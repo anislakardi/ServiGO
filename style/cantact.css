@@ -1,0 +1,142 @@
+/* Importation des polices */
+@import url('https://fonts.googleapis.com/css2?family=Figtree:ital,wght@0,300..900;1,300..900&family=Josefin+Sans:ital,wght@0,100..700;1,100..700&family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap');
+
+/* Variables et styles de base */
+:root {
+  --Bright-Sun: #fcdb32;
+  --Big-Stone: #141D38;
+  --font-family-1: "Montserrat", sans-serif;
+  --font-family-2: "Josefin Sans", sans-serif;
+  --font-family-3: "Figtree", sans-serif;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+/* Conteneur principal */
+.contact-container {
+  display: flex; /* Utilisation de flexbox */
+  justify-content: center; /* Centre horizontalement */
+  align-items: center; /* Centre verticalement */
+  height: 100vh; /* Hauteur de la page complète */
+  gap: 40px;
+  padding: 40px;
+  background-color: #f4f4f4; /* Gris clair pour un arrière-plan élégant */
+  border-radius: 20px;
+  font-family: var(--font-family-3);
+}
+
+.contact-container > div {
+  background-color: #fff;
+  padding: 30px;
+  border-radius: 15px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+
+/* Formulaire de contact */
+.contact-form h2 {
+  font-family: var(--font-family-1);
+  color: var(--Big-Stone);
+  font-size: 28px;
+  margin-bottom: 20px;
+  text-align: center;
+}
+
+.contact-form input,
+.contact-form textarea {
+  width: 100%;
+  padding: 15px;
+  margin-bottom: 20px;
+  border: 1px solid lightgrey;
+  border-radius: 10px;
+  font-size: 16px;
+  font-family: var(--font-family-3);
+}
+
+.contact-form button {
+  width: 100%;
+  padding: 15px;
+  background-color: var(--Big-Stone);
+  color: white;
+  border: none;
+  border-radius: 10px;
+  font-size: 18px;
+  font-family: var(--font-family-1);
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.contact-form button:hover {
+  background-color: #0056b3;
+}
+
+/* Informations de contact */
+.contact-info h3 {
+  font-family: var(--font-family-2);
+  font-size: 24px;
+  margin-bottom: 20px;
+  text-align: center;
+  color: var(--Big-Stone);
+}
+
+.info-item {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  margin-bottom: 15px;
+}
+
+.info-item img {
+  width: 24px;
+  height: 24px;
+}
+
+.info-item span {
+  font-size: 16px;
+  color: var(--Big-Stone);
+  font-family: var(--font-family-3);
+}
+
+/* Boutons dans Informations */
+.btn-container {
+  text-align: center;
+  margin-top: 20px;
+}
+
+.btn-container a {
+  display: inline-block;
+  margin: 0 10px;
+  padding: 10px 20px;
+  background-color: var(--Big-Stone);
+  color: white;
+  font-size: 16px;
+  border-radius: 30px;
+  text-decoration: none;
+  font-family: var(--font-family-3);
+  transition: background-color 0.3s ease;
+}
+
+.btn-container a:hover {
+  background-color: #0056b3;
+}
+
+/* Réactivité pour les petits écrans */
+@media (max-width: 768px) {
+  .contact-container {
+    grid-template-columns: 1fr;
+    gap: 20px;
+  }
+
+  .contact-container > div {
+    padding: 20px;
+  }
+
+  .contact-form button,
+  .btn-container a {
+    font-size: 14px;
+  }
+}

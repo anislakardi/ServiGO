@@ -413,4 +413,103 @@
 .service-card:hover {
   transform: scale(1.05);
 }
+.site-footer {
+  background-color: var(--Big-Stone);
+  color: white;
+  font-family: var(--font-family-3);
+  padding: 40px 20px 20px;
+}
+
+.footer-container {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 30px;
+  text-align: center;
+  align-items: center;
+}
+
+.footer-logo h2 {
+  font-size: 24px;
+  margin-bottom: 10px;
+  color: var(--Bright-Sun);
+  font-style: italic;
+}
+
+.footer-logo p {
+  font-size: 14px;
+  color: #ccc;
+}
+
+.footer-links a {
+  display: block;
+  margin-bottom: 8px;
+  color: white;
+  text-decoration: none;
+  font-size: 14px;
+  transition: color 0.3s;
+}
+
+.footer-links a:hover {
+  color: var(--Bright-Sun);
+}
+
+.footer-social {
+  text-align: center;
+}
+
+.footer-social p {
+  margin-bottom: 10px;
+  font-size: 14px;
+  color: white;
+}
+
+.social-icons {
+  display: flex;
+  justify-content: center;
+  gap: 15px;
+}
+
+.social-icons a img {
+  width: 24px;
+  height: 24px;
+  filter: brightness(0) invert(1);
+  transition: transform 0.3s ease;
+}
+
+.social-icons a:hover img {
+  transform: scale(1.1);
+}
+
+.footer-bottom {
+  margin-top: 30px;
+  text-align: center;
+  font-size: 12px;
+  color: #aaa;
+}
+.contact-info {
+  display: grid;
+  gap: 15px;
+  justify-content: center;
+  text-align: center;
+  margin-top: 20px;
+}
+
+.info-item {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+  font-size: 14px;
+  color: white;
+}
+
+.info-item img {
+  width: 20px;
+  height: 20px;
+  object-fit: contain;
+  filter: brightness(0) invert(1); /* pour garder icônes blanches */
+}
+
+
+
   
