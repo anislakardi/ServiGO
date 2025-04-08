@@ -259,11 +259,8 @@
     object-fit: cover;
   }
 
-
-  /*OUII*/
-  /* Personalisation de la section "What our users are saying" */
 .what-our-users-are-saying {
-  background-color: rgb(242, 242, 242); /* Arrière-plan doux */
+  background-color: white; /* Arrière-plan doux */
   padding: 60px 30px;
   font-family: var(--font-family-3);
   text-align: center;
@@ -284,7 +281,7 @@
 }
 
 .testimonial-card {
-  background-color: white;
+  background-color: rgb(242, 242, 242);;
   border-radius: 20px;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
   padding: 30px;
@@ -362,5 +359,58 @@
   background-color: #f2c94d; /* Un ton plus clair au survol */
   text-decoration: none;
 }
+.services {
+  padding: 40px;
+  background-color: #f4f4f4;
+  text-align: center;
+  font-family: var(--font-family-3);
+}
 
+.services h2 {
+  font-size: 2rem;
+  margin-bottom: 30px;
+  color: var(--Big-Stone);
+}
+
+.service-cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 20px;
+  margin-top: 30px;
+  font-family: var(--font-family-3);
+}
+
+.service-card {
+  background-color: white;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  padding: 20px;
+  text-align: center;
+  transition: transform 0.3s ease-in-out;
+}
+
+.service-card img {
+  width: 60%;       /* La largeur sera à 100% de la carte */
+  height: auto;      /* L'aspect de l'image sera maintenu */
+  max-width: 250px;  /* Limite la largeur de l'image */
+  max-height: 250px; /* Limite la hauteur de l'image */
+  object-fit: cover;
+  border-radius: 30px;
+}
+
+.service-card h3 {
+  font-size: 1.5rem;
+  margin-top: 15px;
+  color: var(--Big-Stone);
+}
+
+.service-card p {
+  font-size: 0.9rem;
+  color: #666;
+  margin-top: 10px;
+}
+
+.service-card:hover {
+  transform: scale(1.05);
+}
   
