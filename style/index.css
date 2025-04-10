@@ -1,0 +1,366 @@
+@import url('https://fonts.googleapis.com/css2?family=Figtree:ital,wght@0,300..900;1,300..900&family=Josefin+Sans:ital,wght@0,100..700;1,100..700&family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap');
+
+:root{
+
+  /*colors*/
+  --Bright-Sun: #fcdb32;
+  --Big-Stone: #141D38;
+  /*fonts*/
+  --font-family-1: "Montserrat", sans-serif;
+  --font-family-2: "Josefin Sans", sans-serif;
+  --font-family-3: "Figtree", sans-serif;
+  }
+  *{
+    margin: 0px;
+    padding: 0px;
+    box-sizing: border-box;
+  }
+  h1{
+    font-size: 35px;
+  }
+  img{
+    /*width: 300px;
+    height: 450px;*/
+    width: 300px;
+    height: 500px;
+  }
+  .BigContainer{
+    display: grid;
+    grid-template-rows: 0.1fr 4fr;
+  }
+  .Navbar{
+    text-align: center;
+  }
+  .Navbar{
+    margin-top: 20px;
+    place-items: center;
+  }
+  .SousNavbar{
+    display: grid;
+    grid-template-columns: 1fr 2fr;
+    border: 1px;
+    background-color: rgb(242, 242, 242);
+    border-radius: 40px;
+    width: 40%;
+    padding: 10px;
+  }
+  .ServiGO{
+    text-align: left;
+    font-family: var(--font-family-3);
+    h1{
+      padding-top: 4px;
+      font-size: 25px;
+      padding-left: 10px;
+      color:var(--Big-Stone);
+      font-style: italic;
+    }
+  }
+  .Pages{
+    text-align: right;
+    font-family: var(--font-family-3);
+    a{
+      text-decoration: none;
+      font-size: 15px;
+      color:var(--Big-Stone);
+      padding-right: 10px;
+    }
+  }
+  .Pages a:nth-of-type(2) {
+    display: inline-block;
+    border: 0px;
+    background-color: var(--Big-Stone);
+    color: white;
+    border-radius: 20px;
+    width: 120px;
+    height: 40px;
+    text-align: center;
+    line-height: 40px;
+    padding: 0;
+  }
+  .Pages a:nth-of-type(2):hover {
+    background-color: #0056b3;
+    text-decoration: none;
+  }
+  .HeroStart{
+    display: grid;
+    grid-template-columns: 1fr 4fr 1fr;
+    .PicD{
+      text-align: end;
+    }
+    .PicG{
+      text-align: start;
+    }
+    .Text1{
+      margin-top: 15px;
+      margin-bottom: 25px;
+      display: grid;
+      place-items: center;
+      gap: 10px;
+      grid-template-rows: 2fr 1fr 1fr;
+      padding: 50px;
+      h1{
+        font-family: var(--font-family-3);
+        font-size: 70px;
+        text-align: center;
+        color: var(--Big-Stone);
+        line-height: 80px;
+      }
+      p{
+        font-family: var(--font-family-3);
+        font-size: 15px;
+        text-align: center;
+        color: rgb(110, 110, 110);
+        line-height: 22px;
+      }
+      a{
+        text-decoration: none;
+        font-family: var(--font-family-3);
+        border: 0px;
+        text-align: center;
+        padding: 20px;
+        background-color: var(--Big-Stone);
+        display: inline-block;
+        color: white;
+        border-radius: 30px;
+        width: 160px;
+        height: 50px;
+        text-align: center;
+        line-height: 50px;
+        padding: 0;
+        font-size: 22px;
+      }
+      .btns1 a:nth-of-type(2) {
+        background-color: rgb(242, 242, 242);
+        color: var(--Big-Stone);
+        margin-left: 20px;
+      }
+      .btns1 a:nth-of-type(1):hover {
+        background-color: #0056b3;
+        text-decoration: none;
+      }
+    }
+
+  }
+  .features {
+    background-color: rgb(242, 242, 242);
+    padding: 60px 30px;
+    font-family: var(--font-family-3);
+    text-align: center;
+  }
+  
+  .features h2 {
+    font-size: 32px;
+    color: var(--Big-Stone);
+    margin-bottom: 40px;
+  }
+  
+  .feature-cards {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 30px;
+    justify-items: center;
+  }
+  
+  .feature-cards .card {
+    background-color: white;
+    border-radius: 20px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    padding: 25px;
+    max-width: 300px;
+    transition: transform 0.3s ease;
+  }
+  
+  .feature-cards .card:hover {
+    transform: translateY(-5px);
+  }
+  
+  .feature-cards .card h3 {
+    color: var(--Big-Stone);
+    font-size: 20px;
+    margin-bottom: 10px;
+  }
+  
+  .feature-cards .card p {
+    font-size: 14px;
+    color: rgb(110, 110, 110);
+    line-height: 20px;
+  }
+  .how-it-works {
+    background-color: white;
+    padding: 60px 30px;
+    font-family: var(--font-family-3);
+    text-align: center;
+  }
+  
+  .how-it-works h2 {
+    font-size: 32px;
+    color: var(--Big-Stone);
+    margin-bottom: 50px;
+  }
+  
+  .user-type {
+    margin-bottom: 50px;
+  }
+  
+  .user-type h3 {
+    font-size: 24px;
+    color: var(--Big-Stone);
+    margin-bottom: 30px;
+  }
+  
+  .step-cards {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 30px;
+    justify-items: center;
+  }
+  
+  .step {
+    background-color: rgb(242, 242, 242);
+    border-radius: 20px;
+    padding: 25px;
+    max-width: 300px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+    transition: transform 0.3s ease;
+  }
+  
+  .step:hover {
+    transform: translateY(-5px);
+  }
+  
+  .step-number {
+    width: 40px;
+    height: 40px;
+    background-color: var(--Bright-Sun);
+    color: var(--Big-Stone);
+    font-weight: bold;
+    font-size: 18px;
+    margin: 0 auto 15px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  
+  .step h4 {
+    font-size: 18px;
+    color: var(--Big-Stone);
+    margin-bottom: 10px;
+  }
+  
+  .step p {
+    font-size: 14px;
+    color: rgb(110, 110, 110);
+    line-height: 20px;
+  }
+  .features img {
+    width: 60px;
+    height: 60px; /* Taille fixe */
+    object-fit: cover;
+  }
+
+
+  /*OUII*/
+  /* Personalisation de la section "What our users are saying" */
+.what-our-users-are-saying {
+  background-color: rgb(242, 242, 242); /* Arrière-plan doux */
+  padding: 60px 30px;
+  font-family: var(--font-family-3);
+  text-align: center;
+}
+
+.what-our-users-are-saying h2 {
+  font-size: 32px;
+  color: var(--Big-Stone);
+  margin-bottom: 40px;
+  font-style: italic; /* Pour ajouter un effet élégant */
+}
+
+.testimonials {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 30px;
+  justify-items: center;
+}
+
+.testimonial-card {
+  background-color: white;
+  border-radius: 20px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  padding: 30px;
+  max-width: 350px;
+  text-align: center;
+  transition: transform 0.3s ease;
+}
+
+.testimonial-card:hover {
+  transform: translateY(-5px);
+}
+
+.testimonial-card p {
+  font-size: 16px;
+  color: rgb(110, 110, 110);
+  line-height: 22px;
+  font-style: italic;
+  margin-bottom: 20px;
+}
+
+.testimonial-card .user-name {
+  font-size: 18px;
+  color: var(--Big-Stone);
+  font-weight: bold;
+  margin-bottom: 10px;
+}
+
+.testimonial-card .user-position {
+  font-size: 14px;
+  color: rgb(110, 110, 110);
+  font-style: normal;
+}
+
+.testimonial-card .user-image {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  object-fit: cover;
+  margin: 0 auto 20px;
+}
+
+.testimonial-card .user-image img {
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+}
+
+.testimonial-card .quote-icon {
+  font-size: 40px;
+  color: var(--Bright-Sun);
+  margin-top: -20px;
+  margin-bottom: 10px;
+}
+
+/* Si tu veux ajouter un effet hover sur l'image de l'utilisateur */
+.testimonial-card .user-image:hover {
+  border: 3px solid var(--Bright-Sun);
+}
+.view-all-reviews {
+  margin-top: 40px;
+}
+
+.view-all-btn {
+  text-decoration: none;
+  background-color: var(--Bright-Sun); /* Couleur de fond du bouton */
+  color: var(--Big-Stone); /* Couleur du texte */
+  padding: 15px 30px;
+  font-size: 16px;
+  border-radius: 30px;
+  display: inline-block;
+  transition: background-color 0.3s ease;
+}
+
+.view-all-btn:hover {
+  background-color: #f2c94d; /* Un ton plus clair au survol */
+  text-decoration: none;
+}
+
+  
