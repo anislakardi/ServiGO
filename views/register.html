@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ServiGO - Inscription</title>
+  <link rel="stylesheet" href="../style/register.css">
+</head>
+<body>
+  <div class="register-container">
+    <a href="javascript:history.back()" class="back-button">
+      &#8592; Retour
+    </a>
+    <div class="register-form">
+      <h2>Inscription</h2>
+      <form action="register.php" method="POST">
+        <div class="form-row">
+          <div>
+            <label for="user_type">Vous êtes :</label>
+            <select name="user_type" id="user_type" required>
+              <option value="client">Client</option>
+              <option value="prestataire">Prestataire</option>
+            </select>
+          </div>
+          <div>
+            <label for="nom_utilisateur">Nom d'utilisateur :</label>
+            <input type="text" name="nom_utilisateur" placeholder="Nom d'utilisateur" required>
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div>
+            <label for="nom">Nom :</label>
+            <input type="text" name="nom" placeholder="Nom" required>
+          </div>
+          <div>
+            <label for="prenom">Prénom :</label>
+            <input type="text" name="prenom" placeholder="Prénom" required>
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div>
+            <label for="date_nee">Date de naissance :</label>
+            <input type="date" name="date_nee" id="date_nee" required>
+          </div>
+          <div>
+            <label for="adresse">Adresse :</label>
+            <input type="text" name="adresse" placeholder="Adresse">
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div>
+            <label for="email">Adresse email :</label>
+            <input type="email" name="email" placeholder="Adresse email" required>
+          </div>
+          <div>
+            <label for="mot_de_passe">Mot de passe :</label>
+            <input type="password" name="mot_de_passe" placeholder="Mot de passe" required>
+          </div>
+        </div>
+
+        <div id="prestataire-fields" style="display: none;">
+          <div class="form-row">
+            <div>
+              <label for="specialisation">Spécialisation :</label>
+                <select name="specialisation" id="specialisation">
+                  <option value="Mecanique automobile">Mécanique automobile</option>
+                  <option value="Electricite">Electricité</option>
+                  <option value="Menuiserie">Menuiserie</option>
+                  <option value="Maconnerie">Maçonnerie</option>
+                  <option value="Reparation electromenager">Réparation électroménager</option>
+                  <option value="Peinture et decoration">Peinture et décoration</option>
+                  <option value="Nettoyage">Nettoyage</option>
+                  <option value="Ferblanterie">Ferblanterie</option>
+                  <option value="Architecture">Architecture</option>
+                  <option value="Plomberie">Plomberie</option>
+                  <option value="Jardinier">Jardinier</option>
+                  <option value="Deménageur">Déménageur</option>
+                </select>            
+            </div>
+            <div>
+              <label for="experience">Années d'expérience :</label>
+              <input type="number" name="experience" id="experience" placeholder="Années d'expérience">
+            </div>
+          </div>
+        </div>
+
+        <button type="submit">S'inscrire</button>
+      </form>
+    </div>
+  </div>
+
+  <script>
+    // Afficher ou masquer les champs pour les prestataires
+    const userTypeSelect = document.getElementById('user_type');
+    const prestataireFields = document.getElementById('prestataire-fields');
+
+    userTypeSelect.addEventListener('change', function() {
+      if (this.value === 'prestataire') {
+        prestataireFields.style.display = 'grid';
+      } else {
+        prestataireFields.style.display = 'none';
+      }
+    });
+  </script>
+</body>
+</html>

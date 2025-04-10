@@ -1,0 +1,149 @@
+@import url('https://fonts.googleapis.com/css2?family=Figtree:ital,wght@0,300..900;1,300..900&family=Josefin+Sans:ital,wght@0,100..700;1,100..700&family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap');
+
+/* Variables et styles de base */
+:root {
+    --Bright-Sun: #fcdb32;
+    --Big-Stone: #141D38;
+    --font-family-1: "Montserrat", sans-serif;
+    --font-family-2: "Josefin Sans", sans-serif;
+    --font-family-3: "Figtree", sans-serif;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    overflow: hidden;
+    background-color: #f4f4f4;
+    font-family: var(--font-family-3);
+}
+
+.register-container {
+    background-color: #fff;
+    padding: 40px;
+    border-radius: 15px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    max-width: 900px;
+    width: 100%;
+}
+
+.register-form {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+}
+
+.register-form h2 {
+    font-family: var(--font-family-1);
+    font-size: 28px;
+    color: var(--Big-Stone);
+    text-align: center;
+    margin-bottom: 30px;
+}
+
+.register-form label {
+    font-size: 14px;
+    color: var(--Big-Stone);
+    margin-bottom: 5px;
+    display: block;
+}
+
+/* Flexbox pour les champs en ligne */
+.form-row {
+    display: flex;
+    gap: 20px;
+    width: 100%;
+    margin-bottom: 15px;
+}
+
+.form-row > div {
+    flex: 1;
+}
+
+.register-form input,
+.register-form select {
+    width: 100%;
+    padding: 12px;
+    margin-bottom: 10px;
+    border: 1px solid lightgrey;
+    border-radius: 10px;
+    font-size: 16px;
+    font-family: var(--font-family-3);
+}
+
+.register-form button {
+    padding: 15px;
+    background-color: var(--Big-Stone);
+    color: white;
+    border: none;
+    border-radius: 10px;
+    font-size: 18px;
+    font-family: var(--font-family-1);
+    cursor: pointer;
+    transition: all 0.3s ease;
+    width: 100%;
+}
+
+.register-form button:hover {
+    background-color: #0056b3;
+}
+
+/* Mise en page pour les prestataires */
+#prestataire-fields {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 15px;
+    width: 140%;
+    margin-top: 20px;
+}
+
+#prestataire-fields select,
+#prestataire-fields input {
+    width: 100%;
+}
+
+@media (max-width: 768px) {
+    .register-form {
+        align-items: stretch;
+    }
+
+    #prestataire-fields {
+        grid-template-columns: 1fr;
+    }
+
+    .register-form input,
+    .register-form select,
+    .register-form button {
+        width: 100%;
+    }
+
+    .form-row {
+        flex-direction: column;
+    }
+}
+/* Style du bouton de retour */
+.back-button {
+  display: inline-block;
+  font-family: var(--font-family-1);
+  font-size: 16px;
+  color: var(--Big-Stone);
+  background-color: transparent;
+  border: none;
+  text-decoration: none;
+  margin-bottom: 20px;
+  padding: 10px;
+  transition: all 0.3s ease;
+}
+
+.back-button:hover {
+  color: var(--Bright-Sun);
+  text-decoration: underline;
+}

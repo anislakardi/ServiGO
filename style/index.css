@@ -392,10 +392,10 @@
 .service-card img {
   width: 60%;       /* La largeur sera à 100% de la carte */
   height: auto;      /* L'aspect de l'image sera maintenu */
-  max-width: 250px;  /* Limite la largeur de l'image */
-  max-height: 250px; /* Limite la hauteur de l'image */
+  max-width: 100px;  /* Limite la largeur de l'image */
+  max-height: 100px; /* Limite la hauteur de l'image */
   object-fit: cover;
-  border-radius: 30px;
+  border-radius: 20px;
 }
 
 .service-card h3 {
