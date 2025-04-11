@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Messagerie Améliorée</title>
+  <link rel="stylesheet" href="../style/huh.css" />
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.5.3/socket.io.min.js"></script>
+</head>
+<body>
+  <nav>
+    <div class="logo"><h1>ServiGO+</h1></div>
+    <ul>
+      <li><a href="home.html">Accueil</a></li>
+      <li><a id="active">Messagerie</a></li>
+      <li><a href="#notifications">Notifications</a></li>
+      <li><a href="#profile">Profil</a></li>
+    </ul>
+    <select id="theme-selector">
+      <option value="clair">Thème Clair</option>
+      <option value="sombre">Thème Sombre</option>
+    </select>
+  </nav>
+  <main class="messagerie-container">
+    <div class="contacts-list">
+      <h3>Contacts</h3>
+      <ul>
+        <li class="contact" data-user="user1" data-status="online">Yacine <span class="status-indicator online"></span></li>
+        <li class="contact" data-user="user2" data-status="offline">Karim <span class="status-indicator offline"></span></li>
+      </ul>
+    </div>
+    <div class="chat-box">
+      <div class="chat-header">
+        <h4 id="contact-name">Sélectionnez un contact</h4>
+      </div>
+      <div class="chat-messages" id="messages-container"></div>
+      <div class="chat-input">
+        <input type="file" id="file-upload" />
+        <input type="text" id="message-input" placeholder="Écrire un message..." />
+        <button id="send-button">Envoyer</button>
+      </div>
+    </div>
+  </main>
+  <script>
+const themeSelector = document.getElementById("theme-selector");
+themeSelector.addEventListener("change", (e) => {
+  document.body.setAttribute("data-theme", e.target.value);
+});
+
+const contacts = document.querySelectorAll(".contact");
+contacts.forEach(contact => {
+  contact.addEventListener("click", () => {
+    document.querySelector(".contact.active")?.classList.remove("active");
+    contact.classList.add("active");
+    const contactName = contact.textContent.trim();
+    document.getElementById("contact-name").textContent = contactName;
+  });
+});
+
+const sendButton = document.getElementById("send-button");
+sendButton.addEventListener("click", () => {
+  const messageInput = document.getElementById("message-input");
+  const chatMessages = document.getElementById("messages-container");
+  const newMessage = document.createElement("div");
+  newMessage.textContent = messageInput.value;
+  newMessage.classList.add("sent");
+  chatMessages.appendChild(newMessage);
+  messageInput.value = "";
+});
+
+  </script>
+</body>
+</html>

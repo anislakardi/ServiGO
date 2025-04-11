@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ServiGO - Accueil</title>
+  <link rel="stylesheet" href="../style/homeClient.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+</head>
+<body>
+  <!-- Navbar -->
+  <nav>
+    <div class="logo">
+      <h1>ServiGO</h1>
+    </div>
+    <ul>
+      <li><a id="home">Accueil</a></li>
+      <li><a href="#offreurs">Offreurs</a></li>
+      <li><a href="../views/messagerie.html">Messagerie</a></li>
+      <li><a href="#notifications">Notifications</a></li>
+      <li><a href="#options">Options</a></li>
+      <li><a href="#profile">Profile</a></li>
+    </ul>
+  </nav>
+
+  <!-- Contenu principal -->
+  <main style="padding: 30px; width: 100%; max-width: 1000px;">
+    <button id="openDialogBtn" style="margin-bottom: 20px; padding: 12px 20px; border: none; background-color: var(--Bright-Sun); color: var(--Big-Stone); border-radius: 8px; font-weight: bold; cursor: pointer;">Créer une Publication</button>
+
+    <!-- Dialogue pour créer une publication -->
+    <dialog id="publicationDialog">
+      <div class="dialog-header">
+        <h3>Nouvelle Publication</h3>
+        <button onclick="dialog.close()">X</button>
+      </div>
+      <form method="post" class="register-form">
+        <label for="titre">Titre</label>
+        <input type="text" id="titre" name="titre" required />
+
+        <label for="description">Description</label>
+        <textarea id="description" name="description" rows="4" required></textarea>
+
+        <label for="date_execution">Date d'exécution</label>
+        <input type="datetime-local" id="date_execution" name="date_execution" />
+
+        <label for="service_vise">Service visé</label>
+        <select id="service_vise" name="service_vise">
+          <option>Mecanique automobile</option>
+          <option>Electricité</option>
+          <option>Menuiserie</option>
+          <option>Maconnerie</option>
+          <option>Réparation électromenagé</option>
+          <option>Peinture et décoration</option>
+          <option>Nettoyage</option>
+          <option>Informatique</option>
+          <option>Chauffage et Climatisation</option>
+        </select>
+        <div class="p-4 max-w-md mx-auto">
+          <label for="wilaya">Wilaya</label>
+          <select id="wilaya" class="w-full p-2 border rounded">
+            <option value="">-- Sélectionnez une wilaya --</option>
+          </select>
+      
+          <label for="commune" class="mt-4 block">Commune</label>
+          <select id="commune" class="w-full p-2 border rounded">
+            <option value="">-- Sélectionnez une commune --</option>
+        </select>
+        <label for="media">Média</label>
+        <input type="file" id="media" name="media" accept="image/*" />
+
+        <button type="submit">Publier</button>
+      </form>
+    </dialog>
+
+    <!-- Publications -->
+    <section class="publication-list">
+      <!-- Publication 1 -->
+      <div class="publication">
+        <div class="publication-header">
+          <img src="../style/images/electricity.png" alt="Photo de profil" class="profile-pic">
+          <div class="user-info">
+            <h4>Mohammed Anis Lakardi</h4>
+            <span class="meta">Publié le : 2025-04-10 | Service : Plomberie</span>
+            <span class="meta">Exécution prévue : 2025-04-11</span>
+          </div>
+        </div>
+        <h3 class="publication-title">Fuite d'eau dans la cuisine</h3>
+        <p class="publication-text">Besoin d'un plombier rapidement pour réparer une fuite sous l'évier...</p>
+        <img src="../style/images/hero.png" alt="media" class="publication-media" />
+        
+        <!-- Actions des boutons -->
+        <div class="publication-actions">
+          <button><i class="fas fa-comment"></i> Commenter</button>
+          <button><i class="fas fa-heart"></i> Aimer</button>
+          <button><i class="fa-solid fa-user"></i> Recommander</button>
+        </div>
+        
+        <!-- Statistiques -->
+        <div class="publication-stats">
+          <span>12 j'aimes</span> - <span>3 commentaires</span>
+        </div>
+      </div>
+    
+      <!-- Publication 2 -->
+      <div class="publication">
+        <div class="publication-header">
+          <img src="../style/images/builder.png" alt="Photo de profil" class="profile-pic">
+          <div class="user-info">
+            <h4>Mohammed Anis Lakardi</h4>
+            <span class="meta">Publié le : 2025-04-10 | Service : Plomberie</span>
+            <span class="meta">Exécution prévue : 2025-04-11</span>
+          </div>
+        </div>
+        <h3 class="publication-title">Fuite d'eau dans la cuisine</h3>
+        <p class="publication-text">Besoin d'un plombier rapidement pour réparer une fuite sous l'évier...</p>
+        <img src="../style/images/hero.png" alt="media" class="publication-media" />
+        
+        <!-- Actions des boutons -->
+        <div class="publication-actions">
+          <button><i class="fas fa-comment"></i> Commenter</button>
+          <button><i class="fas fa-heart"></i> Aimer</button>
+          <button><i class="fa-solid fa-user"></i> Recommander</button>
+        </div>
+        
+        <!-- Statistiques -->
+        <div class="publication-stats">
+          <span>12 j'aimes</span> - <span>3 commentaires</span>
+        </div>
+      </div>
+    </section>    
+  </main>
+
+  <footer style="text-align: center; padding: 30px; font-size: 14px; color: #666;">
+    &copy; 2025 ServiGO. Tous droits réservés.
+  </footer>
+
+  <script>
+    const dialog = document.getElementById("publicationDialog");
+    const openBtn = document.getElementById("openDialogBtn");
+    
+    // Sélectionner les publications et vérifier la présence de l'image
+    document.querySelectorAll('.publication').forEach(publication => {
+    const image = publication.querySelector('.publication-media');
+    const text = publication.querySelector('.publication-text');
+
+    // Vérifiez si l'image a une source valide
+    if (image && image.src && image.src !== '' && image.alt.trim() !== '') {
+      image.style.display = 'block';
+    } else {
+      image.style.display = 'none';
+      text.style.display = 'block';
+    }
+    });
+
+
+    openBtn.addEventListener("click", () => {
+      dialog.showModal();
+    });
+
+    let wilayas = [];
+    let communes = [];
+
+    // Charger les deux fichiers JSON
+    Promise.all([
+      fetch('../fichiers/Wilaya_Of_Algeria.json').then(res => res.json()),
+      fetch('../fichiers/Commune_Of_Algeria.json').then(res => res.json())
+    ]).then(([wilayaData, communeData]) => {
+      wilayas = wilayaData;
+      communes = communeData;
+
+      populateWilayas(wilayas);
+    });
+
+    function populateWilayas(wilayas) {
+      const wilayaSelect = document.getElementById('wilaya');
+      wilayas.forEach(w => {
+        const option = document.createElement('option');
+        option.value = w.id;
+        option.textContent = w.name;
+        wilayaSelect.appendChild(option);
+      });
+
+      // Écouteur pour changer les communes quand wilaya change
+      wilayaSelect.addEventListener('change', () => {
+        const selectedId = wilayaSelect.value;
+        populateCommunes(selectedId);
+      });
+    }
+
+    function populateCommunes(wilayaId) {
+      const communeSelect = document.getElementById('commune');
+      communeSelect.innerHTML = '<option value="">-- Sélectionnez une commune --</option>';
+
+      const filtered = communes.filter(c => c.wilaya_id === wilayaId);
+      filtered.forEach(c => {
+        const option = document.createElement('option');
+        option.value = c.name;
+        option.textContent = c.name;
+        communeSelect.appendChild(option);
+      });
+    }
+  </script>
+</body>
+</html>

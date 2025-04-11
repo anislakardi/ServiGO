@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>ServiGO - Messagerie</title>
+  <link rel="stylesheet" href="../style/messagerie.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"/>
+</head>
+<body>
+
+  <!-- Navbar -->
+  <nav>
+    <div class="logo">
+      <h1>ServiGO</h1>
+    </div>
+    <ul>
+      <li><a href="homeClient.html">Accueil</a></li>
+      <li><a href="#offreurs">Offreurs</a></li>
+      <li><a id="active">Messagerie</a></li>
+      <li><a href="#notifications">Notifications</a></li>
+      <li><a href="#options">Options</a></li>
+      <li><a href="#profile">Profile</a></li>
+    </ul>
+  </nav>
+
+  <!-- Zone de messagerie -->
+  <main class="messagerie-container">
+    <div class="contacts-list">
+      <h3>Mes contacts</h3>
+      <ul>
+        <li class="contact active" data-user="yacine">Yacine Réparateur</li>
+        <li class="contact" data-user="karim">Karim Électricien</li>
+        <li class="contact" data-user="sabrina">Sabrina Plombière</li>
+      </ul>      
+    </div>
+
+    <div class="chat-box">
+      <div class="chat-header">
+        <h4 id="contact-name">Yacine Réparateur</h4>
+      </div>
+
+      <div class="chat-messages" id="messages-container">
+        <div class="message received">
+          Bonjour, je suis dispo demain à 10h pour la réparation.
+        </div>
+        <div class="message sent">
+          Parfait, on fait comme ça. Merci !
+        </div>
+      </div>
+
+      <div class="chat-input">
+        <label for="file-upload" class="file-label">
+          <i class="fas fa-paperclip"></i>
+        </label>
+        <input type="file" id="file-upload" style="display: none" />
+        <input type="text" placeholder="Écrire un message..." />
+        <button><i class="fas fa-paper-plane"></i></button>
+      </div>      
+    </div>
+  </main>
+  <script>
+    const input = document.querySelector('.chat-input input[type="text"]');
+    const button = document.querySelector('.chat-input button');
+    const fileInput = document.getElementById('file-upload');
+    const chatMessages = document.getElementById('messages-container');
+    const contactName = document.getElementById('contact-name');
+
+    const messagesData = {
+      yacine: [
+        { type: 'received', text: 'Bonjour, je suis dispo demain à 10h pour la réparation.' },
+        { type: 'sent', text: 'Parfait, on fait comme ça. Merci !' }
+      ],
+      karim: [
+        { type: 'received', text: 'J\'ai vérifié le disjoncteur, tout semble normal.' },
+        { type: 'sent', text: 'OK, je vais vérifier à nouveau. Merci.' }
+      ],
+      sabrina: [
+        { type: 'received', text: 'Je peux passer cet après-midi pour le robinet.' },
+        { type: 'sent', text: 'Super, je vous attends.' }
+      ]
+    };
+
+    let currentUser = 'yacine';
+
+    function afficherMessages(user) {
+      chatMessages.innerHTML = '';
+      messagesData[user].forEach(msg => {
+        const msgDiv = document.createElement('div');
+        msgDiv.classList.add('message', msg.type);
+
+        if (msg.image) {
+          const img = document.createElement('img');
+          img.src = msg.image;
+          msgDiv.appendChild(img);
+        } else {
+          msgDiv.textContent = msg.text;
+        }
+
+        chatMessages.appendChild(msgDiv);
+      });
+      chatMessages.scrollTop = chatMessages.scrollHeight;
+    }
+
+    function envoyerMessage() {
+      const message = input.value.trim();
+      if (message !== '') {
+        const msgDiv = document.createElement('div');
+        msgDiv.classList.add('message', 'sent');
+        msgDiv.textContent = message;
+        chatMessages.appendChild(msgDiv);
+
+        messagesData[currentUser].push({ type: 'sent', text: message });
+        input.value = '';
+        chatMessages.scrollTop = chatMessages.scrollHeight;
+      }
+    }
+
+    button.addEventListener('click', envoyerMessage);
+    input.addEventListener('keypress', e => {
+      if (e.key === 'Enter') envoyerMessage();
+    });
+
+    document.querySelectorAll('.contact').forEach(item => {
+      item.addEventListener('click', () => {
+        document.querySelector('.contact.active')?.classList.remove('active');
+        item.classList.add('active');
+        currentUser = item.getAttribute('data-user');
+        contactName.textContent = item.textContent;
+        afficherMessages(currentUser);
+      });
+    });
+
+    fileInput.addEventListener('change', () => {
+      const file = fileInput.files[0];
+      if (file && file.type.startsWith('image/')) {
+        const imageURL = URL.createObjectURL(file);
+        const msgDiv = document.createElement('div');
+        msgDiv.classList.add('message', 'sent');
+
+        const img = document.createElement('img');
+        img.src = imageURL;
+        msgDiv.appendChild(img);
+
+        chatMessages.appendChild(msgDiv);
+        chatMessages.scrollTop = chatMessages.scrollHeight;
+
+        messagesData[currentUser].push({ type: 'sent', image: imageURL });
+
+        fileInput.value = '';
+      }
+    });
+
+    afficherMessages(currentUser);
+
+    function formatTime(date) {
+  const hours = date.getHours().toString().padStart(2, '0');
+  const minutes = date.getMinutes().toString().padStart(2, '0');
+  return `${hours}:${minutes}`;
+}
+
+function afficherMessages(user) {
+  chatMessages.innerHTML = '';
+  messagesData[user].forEach(msg => {
+    const msgDiv = document.createElement('div');
+    msgDiv.classList.add('message', msg.type);
+
+    const time = document.createElement('span');
+    time.classList.add('message-time');
+    time.textContent = formatTime(new Date()); // Affiche l'heure actuelle
+
+    if (msg.image) {
+      const img = document.createElement('img');
+      img.src = msg.image;
+      msgDiv.appendChild(img);
+    } else {
+      msgDiv.textContent = msg.text;
+    }
+
+    msgDiv.appendChild(time);  // Ajouter l'heure au message
+    chatMessages.appendChild(msgDiv);
+  });
+  chatMessages.scrollTop = chatMessages.scrollHeight;
+}
+
+  </script>  
+</body>
+</html>
