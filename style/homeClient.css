@@ -270,4 +270,160 @@ a, button {
     display: flex;
     flex-direction: column;
 }
-  
+#myPostsDialog {
+  background-color: #f9f9f9;
+  border: none;
+  border-radius: 16px;
+  padding: 30px;
+  width: 90%;
+  max-width: 800px;
+  max-height: 90vh;
+  overflow-y: auto;
+  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.25);
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+/* En-tête du dialogue */
+#myPostsDialog .dialog-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 25px;
+}
+
+#myPostsDialog .dialog-header h3 {
+  font-size: 1.6em;
+  margin: 0;
+  color: #2c3e50;
+}
+
+#myPostsDialog .dialog-header button {
+  background-color: transparent;
+  border: none;
+  font-size: 1.4em;
+  color: #7f8c8d;
+  cursor: pointer;
+  transition: color 0.2s ease;
+}
+
+#myPostsDialog .dialog-header button:hover {
+  color: #e74c3c;
+}
+
+/* Contenu des publications */
+#myPostsDialog .publication {
+  background-color: #fff;
+  border-radius: 12px;
+  padding: 20px;
+  margin-bottom: 20px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+#myPostsDialog .publication-header {
+  font-size: 0.9em;
+  color: #7f8c8d;
+  margin-bottom: 8px;
+}
+
+#myPostsDialog .publication-title {
+  font-size: 1.4em;
+  font-weight: 600;
+  color: #34495e;
+  margin: 10px 0;
+}
+
+#myPostsDialog .publication-text {
+  font-size: 1em;
+  color: #555;
+  margin-bottom: 12px;
+  line-height: 1.5;
+}
+#myPostsDialog .publication-stats {
+  font-size: 0.9em;
+  color: #888;
+  margin-top: 5px;
+  text-align: right;
+}
+
+/* Boutons Modifier / Supprimer */
+#myPostsDialog .edit-delete-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  margin-top: 15px;
+}
+
+#myPostsDialog .edit-btn,
+#myPostsDialog .delete-btn {
+  padding: 8px 14px;
+  border: none;
+  border-radius: 8px;
+  font-size: 0.9em;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  transition: background-color 0.2s ease;
+}
+
+#myPostsDialog .edit-btn {
+  background-color: #2980b9;
+  color: white;
+}
+
+#myPostsDialog .edit-btn:hover {
+  background-color: #3498db;
+}
+
+#myPostsDialog .delete-btn {
+  background-color: #c0392b;
+  color: white;
+}
+
+#myPostsDialog .delete-btn:hover {
+  background-color: #e74c3c;
+}
+/* Formulaire à l'intérieur du dialog */
+#editForm {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+/* Styles des champs de saisie */
+#editForm label {
+  font-weight: bold;
+  margin-bottom: 5px;
+}
+
+#editForm input,
+#editForm textarea {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+}
+
+#editForm textarea {
+  height: 120px;
+}
+
+/* Style du bouton */
+#editForm button {
+  background-color: #fdd835;
+  color: var(--Big-Stone);
+  padding: 10px 20px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: bold;
+  margin-top: 20px;
+  transition: background-color 0.3s ease;
+}
+
+#editForm button:hover {
+  background-color: var(--Big-Stone);
+  color: var(--Bright-Sun);
+}
+
+

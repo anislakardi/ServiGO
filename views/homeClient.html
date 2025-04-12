@@ -24,14 +24,16 @@
   </nav>
 
   <!-- Contenu principal -->
+
+  
   <main style="padding: 30px; width: 100%; max-width: 1000px;">
     <button id="openDialogBtn" style="margin-bottom: 20px; padding: 12px 20px; border: none; background-color: var(--Bright-Sun); color: var(--Big-Stone); border-radius: 8px; font-weight: bold; cursor: pointer;">Créer une Publication</button>
-
+    <button id="openMyPostsBtn" style="margin-left: 10px; padding: 12px 20px; border: none; background-color: var(--Big-Stone); color: white; border-radius: 8px; font-weight: bold; cursor: pointer;">Mes Publications</button>
     <!-- Dialogue pour créer une publication -->
     <dialog id="publicationDialog">
       <div class="dialog-header">
         <h3>Nouvelle Publication</h3>
-        <button onclick="dialog.close()">X</button>
+        <button onclick="document.getElementById('publicationDialog').close()">X</button>
       </div>
       <form method="post" class="register-form">
         <label for="titre">Titre</label>
@@ -71,6 +73,83 @@
         <button type="submit">Publier</button>
       </form>
     </dialog>
+
+    <dialog id="myPostsDialog">
+      <div class="dialog-header">
+        <h3>Mes Annonces</h3>
+        <button onclick="document.getElementById('myPostsDialog').close()">X</button>
+      </div>
+      <div class="my-posts-content">
+        <!-- Exemple d’annonce -->
+        <div class="publication">
+          <div class="publication-header">
+            <span class="meta">Publié le : 2025-04-10 | Service : Plomberie</span>
+            <span class="meta">Exécution prévue : 2025-04-11</span>
+          </div>
+          <h3 class="publication-title">Fuite d'eau dans la cuisine</h3>
+          <p class="publication-text">Besoin d'un plombier rapidement pour réparer une fuite sous l'évier...</p>
+          <img src="../style/images/hero.png" alt="media" class="publication-media" />
+        
+          <!-- Statistiques -->
+          <div class="publication-stats">
+            <span>12 j'aimes</span> - <span>3 commentaires</span>
+          </div>
+        
+          <!-- Actions des boutons Modifier et Supprimer -->
+          <div class="edit-delete-actions">
+            <button class="edit-btn"><i class="fas fa-edit"></i> Modifier</button>
+            <button class="delete-btn"><i class="fas fa-trash"></i> Supprimer</button>
+          </div>
+        </div>                
+    
+        <!-- Autre exemple -->
+        <div class="publication">
+          <div class="publication-header">
+            <span class="meta">Publié le : 2025-04-10 | Service : Plomberie</span>
+            <span class="meta">Exécution prévue : 2025-04-11</span>
+          </div>
+          <h3 class="publication-title">Fuite d'eau dans la cuisine</h3>
+          <p class="publication-text">Besoin d'un plombier rapidement pour réparer une fuite sous l'évier...</p>
+          <img src="../style/images/hero.png" alt="media" class="publication-media" />
+        
+          <!-- Statistiques -->
+          <div class="publication-stats">
+            <span>12 j'aimes</span> - <span>3 commentaires</span>
+          </div>
+        
+          <!-- Actions des boutons Modifier et Supprimer -->
+          <div class="edit-delete-actions">
+            <button class="edit-btn"><i class="fas fa-edit"></i> Modifier</button>
+            <button class="delete-btn"><i class="fas fa-trash"></i> Supprimer</button>
+          </div>
+        </div>                
+      </div>
+    </dialog>
+
+    <dialog id="editPublicationDialog">
+      <div class="dialog-header">
+        <h3>Modifications</h3>
+        <button onclick="document.getElementById('editPublicationDialog').close()">X</button>
+      </div>
+      <div class="my-posts-content"></div>
+        <form id="editForm">
+          <label for="editTitre">Titre</label>
+          <input type="text" id="editTitre" name="titre">
+      
+          <label for="editDescription">Description</label>
+          <textarea id="editDescription" name="description"></textarea>
+      
+          <label for="editDate">Date d'exécution</label>
+          <input type="date" id="editDate" name="date">
+      
+          <input type="hidden" id="editIndex" name="index">
+      
+          <button type="submit">Valider</button>
+        </form>
+        </div>
+    </dialog>
+    
+    
 
     <!-- Publications -->
     <section class="publication-list">
@@ -136,69 +215,106 @@
 
   <script>
     const dialog = document.getElementById("publicationDialog");
-    const openBtn = document.getElementById("openDialogBtn");
-    
-    // Sélectionner les publications et vérifier la présence de l'image
-    document.querySelectorAll('.publication').forEach(publication => {
-    const image = publication.querySelector('.publication-media');
-    const text = publication.querySelector('.publication-text');
+    const myPostsDialog = document.getElementById("myPostsDialog");
+    const openBtn = document.getElementById("openDialogBtn");
+    const openMyPostsBtn = document.getElementById("openMyPostsBtn");
+    const editPublicationDialog = document.getElementById("editPublicationDialog");
 
-    // Vérifiez si l'image a une source valide
-    if (image && image.src && image.src !== '' && image.alt.trim() !== '') {
-      image.style.display = 'block';
-    } else {
-      image.style.display = 'none';
-      text.style.display = 'block';
-    }
-    });
+    openBtn.addEventListener("click", () => {
+      dialog.showModal();
+    });
+    openMyPostsBtn.addEventListener("click", () => {
+      myPostsDialog.showModal();
+    });
 
+    // Sélectionner les publications et vérifier la présence de l'image
+    document.querySelectorAll('.publication').forEach(publication => {
+    const image = publication.querySelector('.publication-media');
+    const text = publication.querySelector('.publication-text');
 
-    openBtn.addEventListener("click", () => {
-      dialog.showModal();
-    });
+    // Vérifiez si l'image a une source valide
+    if (image && image.src && image.src !== '' && image.alt.trim() !== '') {
+      image.style.display = 'block';
+    } else {
+      image.style.display = 'none';
+      text.style.display = 'block';
+    }
+    });
 
-    let wilayas = [];
-    let communes = [];
+    let wilayas = [];
+    let communes = [];
 
-    // Charger les deux fichiers JSON
-    Promise.all([
-      fetch('../fichiers/Wilaya_Of_Algeria.json').then(res => res.json()),
-      fetch('../fichiers/Commune_Of_Algeria.json').then(res => res.json())
-    ]).then(([wilayaData, communeData]) => {
-      wilayas = wilayaData;
-      communes = communeData;
+    // Charger les deux fichiers JSON
+    Promise.all([
+      fetch('../fichiers/Wilaya_Of_Algeria.json').then(res => res.json()),
+      fetch('../fichiers/Commune_Of_Algeria.json').then(res => res.json())
+    ]).then(([wilayaData, communeData]) => {
+      wilayas = wilayaData;
+      communes = communeData;
 
-      populateWilayas(wilayas);
-    });
+      populateWilayas(wilayas);
+    });
 
-    function populateWilayas(wilayas) {
-      const wilayaSelect = document.getElementById('wilaya');
-      wilayas.forEach(w => {
-        const option = document.createElement('option');
-        option.value = w.id;
-        option.textContent = w.name;
-        wilayaSelect.appendChild(option);
-      });
+    function populateWilayas(wilayas) {
+      const wilayaSelect = document.getElementById('wilaya');
+      wilayas.forEach(w => {
+        const option = document.createElement('option');
+        option.value = w.id;
+        option.textContent = w.name;
+        wilayaSelect.appendChild(option);
+      });
 
-      // Écouteur pour changer les communes quand wilaya change
-      wilayaSelect.addEventListener('change', () => {
-        const selectedId = wilayaSelect.value;
-        populateCommunes(selectedId);
-      });
-    }
+      // Écouteur pour changer les communes quand wilaya change
+      wilayaSelect.addEventListener('change', () => {
+        const selectedId = wilayaSelect.value;
+        populateCommunes(selectedId);
+      });
+    }
 
-    function populateCommunes(wilayaId) {
-      const communeSelect = document.getElementById('commune');
-      communeSelect.innerHTML = '<option value="">-- Sélectionnez une commune --</option>';
+    function populateCommunes(wilayaId) {
+      const communeSelect = document.getElementById('commune');
+      communeSelect.innerHTML = '<option value="">-- Sélectionnez une commune --</option>';
 
-      const filtered = communes.filter(c => c.wilaya_id === wilayaId);
-      filtered.forEach(c => {
-        const option = document.createElement('option');
-        option.value = c.name;
-        option.textContent = c.name;
+      const filtered = communes.filter(c => c.wilaya_id === wilayaId);
+      filtered.forEach(c => {
+        const option = document.createElement('option');
+        option.value = c.name;
+        option.textContent = c.name;
         communeSelect.appendChild(option);
-      });
-    }
+      });
+    }
+
+
+    let currentPost = null;
+
+    // Fonction appelée au clic sur "Modifier"
+document.querySelectorAll('.edit-btn').forEach((btn, index) => {
+  btn.addEventListener('click', () => {
+    const publication = btn.closest('.publication');
+    const titleElement = publication.querySelector('.publication-title');
+    const descElement = publication.querySelector('.publication-text');
+    const metaElement = publication.querySelector('.publication-header .meta:first-child');
+
+    const title = titleElement ? titleElement.textContent.trim() : '';
+    const desc = descElement ? descElement.textContent.trim() : '';
+    const metaText = metaElement ? metaElement.innerText : '';
+    const dateMatch = metaText.match(/Publié le\s*:\s*(\d{4}-\d{2}-\d{2})/);
+    const date = dateMatch ? dateMatch[1] : '';
+
+    document.getElementById('editTitre').value = title;
+    document.getElementById('editDescription').value = desc;
+    document.getElementById('editDate').value = date;
+    document.getElementById('editIndex').value = index;
+
+    editPublicationDialog.showModal();
+  });
+});
+
+// Ajouter un événement pour fermer le dialog lorsqu'on clique sur X
+document.querySelector('#editPublicationDialog::before').addEventListener('click', function() {
+  document.getElementById('editPublicationDialog').close();
+});
+
   </script>
 </body>
 </html>

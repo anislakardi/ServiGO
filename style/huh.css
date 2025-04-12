@@ -1,45 +1,63 @@
-@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Figtree:ital,wght@0,300..900;1,300..900&family=Josefin+Sans:ital,wght@0,100..700;1,100..700&family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap');
 
+/* Variables et styles de base */
 :root {
   --Bright-Sun: #fcdb32;
   --Big-Stone: #141D38;
   --Light-Grey: #eef0f5;
   --Dark-Grey: #444b54;
-  --Shadow: rgba(0, 0, 0, 0.1);
-  --radius: 15px;
+  --Shadow: rgba(0, 0, 0, 0.2);
+  --font-family-1: "Montserrat", sans-serif;
+  --font-family-2: "Josefin Sans", sans-serif;
+  --font-family-3: "Figtree", sans-serif;
 }
 
 * {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
 }
 
 body {
-  font-family: 'Montserrat', sans-serif;
-  background-color: var(--Light-Grey);
+    font-family: var(--font-family-1);
+    background-color: var(--Light-Grey);
+    color: var(--Dark-Grey);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    min-height: 100vh;
 }
 
+/* Navbar */
 nav {
-  background-color: var(--Big-Stone);
-  color: white;
-  padding: 15px;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
+    background-color: var(--Big-Stone);
+    color: white;
+    width: 100%;
+    padding: 15px;
+    box-shadow: 0 2px 8px var(--Shadow);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+nav .logo h1 {
+  font-style: italic;
+  margin: 0;
 }
 
 nav ul {
   list-style: none;
   display: flex;
   gap: 15px;
+  margin: 0;
 }
 
 nav ul li a {
   color: white;
   text-decoration: none;
-  padding: 8px 12px;
-  border-radius: 5px;
+  padding: 8px;
+  border-radius: 4px;
+  transition: background-color 0.3s;
 }
 
 nav ul li a:hover,
@@ -48,56 +66,240 @@ nav ul li a#active {
   color: var(--Big-Stone);
 }
 
-.search-container {
-  text-align: center;
+/* Conteneur des publications */
+.publication-list {
+  display: flex;
+  flex-direction: column; /* Alignement vertical */
+  gap: 20px; /* Espacement entre les publications */
+  width: 100%; /* Utiliser toute la largeur disponible */
   padding: 30px;
+  max-width: 800px; /* Limite la largeur totale */
+  margin: auto; /* Centrer le contenu */
+}
+/* Publication individuelle */
+.publication {
+    background: white;
+    border-radius: 10px;
+    box-shadow: 0 2px 8px var(--Shadow);
+    padding: 15px;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 10px;
+}
+.publication-header {
+    display: flex;
+    align-items: center;
+    margin-bottom: 10px;
+    gap: 1px;
 }
 
-.search-bar {
+.profile-pic {
+    width: 45px;
+    height: 45px;
+    border-radius: 50%;
+    object-fit: cover;
+    margin-right: 10px;
+}
+.user-info h4 {
+    font-size: 18px;
+    color: var(--Big-Stone);
+    margin-bottom: 5px;
+}
+
+.user-info .meta {
+    font-size: 14px;
+    color: var(--Dark-Grey);
+}
+
+.publication-title {
+    font-size: 1.3em;
+    font-weight: 600;
+    margin-top: 10px;
+    color: var(--Big-Stone);
+}
+
+.publication-media {
+    width: 50%;
+    max-height: 50%; /* Ajustez selon vos besoins */
+    object-fit: fill;
+    border-radius: 10px;
+    display: block;      /* Nécessaire pour appliquer le centrage */
+    margin: 0 auto;
+    padding-top: 10px;
+    padding-bottom: 10px;  
+}
+
+.publication-text {
+    font-size: 1em;
+    color: var(--Dark-Grey);
+    margin-top: 10px;
+}
+.publication-actions {
   display: flex;
-  justify-content: center;
-  gap: 10px;
-  margin-top: 15px;
+  gap: 5px;
+  margin-top: 10px;
+}
+.publication-actions button {
+    background-color: var(--Big-Stone);
+    color: white;
+    border: none;
+    padding: 8px 14px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 14px;
+    transition: all 0.3s ease;
 }
 
-.search-bar input {
-  padding: 10px;
-  width: 300px;
-  border-radius: var(--radius);
+.publication-actions button:hover {
+    background-color: #0056b3;
 }
 
-.search-bar button {
-  background-color: var(--Bright-Sun);
-  padding: 10px;
+.publication-stats {
+    font-size: 0.9em;
+    color: var(--Dark-Grey);
+    margin-top: 8px;
+    text-align: right;
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    margin-top: 10px;
+    padding-left: 5px;
+}
+
+/* Dialogue */
+dialog {
+    border: none;
+    border-radius: 10px;
+    padding: 20px;
+    width: 100%;
+    max-width: 500px;
+    font-family: var(--font-family-1);
+    box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+    background-color: white;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+  }
+  dialog::backdrop {
+    background: rgba(0, 0, 0, 0.5);
+  }
+
+  .dialog-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+  }
+
+  .dialog-header h3 {
+    margin: 0;
+    font-size: 1.2em;
+    color: var(--Big-Stone);
+  }
+
+  .dialog-header button {
+    background: transparent;
+    border: none;
+    font-size: 1.2em;
+    cursor: pointer;
+    color: var(--Dark-Grey);
+  }
+
+.register-form {
+    width: 100%;
+}
+
+.register-form input,
+.register-form textarea,
+.register-form select {
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    padding: 10px;
+    font-size: 16px;
+    margin-bottom: 15px;
+    width: 100%;
+    box-shadow: inset 0 1px 3px var(--Shadow);
+}
+
+.register-form button {
+    background-color: var(--Bright-Sun);
+    color: var(--Big-Stone);
+    font-size: 16px;
+    font-family: var(--font-family-primary);
+    font-weight: bold;
+    padding: 12px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    width: 100%;
+}
+
+.register-form button:hover {
+    background-color: var(--Big-Stone);
+    color: white;
+}
+
+body {
+  font-family: var(--font-family-3); /* Figtree par défaut */
+}
+
+/* Titres */
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--font-family-1); /* Montserrat pour les titres */
+}
+
+/* Paragraphes et texte normal */
+p, li {
+  font-family: var(--font-family-2); /* Josefin Sans pour les textes généraux */
+}
+span{
+  font-family: var(--font-family-3);
+}
+
+/* Lien et boutons */
+a, button {
+  font-family: var(--font-family-1); /* Montserrat pour les liens et boutons */
+}
+
+
+.form-group {
+    margin-bottom: 15px;
+    display: flex;
+    flex-direction: column;
+}
+dialog {
+  width: 90%;
+  max-width: 600px;
   border: none;
-  border-radius: var(--radius);
-}
-
-.contacted-container,
-.services-container {
+  border-radius: 10px;
   padding: 20px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+  font-family: var(--font-family-1);
 }
 
-.cards-container {
+.dialog-header {
   display: flex;
-  gap: 20px;
-  overflow-x: auto;
-  scroll-behavior: smooth;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 15px;
 }
 
-.cards-container::-webkit-scrollbar {
-  display: none;
+.dialog-header h3 {
+  margin: 0;
 }
 
-.offreur-card {
-  flex: 0 0 250px;
-  background-color: white;
-  border-radius: var(--radius);
-  box-shadow: 0 4px 10px var(--Shadow);
-  padding: 15px;
+.dialog-header button {
+  background: transparent;
+  border: none;
+  font-size: 18px;
+  cursor: pointer;
+  color: var(--Dark-Grey);
 }
 
-.offreur-card img {
-  width: 100%;
-  border-radius: var(--radius);
+.my-posts-content {
+  max-height: 400px;
+  overflow-y: auto;
 }

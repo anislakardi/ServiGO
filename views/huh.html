@@ -2,89 +2,69 @@
 <html lang="fr">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>ServiGO - Offreurs</title>
-  <link rel="stylesheet" href="../style/huh.css">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <title>Test Modifier</title>
+  <style>
+    #editForm {
+      display: none;
+      margin-top: 20px;
+    }
+    .publication {
+      border: 1px solid #ccc;
+      padding: 10px;
+      margin-bottom: 10px;
+    }
+  </style>
 </head>
 <body>
 
-  <!-- Navbar conservée -->
-  <nav>
-    <div class="logo">
-      <h1>ServiGO</h1>
-    </div>
-    <ul>
-      <li><a href="homeClient.html">Accueil</a></li>
-      <li><a id="active">Offreurs</a></li>
-      <li><a href="messagerie.html">Messagerie</a></li>
-      <li><a href="#notifications">Notifications</a></li>
-      <li><a href="#options">Options</a></li>
-      <li><a href="#profile">Profile</a></li>
-    </ul>
-  </nav>
+  <div class="publication">
+    <h3 class="publication-title">Titre original</h3>
+    <p class="publication-text">Texte original de la publication</p>
+    <button onclick="editPost(this)">Modifier</button>
+  </div>
 
-  <!-- Zone de recherche centrale -->
-  <header class="search-container">
-    <h2>Trouvez le prestataire parfait pour vos besoins</h2>
-    <div class="search-bar">
-      <input type="text" placeholder="Rechercher un service...">
-      <button>Rechercher</button>
-    </div>
-  </header>
-
-  <!-- Section des prestataires contactés -->
-  <section class="contacted-container">
-    <h2>Vos Prestataires Contactés</h2>
-    <div class="cards-container">
-      <div class="offreur-card">
-        <div class="images-preview">
-          <img src="img1.jpg" alt="Service Image 1">
-          <img src="img2.jpg" alt="Service Image 2">
-        </div>
-        <h3>Ali M.</h3>
-        <div class="rating">⭐⭐⭐⭐⭐</div>
-        <p>📍 Alger</p>
-        <p>📅 Disponible</p>
-        <button>Contacter</button>
-      </div>
-    </div>
-  </section>
-
-  <!-- Section par service -->
-  <section class="services-container">
-    <h2>Électricien</h2>
-    <div class="scroll-wrapper">
-      <button class="scroll-left">◀</button>
-      <div class="cards-container">
-        <!-- Exemple carte -->
-        <div class="offreur-card">
-          <div class="images-preview">
-            <img src="img1.jpg" alt="Service Image 1">
-            <img src="img2.jpg" alt="Service Image 2">
-          </div>
-          <h3>Mohamed B.</h3>
-          <div class="rating">⭐⭐⭐⭐☆</div>
-          <p>📍 Oran</p>
-          <p>📅 Disponible</p>
-          <button>Contacter</button>
-        </div>
-      </div>
-      <button class="scroll-right">▶</button>
-    </div>
-  </section>
+  <div id="editForm">
+    <h3>Modifier la publication</h3>
+    <form id="updatePostForm">
+      <input type="text" id="editTitle" required><br><br>
+      <textarea id="editText" required></textarea><br><br>
+      <button type="submit">Mettre à jour</button>
+      <button type="button" onclick="hideEditForm()">Annuler</button>
+    </form>
+  </div>
 
   <script>
-    // Carrousel scroll
-    document.querySelectorAll('.scroll-wrapper').forEach(wrapper => {
-      const container = wrapper.querySelector('.cards-container');
-      wrapper.querySelector('.scroll-left').onclick = () => {
-        container.scrollBy({ left: -300, behavior: 'smooth' });
-      };
-      wrapper.querySelector('.scroll-right').onclick = () => {
-        container.scrollBy({ left: 300, behavior: 'smooth' });
-      };
+    function editPost(button) {
+      const publication = button.closest('.publication');
+      const title = publication.querySelector('.publication-title').innerText;
+      const text = publication.querySelector('.publication-text').innerText;
+
+      document.getElementById('editTitle').value = title;
+      document.getElementById('editText').value = text;
+
+      document.getElementById('editForm').style.display = 'block';
+      window.currentEditingPost = publication;
+    }
+
+    function hideEditForm() {
+      document.getElementById('editForm').style.display = 'none';
+      window.currentEditingPost = null;
+    }
+
+    document.getElementById('updatePostForm').addEventListener('submit', function(e) {
+      e.preventDefault();
+
+      if (window.currentEditingPost) {
+        const newTitle = document.getElementById('editTitle').value;
+        const newText = document.getElementById('editText').value;
+
+        window.currentEditingPost.querySelector('.publication-title').innerText = newTitle;
+        window.currentEditingPost.querySelector('.publication-text').innerText = newText;
+
+        hideEditForm();
+      }
     });
   </script>
+
 </body>
 </html>
