@@ -131,7 +131,7 @@
         <h3>Modifications</h3>
         <button onclick="document.getElementById('editPublicationDialog').close()">X</button>
       </div>
-      <div class="my-posts-content"></div>
+      <div class="my-posts-content">
         <form id="editForm">
           <label for="editTitre">Titre</label>
           <input type="text" id="editTitre" name="titre">
@@ -147,6 +147,27 @@
           <button type="submit">Valider</button>
         </form>
         </div>
+    </dialog>
+
+    <dialog id="recommandationDialog">
+      <div class="dialog-header">
+        <h3>Recommander un prestataire</h3>
+        <button onclick="document.getElementById('recommandationDialog').close()">X</button>
+      </div>
+      <form>
+        <input type="text" id="searchInput" placeholder="Rechercher un prestataire..." />
+    
+        <ul id="prestataireList">
+          <li><input type="checkbox" value="Ahmed"> Ahmed, électricien</li>
+          <li><input type="checkbox" value="Sonia"> Sonia, couturière</li>
+          <li><input type="checkbox" value="Rachid"> Rachid, plombier</li>
+        </ul>
+    
+        <div style="margin-top: 10px;">
+          <button id="confirmerBtn" type="button">Confirmer</button>
+          <button type="reset">Annuler</button>
+        </div>
+      </form>
     </dialog>
     
     
@@ -171,7 +192,7 @@
         <div class="publication-actions">
           <button><i class="fas fa-comment"></i> Commenter</button>
           <button><i class="fas fa-heart"></i> Aimer</button>
-          <button><i class="fa-solid fa-user"></i> Recommander</button>
+          <button class="openRecommandationDialogBtn"><i class="fa-solid fa-user"></i> Recommander</button>
         </div>
         
         <!-- Statistiques -->
@@ -198,7 +219,7 @@
         <div class="publication-actions">
           <button><i class="fas fa-comment"></i> Commenter</button>
           <button><i class="fas fa-heart"></i> Aimer</button>
-          <button><i class="fa-solid fa-user"></i> Recommander</button>
+          <button class="openRecommandationDialogBtn"><i class="fa-solid fa-user"></i> Recommander</button>
         </div>
         
         <!-- Statistiques -->
@@ -215,45 +236,59 @@
 
   <script>
     const dialog = document.getElementById("publicationDialog");
-    const myPostsDialog = document.getElementById("myPostsDialog");
-    const openBtn = document.getElementById("openDialogBtn");
-    const openMyPostsBtn = document.getElementById("openMyPostsBtn");
-    const editPublicationDialog = document.getElementById("editPublicationDialog");
+    const myPostsDialog = document.getElementById("myPostsDialog");
+    const recommandationDialog = document.getElementById("recommandationDialog");
+    const openBtn = document.getElementById("openDialogBtn");
+    const openMyPostsBtn = document.getElementById("openMyPostsBtn");
+    const editPublicationDialog = document.getElementById("editPublicationDialog");
+    const openRecommandationDialogBtn = document.querySelector(".openRecommandationDialogBtn");
+    const searchInput = document.getElementById('searchInput');
+    const prestataireList = document.getElementById('prestataireList');
+    const confirmerBtn = document.getElementById('confirmerBtn');
 
-    openBtn.addEventListener("click", () => {
-      dialog.showModal();
-    });
-    openMyPostsBtn.addEventListener("click", () => {
-      myPostsDialog.showModal();
-    });
+    openBtn.addEventListener("click", () => {
+      dialog.showModal();
+    });
+    openMyPostsBtn.addEventListener("click", () => {
+      myPostsDialog.showModal();
+    });
+    if (openRecommandationDialogBtn) {
+    openRecommandationDialogBtn.addEventListener("click", () => {
+    const recommandationDialog = document.getElementById("recommandationDialog");
+        if (recommandationDialog) {
+            recommandationDialog.showModal();
+            console.log("Dialogue de recommandation devrait être affiché.");
+        }
+    });
+}
 
-    // Sélectionner les publications et vérifier la présence de l'image
-    document.querySelectorAll('.publication').forEach(publication => {
-    const image = publication.querySelector('.publication-media');
-    const text = publication.querySelector('.publication-text');
+    // Sélectionner les publications et vérifier la présence de l'image
+    document.querySelectorAll('.publication').forEach(publication => {
+    const image = publication.querySelector('.publication-media');
+    const text = publication.querySelector('.publication-text');
 
-    // Vérifiez si l'image a une source valide
-    if (image && image.src && image.src !== '' && image.alt.trim() !== '') {
+    // Vérifiez si l'image a une source valide
+    if (image && image.src && image.src !== '' && image.alt.trim() !== '') {
       image.style.display = 'block';
     } else {
-      image.style.display = 'none';
-      text.style.display = 'block';
-    }
-    });
+      image.style.display = 'none';
+      ext.style.display = 'block';
+    }
+    });
 
-    let wilayas = [];
-    let communes = [];
+    let wilayas = [];
+    let communes = [];
 
-    // Charger les deux fichiers JSON
-    Promise.all([
+    // Charger les deux fichiers JSON
+    Promise.all([
       fetch('../fichiers/Wilaya_Of_Algeria.json').then(res => res.json()),
       fetch('../fichiers/Commune_Of_Algeria.json').then(res => res.json())
     ]).then(([wilayaData, communeData]) => {
-      wilayas = wilayaData;
-      communes = communeData;
+      wilayas = wilayaData;
+      communes = communeData;
 
-      populateWilayas(wilayas);
-    });
+      populateWilayas(wilayas);
+    });
 
     function populateWilayas(wilayas) {
       const wilayaSelect = document.getElementById('wilaya');
@@ -314,7 +349,32 @@ document.querySelectorAll('.edit-btn').forEach((btn, index) => {
 document.querySelector('#editPublicationDialog::before').addEventListener('click', function() {
   document.getElementById('editPublicationDialog').close();
 });
+  
 
+document.querySelectorAll('.delete-btn').forEach(button => {
+  button.addEventListener('click', (e) => {
+    const publication = e.target.closest('.publication');
+    if (confirm("Es-tu sûr de vouloir supprimer cette publication ?")) {
+      publication.remove();
+    }
+  });
+});
+
+    searchInput.addEventListener('input', () => {
+      const filter = searchInput.value.toLowerCase();
+      const items = prestataireList.getElementsByTagName('li');
+      Array.from(items).forEach(item => {
+        const text = item.textContent.toLowerCase();
+        item.style.display = text.includes(filter) ? '' : 'none';
+      });
+    });
+  
+    confirmerBtn.onclick = () => {
+      const checked = document.querySelectorAll('#prestataireList input:checked');
+      const noms = Array.from(checked).map(input => input.value);
+      alert("Prestataires recommandés : " + noms.join(", "));
+      recommandationDialog.close();
+    };
   </script>
 </body>
 </html>
