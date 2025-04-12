@@ -1,0 +1,232 @@
+@import url('https://fonts.googleapis.com/css2?family=Figtree:ital,wght@0,300..900;1,300..900&family=Josefin+Sans:ital,wght@0,100..700;1,100..700&family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap');
+
+:root {
+  --Bright-Sun: #fcdb32;
+  --Big-Stone: #141D38;
+  --Light-Grey: #eef0f5;
+  --Dark-Grey: #444b54;
+  --Shadow: rgba(0, 0, 0, 0.1);
+  --font-family-1: "Montserrat", sans-serif;
+  --font-family-2: "Josefin Sans", sans-serif;
+  --font-family-3: "Figtree", sans-serif;
+  --border-radius: 20px;
+  --padding: 10px 15px;
+  --box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--font-family-1);
+}
+
+p, li {
+  font-family: var(--font-family-2);
+}
+
+a, button {
+  font-family: var(--font-family-1);
+}
+
+span {
+  font-family: var(--font-family-3);
+}
+
+body {
+  font-family: var(--font-family-1);
+  background-color: var(--Light-Grey);
+}
+
+/* ------------------ NAVBAR ------------------ */
+nav {
+  background-color: var(--Big-Stone);
+  color: white;
+  padding: 15px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  box-shadow: 0 2px 8px var(--Shadow);
+}
+
+nav .logo h1 {
+  font-style: italic;
+  color: white;
+  margin: 0;
+}
+
+nav ul {
+  list-style: none;
+  display: flex;
+  gap: 15px;
+  margin: 0;
+}
+
+nav ul li a {
+  color: white;
+  text-decoration: none;
+  padding: 8px;
+  border-radius: 4px;
+  transition: background-color 0.3s;
+}
+
+nav ul li a:hover,
+nav ul li a#active {
+  background-color: var(--Bright-Sun);
+  color: var(--Big-Stone);
+}
+
+/* ------------------ PROFILE ------------------ */
+.profile-container {
+  padding: 40px 15px;
+  text-align: center;
+}
+
+.profile-box {
+  background-color: white;
+  padding: 30px;
+  border-radius: var(--border-radius);
+  box-shadow: var(--box-shadow);
+  max-width: 800px;
+  margin: 30px auto;
+  text-align: left;
+}
+
+.profile-header {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  margin-bottom: 30px;
+}
+
+.profile-img {
+  width: 120px;
+  height: 120px;
+  object-fit: cover;
+  border-radius: 50%;
+  border: 3px solid lightgray;
+}
+
+.profile-info h2 {
+  color: var(--Big-Stone);
+  margin-bottom: 10px;
+}
+
+.profile-details h3 {
+  color: var(--Dark-Grey);
+  margin-top: 20px;
+  margin-bottom: 10px;
+}
+
+.profile-details p, .profile-details li {
+  font-size: 15px;
+  margin-bottom: 8px;
+}
+
+.button-group {
+  display: flex;
+  gap: 15px;
+  margin-top: 20px;
+}
+
+button {
+  padding: 10px 20px;
+  font-size: 16px;
+  border-radius: var(--border-radius);
+  border: none;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.btn-edit {
+  background-color: var(--Big-Stone);
+  color: white;
+}
+
+.btn-delete {
+  background-color: #e04f5f;
+  color: white;
+}
+
+button:hover {
+  opacity: 0.9;
+}
+
+/* ------------------ MODAL ------------------ */
+.modal {
+  display: none;
+  position: fixed;
+  z-index: 1000;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  overflow: auto;
+  background-color: rgba(0,0,0,0.4);
+}
+
+.modal-content {
+  background-color: #fff;
+  margin: 10% auto;
+  padding: 30px;
+  border-radius: var(--border-radius);
+  width: 80%;
+  max-width: 500px;
+  box-shadow: var(--box-shadow);
+}
+
+.modal-content h2 {
+  margin-bottom: 20px;
+  color: var(--Big-Stone);
+}
+
+.modal-content label {
+  display: block;
+  margin: 10px 0 5px;
+  font-weight: bold;
+}
+
+.modal-content input {
+  width: 100%;
+  padding: 8px;
+  border: 1px solid #ccc;
+  border-radius: 10px;
+}
+
+.close {
+  color: #aaa;
+  float: right;
+  font-size: 28px;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.close:hover {
+  color: black;
+}
+
+/* ------------------ BOUTON DECONNEXION ------------------ */
+.btn-logout {
+  background-color: #999;
+  color: white;
+}
+
+.profile-img {
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+.profile-img:hover {
+  opacity: 0.85;
+}
+
+select {
+  width: 100%;
+  padding: 8px;
+  border: 1px solid #ccc;
+  border-radius: 10px;
+}
+

@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>ServiGO - Profil</title>
+  <link rel="stylesheet" href="../style/profileClient.css">
+</head>
+<body>
+
+  <!-- NAVBAR -->
+  <nav>
+    <div class="logo">
+      <h1>ServiGO</h1>
+    </div>
+    <ul>
+      <li><a href="homeClient.html">Accueil</a></li>
+      <li><a href="offreurs.html">Offreurs</a></li>
+      <li><a href="messagerie.html">Messagerie</a></li>
+      <li><a href="notification.html">Notifications</a></li>
+      <li><a href="#">Options</a></li>
+      <li><a id="active" href="#">Profile</a></li>
+    </ul>
+  </nav>
+
+  <!-- PAGE PROFIL -->
+  <main class="profile-container">
+    <h1>Mon Profil</h1>
+
+    <div class="profile-box">
+      <div class="profile-header">
+        <label for="profilePicInput">
+          <img src="../images/avatar-default.png" alt="Photo de profil" class="profile-img" id="profileImagePreview">
+        </label>
+        <input type="file" id="profilePicInput" accept="image/*" style="display: none;">
+        <div class="profile-info">
+          <h2>Mohammed Anis Lakardi</h2>
+          <p>Email : anis.lakardi@example.com</p>
+          <p>Nom D'utilisateur : june25th</p>
+          <p>Téléphone : +213 5 55 55 55 55</p>
+          <p>Adresse : El Karimia, Chlef, Algérie</p>
+        </div>
+      </div>
+
+      <div class="profile-details">
+        <div id="bio-container">
+          <h3>
+            À propos de moi 
+            <button onclick="editBio()" style="font-size: 12px; padding: 4px 8px; margin-left: 10px;">Modifier</button>
+          </h3>
+          <p id="bio-text">
+            Je suis un client actif sur ServiGO. J’utilise la plateforme pour trouver des professionnels fiables dans ma région.
+          </p>
+        </div>        
+
+        <div class="button-group">
+          <button class="btn btn-edit" onclick="openModal()">Modifier Profil</button>
+          <button class="btn btn-delete">Supprimer le Compte</button>
+          <button class="btn btn-logout">Déconnexion</button>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <!-- MODAL -->
+  <div class="modal" id="editModal">
+    <div class="modal-content">
+      <span class="close" onclick="closeModal()">&times;</span>
+      <h2>Modifier mon profil</h2>
+      <form>
+        <label>Nom :</label>
+        <input type="text" placeholder="Entrer le nom"><br>
+
+        <label>Prénom :</label>
+        <input type="text" placeholder="Entrer le prénom"><br>
+        
+        <label>Nom D'utilisateur :</label>
+        <input type="text" placeholder="Entrer le Nom D'utilisateur :"><br>
+
+        <label>Date de naissance :</label>
+        <input type="date"><br>
+
+        <label>Email :</label>
+        <input type="email" placeholder="Entrer l'email"><br>
+
+        <label for="wilaya">Wilaya</label>
+        <select id="wilaya" name="wilaya">
+          <option value="">-- Sélectionnez une wilaya --</option>
+        </select>
+
+        <label for="commune" class="mt-4 block">Commune</label>
+        <select id="commune" name="commune">
+          <option value="">-- Sélectionnez une commune --</option>
+        </select><br><br>
+
+        <button type="submit" class="btn btn-edit">Enregistrer</button>
+      </form>
+    </div>
+  </div>
+
+  <script>
+    function openModal() {
+      document.getElementById('editModal').style.display = 'block';
+    }
+
+    function closeModal() {
+      document.getElementById('editModal').style.display = 'none';
+    }
+
+    window.onclick = function(event) {
+      const modal = document.getElementById('editModal');
+      if (event.target == modal) {
+        modal.style.display = "none";
+      }
+    }
+    const profileInput = document.getElementById("profilePicInput");
+  const profilePreview = document.getElementById("profileImagePreview");
+
+  profileInput.addEventListener("change", () => {
+    const file = profileInput.files[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = e => {
+        profilePreview.src = e.target.result;
+      };
+      reader.readAsDataURL(file);
+    }
+  });
+
+  let wilayas = [];
+  let communes = [];
+
+  // Charger les fichiers JSON
+  Promise.all([
+    fetch('../fichiers/Wilaya_Of_Algeria.json').then(res => res.json()),
+    fetch('../fichiers/Commune_Of_Algeria.json').then(res => res.json())
+  ]).then(([wilayaData, communeData]) => {
+    wilayas = wilayaData;
+    communes = communeData;
+    populateWilayas();
+  });
+
+  function populateWilayas() {
+    const wilayaSelect = document.getElementById('wilaya');
+    wilayas.forEach(w => {
+      const option = document.createElement('option');
+      option.value = w.id;
+      option.textContent = w.name;
+      wilayaSelect.appendChild(option);
+    });
+
+    wilayaSelect.addEventListener('change', () => {
+      const selectedId = wilayaSelect.value;
+      populateCommunes(selectedId);
+    });
+  }
+
+  function populateCommunes(wilayaId) {
+    const communeSelect = document.getElementById('commune');
+    communeSelect.innerHTML = '<option value="">-- Sélectionnez une commune --</option>';
+    const filtered = communes.filter(c => c.wilaya_id === wilayaId);
+    filtered.forEach(c => {
+      const option = document.createElement('option');
+      option.value = c.name;
+      option.textContent = c.name;
+      communeSelect.appendChild(option);
+    });
+  }
+
+  function editBio() {
+  const container = document.getElementById("bio-container");
+  const currentText = document.getElementById("bio-text").innerText;
+
+  container.innerHTML = `
+    <h3>À propos de moi</h3>
+    <textarea id="bio-edit" rows="4" style="width:100%; padding:8px;">${currentText}</textarea>
+    <button onclick="saveBio()">Enregistrer</button>
+  `;
+}
+
+function saveBio() {
+  const newBio = document.getElementById("bio-edit").value;
+  const container = document.getElementById("bio-container");
+
+  container.innerHTML = `
+    <h3>À propos de moi</h3>
+    <p id="bio-text">${newBio}</p>
+    <button onclick="editBio()">Modifier</button>
+  `;
+}
+
+  </script>
+
+</body>
+</html>
