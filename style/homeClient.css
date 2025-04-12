@@ -40,43 +40,30 @@ nav {
     align-items: center;
 }
 
-nav .logo {
-    font-family: var(--font-family-3);
-    h1{
-      padding-top: 4px;
-      font-size: 25px;
-      padding-left: 10px;
-      color:white;
-      font-style: italic;
-    }
-
+nav .logo h1 {
+  font-style: italic;
+  margin: 0;
 }
 
 nav ul {
-    list-style: none;
-    display: flex;
-}
-
-nav ul li {
-    margin-left: 15px;
+  list-style: none;
+  display: flex;
+  gap: 15px;
+  margin: 0;
 }
 
 nav ul li a {
-    color: white;
-    text-decoration: none;
-    font-size: 16px;
-    padding: 8px;
-    border-radius: 4px;
-    transition: background-color 0.3s ease;
+  color: white;
+  text-decoration: none;
+  padding: 8px;
+  border-radius: 4px;
+  transition: background-color 0.3s;
 }
 
-nav ul li a:hover {
-    background-color: var(--Bright-Sun);
-    color: var(--Big-Stone);
-}
-#home{
-    background-color: var(--Bright-Sun);
-    color: var(--Big-Stone);
+nav ul li a:hover,
+nav ul li a#active {
+  background-color: var(--Bright-Sun);
+  color: var(--Big-Stone);
 }
 
 /* Conteneur des publications */
