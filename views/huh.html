@@ -1,73 +1,90 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Messagerie Améliorée</title>
-  <link rel="stylesheet" href="../style/huh.css" />
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.5.3/socket.io.min.js"></script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ServiGO - Offreurs</title>
+  <link rel="stylesheet" href="../style/huh.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 </head>
 <body>
+
+  <!-- Navbar conservée -->
   <nav>
-    <div class="logo"><h1>ServiGO+</h1></div>
+    <div class="logo">
+      <h1>ServiGO</h1>
+    </div>
     <ul>
-      <li><a href="home.html">Accueil</a></li>
-      <li><a id="active">Messagerie</a></li>
+      <li><a href="homeClient.html">Accueil</a></li>
+      <li><a id="active">Offreurs</a></li>
+      <li><a href="messagerie.html">Messagerie</a></li>
       <li><a href="#notifications">Notifications</a></li>
-      <li><a href="#profile">Profil</a></li>
+      <li><a href="#options">Options</a></li>
+      <li><a href="#profile">Profile</a></li>
     </ul>
-    <select id="theme-selector">
-      <option value="clair">Thème Clair</option>
-      <option value="sombre">Thème Sombre</option>
-    </select>
   </nav>
-  <main class="messagerie-container">
-    <div class="contacts-list">
-      <h3>Contacts</h3>
-      <ul>
-        <li class="contact" data-user="user1" data-status="online">Yacine <span class="status-indicator online"></span></li>
-        <li class="contact" data-user="user2" data-status="offline">Karim <span class="status-indicator offline"></span></li>
-      </ul>
+
+  <!-- Zone de recherche centrale -->
+  <header class="search-container">
+    <h2>Trouvez le prestataire parfait pour vos besoins</h2>
+    <div class="search-bar">
+      <input type="text" placeholder="Rechercher un service...">
+      <button>Rechercher</button>
     </div>
-    <div class="chat-box">
-      <div class="chat-header">
-        <h4 id="contact-name">Sélectionnez un contact</h4>
-      </div>
-      <div class="chat-messages" id="messages-container"></div>
-      <div class="chat-input">
-        <input type="file" id="file-upload" />
-        <input type="text" id="message-input" placeholder="Écrire un message..." />
-        <button id="send-button">Envoyer</button>
+  </header>
+
+  <!-- Section des prestataires contactés -->
+  <section class="contacted-container">
+    <h2>Vos Prestataires Contactés</h2>
+    <div class="cards-container">
+      <div class="offreur-card">
+        <div class="images-preview">
+          <img src="img1.jpg" alt="Service Image 1">
+          <img src="img2.jpg" alt="Service Image 2">
+        </div>
+        <h3>Ali M.</h3>
+        <div class="rating">⭐⭐⭐⭐⭐</div>
+        <p>📍 Alger</p>
+        <p>📅 Disponible</p>
+        <button>Contacter</button>
       </div>
     </div>
-  </main>
+  </section>
+
+  <!-- Section par service -->
+  <section class="services-container">
+    <h2>Électricien</h2>
+    <div class="scroll-wrapper">
+      <button class="scroll-left">◀</button>
+      <div class="cards-container">
+        <!-- Exemple carte -->
+        <div class="offreur-card">
+          <div class="images-preview">
+            <img src="img1.jpg" alt="Service Image 1">
+            <img src="img2.jpg" alt="Service Image 2">
+          </div>
+          <h3>Mohamed B.</h3>
+          <div class="rating">⭐⭐⭐⭐☆</div>
+          <p>📍 Oran</p>
+          <p>📅 Disponible</p>
+          <button>Contacter</button>
+        </div>
+      </div>
+      <button class="scroll-right">▶</button>
+    </div>
+  </section>
+
   <script>
-const themeSelector = document.getElementById("theme-selector");
-themeSelector.addEventListener("change", (e) => {
-  document.body.setAttribute("data-theme", e.target.value);
-});
-
-const contacts = document.querySelectorAll(".contact");
-contacts.forEach(contact => {
-  contact.addEventListener("click", () => {
-    document.querySelector(".contact.active")?.classList.remove("active");
-    contact.classList.add("active");
-    const contactName = contact.textContent.trim();
-    document.getElementById("contact-name").textContent = contactName;
-  });
-});
-
-const sendButton = document.getElementById("send-button");
-sendButton.addEventListener("click", () => {
-  const messageInput = document.getElementById("message-input");
-  const chatMessages = document.getElementById("messages-container");
-  const newMessage = document.createElement("div");
-  newMessage.textContent = messageInput.value;
-  newMessage.classList.add("sent");
-  chatMessages.appendChild(newMessage);
-  messageInput.value = "";
-});
-
+    // Carrousel scroll
+    document.querySelectorAll('.scroll-wrapper').forEach(wrapper => {
+      const container = wrapper.querySelector('.cards-container');
+      wrapper.querySelector('.scroll-left').onclick = () => {
+        container.scrollBy({ left: -300, behavior: 'smooth' });
+      };
+      wrapper.querySelector('.scroll-right').onclick = () => {
+        container.scrollBy({ left: 300, behavior: 'smooth' });
+      };
+    });
   </script>
 </body>
 </html>
