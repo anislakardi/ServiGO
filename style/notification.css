@@ -1,0 +1,223 @@
+@import url('https://fonts.googleapis.com/css2?family=Figtree:ital,wght@0,300..900;1,300..900&family=Josefin+Sans:ital,wght@0,100..700;1,100..700&family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap');
+
+:root {
+  --Bright-Sun: #fcdb32;
+  --Big-Stone: #141D38;
+  --Light-Grey: #eef0f5;
+  --Dark-Grey: #444b54;
+  --Shadow: rgba(0, 0, 0, 0.1);
+  --font-family-1: "Montserrat", sans-serif;
+  --font-family-2: "Josefin Sans", sans-serif;
+  --font-family-3: "Figtree", sans-serif;
+  --border-radius: 20px;
+  --padding: 10px 15px;
+  --box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--font-family-1);
+}
+
+p, li {
+  font-family: var(--font-family-2);
+}
+
+a, button {
+  font-family: var(--font-family-1);
+}
+
+span {
+  font-family: var(--font-family-3);
+}
+
+body {
+  font-family: var(--font-family-1);
+  background-color: var(--Light-Grey);
+}
+
+/* ------------------ NAVBAR ------------------ */
+nav {
+  background-color: var(--Big-Stone);
+  color: white;
+  padding: 15px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  box-shadow: 0 2px 8px var(--Shadow);
+}
+
+nav .logo h1 {
+  font-style: italic;
+  color: white;
+  margin: 0;
+}
+
+nav ul {
+  list-style: none;
+  display: flex;
+  gap: 15px;
+  margin: 0;
+}
+
+nav ul li a {
+  color: white;
+  text-decoration: none;
+  padding: 8px;
+  border-radius: 4px;
+  transition: background-color 0.3s;
+}
+
+nav ul li a:hover,
+nav ul li a#active {
+  background-color: var(--Bright-Sun);
+  color: var(--Big-Stone);
+}
+
+.notifications-container {
+  padding: 30px;
+}
+
+h1 {
+  text-align: center;
+  color: var(--Big-Stone);
+  margin-bottom: 30px;
+}
+
+.section-title {
+  margin-top: 40px;
+  color: var(--Dark-Grey);
+  border-bottom: 2px solid #ddd;
+  padding-bottom: 5px;
+}
+
+.notifications-list {
+  list-style: none;
+  padding: 0;
+  margin-top: 20px;
+}
+
+.notification {
+  background-color: white;
+  border: 1px solid #ddd;
+  border-radius: var(--radius);
+  padding: 20px;
+  margin-bottom: 20px;
+  box-shadow: 0 2px 5px var(--Shadow);
+  transition: background 0.3s;
+}
+
+.notification:hover {
+  background-color: #fdfce6;
+}
+
+.notification strong {
+  color: var(--Big-Stone);
+}
+
+.notification .time {
+  display: block;
+  font-size: 0.85em;
+  color: var(--Dark-Grey);
+  margin-top: 8px;
+  font-style: italic;
+}
+
+.actions {
+  margin-top: 10px;
+}
+
+.btn {
+  padding: 8px 15px;
+  margin-right: 10px;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  color: white;
+  font-weight: bold;
+  transition: background 0.3s ease;
+}
+
+.btn-accept {
+  background-color: #28a745;
+}
+
+.btn-reject {
+  background-color: #dc3545;
+}
+
+.btn-accept:hover {
+  background-color: #218838;
+}
+
+.btn-reject:hover {
+  background-color: #c82333;
+}
+.dialog-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(20, 29, 56, 0.6);
+  display: none;
+  justify-content: center;
+  align-items: center;
+  z-index: 999;
+}
+
+.dialog-content {
+  background: white;
+  padding: 30px;
+  border-radius: var(--border-radius);
+  max-width: 500px;
+  width: 90%;
+  box-shadow: var(--box-shadow);
+  font-family: var(--font-family-1);
+  animation: fadeIn 0.3s ease;
+}
+
+.dialog-content h2 {
+  margin-bottom: 15px;
+  color: var(--Big-Stone);
+}
+
+.dialog-content ul {
+  list-style: none;
+  padding: 0;
+}
+
+.dialog-content li {
+  margin-bottom: 10px;
+  font-size: 15px;
+}
+
+.btn-more {
+  background-color: var(--Bright-Sun);
+  color: var(--Big-Stone);
+  border: none;
+  padding: 8px 12px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.btn-more:hover {
+  background-color: #f4b400;
+}
+
+.btn-close {
+  background-color: var(--Big-Stone);
+  color: white;
+  padding: 8px 15px;
+  border-radius: 6px;
+  border: none;
+  cursor: pointer;
+  margin-top: 15px;
+}
+

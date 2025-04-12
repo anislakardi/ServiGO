@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Notifications</title>
+  <link rel="stylesheet" href="../style/notification.css">
+</head>
+<body>
+
+  <!-- NAVBAR -->
+  <nav>
+    <div class="logo">
+      <h1>ServiGO</h1>
+    </div>
+    <ul>
+      <li><a href="homeClient.html">Accueil</a></li>
+      <li><a href="offreurs.html">Offreurs</a></li>
+      <li><a href="messagerie.html">Messagerie</a></li>
+      <li><a id="active" href="#">Notifications</a></li>
+      <li><a href="#">Options</a></li>
+      <li><a href="#">Profile</a></li>
+    </ul>
+  </nav>
+
+  <!-- PAGE DE NOTIFICATIONS -->
+  <main class="notifications-container">
+    <h1>Mes Notifications</h1>
+
+    <section>
+      <h2 class="section-title">Demandes de service</h2>
+      <ul class="notifications-list">
+        <li class="notification">
+          <p><strong>Ali Bensalem</strong> vous a proposé un service de plomberie à Chlef.</p>
+          <p>Description : Réparation de fuite sous l'évier.</p>
+          <div class="actions">
+            <button class="btn btn-accept">Accepter</button>
+            <button class="btn btn-reject">Refuser</button>
+            <button class="btn-more" onclick="openDialog(1)">En savoir plus</button>
+          </div>
+          <span class="time">il y a 10 minutes</span>
+        </li>
+
+        <li class="notification">
+          <p><strong>Sarah Tech</strong> propose un service d’installation d’antenne satellite.</p>
+          <p>Description : Installation complète avec réglage signal.</p>
+          <div class="actions">
+            <button class="btn btn-accept">Accepter</button>
+            <button class="btn btn-reject">Refuser</button>
+          </div>
+          <span class="time">il y a 30 minutes</span>
+        </li>
+      </ul>
+    </section>
+
+    <section>
+      <h2 class="section-title">Autres notifications</h2>
+      <ul class="notifications-list">
+        <li class="notification">
+          <p><strong>Reda</strong> vous a envoyé un message.</p>
+          <span class="time">il y a 1 heure</span>
+        </li>
+
+        <li class="notification">
+          <p><strong>Admin</strong> : Votre mot de passe a été modifié avec succès.</p>
+          <span class="time">il y a 3 heures</span>
+        </li>
+      </ul>
+    </section>
+    <div class="dialog-overlay" id="dialog-1">
+      <div class="dialog-content">
+        <h2>Détails de la demande</h2>
+        <ul>
+          <li><strong>Titre :</strong> Remplacement de robinet</li>
+          <li><strong>Service :</strong> Plomberie</li>
+          <li><strong>Description :</strong> Remplacer le robinet de la cuisine car il fuit.</li>
+          <li><strong>Date de demande :</strong> 2025-04-20 14:30</li>
+          <li><strong>Date programmée :</strong> 2025-04-22</li>
+          <li><strong>Date début réel :</strong> Non commencé</li>
+          <li><strong>Date fin :</strong> Non terminé</li>
+          <li><strong>Prix :</strong> 300 DA</li>
+          <li><strong>Statut demande :</strong> En attente</li>
+          <li><strong>Statut travail :</strong> À faire</li>
+          <li><strong>Confirmation progression :</strong> Non</li>
+        </ul>
+        <button onclick="closeDialog(1)" class="btn-close">Fermer</button>
+      </div>
+    </div>    
+  </main>
+  <script>
+    function openDialog(id) {
+      document.getElementById('dialog-' + id).style.display = 'flex';
+    }
+  
+    function closeDialog(id) {
+      document.getElementById('dialog-' + id).style.display = 'none';
+    }
+  </script>
+  
+</body>
+</html>
