@@ -45,11 +45,13 @@ nav {
   justify-content: space-between;
   align-items: center;
   box-shadow: 0 2px 8px var(--Shadow);
+  height: 60px;
 }
 
 nav .logo h1 {
   font-style: italic;
   margin: 0;
+  line-height: 1;
 }
 
 nav ul {
@@ -57,6 +59,15 @@ nav ul {
   display: flex;
   gap: 15px;
   margin: 0;
+  padding: 0;
+  height: 100%;
+  align-items: center;
+}
+
+nav ul li {
+  display: flex;
+  align-items: center;
+  height: 100%;
 }
 
 nav ul li a {
@@ -65,6 +76,10 @@ nav ul li a {
   padding: 8px;
   border-radius: 4px;
   transition: background-color 0.3s;
+  display: flex;
+  align-items: center;
+  height: 100%;
+  line-height: 1;
 }
 
 nav ul li a:hover,
@@ -103,46 +118,77 @@ nav ul li a#active {
 /* SECTION SERVICES */
 main.offreurs-container {
   padding: 30px;
+  max-width: 1400px;
+  margin: 0 auto;
 }
 
 .service-section {
   margin-bottom: 50px;
+  background: white;
+  border-radius: var(--radius);
+  padding: 25px;
+  box-shadow: 0 4px 16px var(--Shadow);
 }
 
 .service-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 20px;
+  margin-bottom: 25px;
+  padding-bottom: 15px;
+  border-bottom: 2px solid var(--Light-Grey);
 }
 
 .service-header h2 {
-  font-size: 22px;
+  font-size: 24px;
   color: var(--Big-Stone);
+  font-weight: 600;
+}
+
+.scroll-buttons {
+  display: flex;
+  gap: 10px;
 }
 
 .scroll-buttons button {
-  background: none;
+  background: var(--Big-Stone);
   border: none;
-  font-size: 24px;
-  color: var(--Big-Stone);
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  font-size: 16px;
+  color: white;
   cursor: pointer;
-  transition: color 0.3s;
+  transition: all 0.3s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 2px 8px var(--Shadow);
 }
 
 .scroll-buttons button:hover {
-  color: var(--Bright-Sun);
+  background: var(--Bright-Sun);
+  color: var(--Big-Stone);
 }
 
 /* GRID DES CARDS */
 .cards-container {
   display: flex;
-  gap: 20px;
-  overflow-x: auto; /* Pour permettre le défilement horizontal si y'a trop de cartes */
-  padding: 10px 0;
+  gap: 25px;
+  overflow-x: auto;
+  padding: 20px 10px;
+  scroll-behavior: smooth;
 }
+
 .cards-container::-webkit-scrollbar {
-  display: none; /* Chrome, Safari */
+  height: 8px;
+  background: var(--Light-Grey);
+  border-radius: 4px;
+}
+
+.cards-container::-webkit-scrollbar-thumb {
+  background: var(--Big-Stone);
+  border-radius: 4px;
 }
 
 /* CARD PRESTATAIRE */
@@ -150,72 +196,84 @@ main.offreurs-container {
   background: white;
   border-radius: var(--radius);
   box-shadow: 0 4px 16px var(--Shadow);
-  padding: 10px;
+  padding: 15px;
   display: flex;
   flex: 0 0 auto;
   flex-direction: column;
-  gap: 20px;
-  width: 300px;
-  max-width: 350px;
-  transition: transform 0.3s ease;
+  gap: 15px;
+  width: 280px;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  border: 1px solid var(--Light-Grey);
 }
 
 .offreur-card:hover {
-  transform: translateY(-5px);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px var(--Shadow);
 }
 
 .card-header {
   display: flex;
   align-items: center;
-  gap: 15px;
+  gap: 12px;
 }
 
 .avatar {
-  width: 60px;
-  height: 60px;
+  width: 55px;
+  height: 55px;
   border-radius: 50%;
   object-fit: cover;
   border: 2px solid var(--Light-Grey);
+  box-shadow: 0 2px 8px var(--Shadow);
 }
 
 .meta {
   display: flex;
   flex-direction: column;
-  gap: 3px;
-  font-size: 14px;
+  gap: 4px;
+  font-size: 13px;
   color: var(--Dark-Grey);
 }
 
 .meta .stars {
   color: gold;
-  font-size: 16px;
+  font-size: 14px;
+  letter-spacing: 1px;
 }
 
 .status.available {
-  color: green;
+  color: #2ecc71;
   font-weight: 600;
 }
 
 .status.occupied {
-  color: crimson;
+  color: #e74c3c;
   font-weight: 600;
 }
 
 .location {
   font-weight: 500;
+  display: flex;
+  align-items: center;
+  gap: 5px;
 }
 
 /* IMAGES DU SERVICE */
 .service-images {
   display: flex;
-  gap: 10px;
+  gap: 8px;
+  height: 130px;
 }
 
 .service-images img {
   width: 50%;
-  height: 140px;
+  height: 100%;
   object-fit: cover;
-  border-radius: 10px;
+  border-radius: 8px;
+  transition: transform 0.3s ease;
+}
+
+.service-images img:hover {
+  transform: scale(1.02);
 }
 
 /* BOUTON CONTACT */
@@ -224,15 +282,115 @@ main.offreurs-container {
   background: var(--Big-Stone);
   color: white;
   border: none;
-  border-radius: 8px;
+  border-radius: 6px;
   font-size: 14px;
-  font-weight: bold;
+  font-weight: 600;
   cursor: pointer;
-  /*align-self: center;*/    /*                   ddfrjeferjfdnvfjkdngdg   a verifie*/
-  transition: 0.3s;
+  transition: all 0.3s;
+  text-align: center;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
 }
 
 .contact-btn:hover {
   background: var(--Bright-Sun);
   color: var(--Big-Stone);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px var(--Shadow);
+}
+
+/* DROPDOWN MENU */
+.dropdown {
+  position: relative;
+  display: flex;
+  align-items: center;
+  height: 100%;
+}
+
+.dropdown > a {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  height: 100%;
+  position: relative;
+  line-height: 1;
+}
+
+.dropdown > a i {
+  font-size: 12px;
+  transition: transform 0.3s;
+  line-height: 1;
+  transform-origin: center;
+}
+
+.dropdown:hover > a i {
+  transform: rotate(180deg);
+}
+
+.dropdown-content {
+  display: none;
+  position: absolute;
+  background-color: white;
+  min-width: 200px;
+  box-shadow: 0 8px 16px var(--Shadow);
+  border-radius: 8px;
+  z-index: 1;
+  top: 100%;
+  right: 0;
+  margin-top: 5px;
+  padding: 5px 0;
+}
+
+.dropdown-content a {
+  color: var(--Big-Stone);
+  padding: 12px 16px;
+  text-decoration: none;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  transition: all 0.3s;
+  position: relative;
+}
+
+.dropdown-content a i {
+  width: 20px;
+  text-align: center;
+}
+
+.dropdown-content a:hover {
+  background-color: var(--Bright-Sun);
+  color: var(--Big-Stone);
+}
+
+/* Ajout d'une zone de survol invisible pour faciliter la sélection */
+.dropdown-content::before {
+  content: '';
+  position: absolute;
+  top: -20px;
+  left: 0;
+  right: 0;
+  height: 20px;
+  background: transparent;
+}
+
+/* Animation d'apparition/disparition */
+.dropdown-content {
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.3s, visibility 0.3s;
+}
+
+.dropdown:hover .dropdown-content {
+  display: block;
+  opacity: 1;
+  visibility: visible;
+}
+
+/* Délai de fermeture */
+.dropdown {
+  transition-delay: 0.2s;
+}
+
+.dropdown:hover {
+  transition-delay: 0s;
 }

@@ -41,11 +41,13 @@ nav {
     position: fixed;
     top: 0;
     z-index: 1000;
+    height: 60px;
 }
 
 nav .logo h1 {
   font-style: italic;
   margin: 0;
+  line-height: 1;
 }
 
 nav ul {
@@ -53,6 +55,15 @@ nav ul {
   display: flex;
   gap: 15px;
   margin: 0;
+  padding: 0;
+  height: 100%;
+  align-items: center;
+}
+
+nav ul li {
+  display: flex;
+  align-items: center;
+  height: 100%;
 }
 
 nav ul li a {
@@ -61,6 +72,10 @@ nav ul li a {
   padding: 8px;
   border-radius: 4px;
   transition: background-color 0.3s;
+  display: flex;
+  align-items: center;
+  height: 100%;
+  line-height: 1;
 }
 
 nav ul li a:hover,
@@ -860,5 +875,96 @@ a, button {
 #reportDialog .cancel-btn:hover {
     background-color: #333;
 }
+/* DROPDOWN MENU */
+.dropdown {
+  position: relative;
+  display: flex;
+  align-items: center;
+  height: 100%;
+}
 
+.dropdown-content {
+  display: none;
+  position: absolute;
+  background-color: white;
+  min-width: 200px;
+  box-shadow: 0 8px 16px var(--Shadow);
+  border-radius: 8px;
+  z-index: 1;
+  top: 100%;
+  right: 0;
+  margin-top: 5px;
+  padding: 5px 0;
+}
+
+.dropdown-content a {
+  color: var(--Big-Stone);
+  padding: 12px 16px;
+  text-decoration: none;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  transition: all 0.3s;
+  position: relative;
+}
+
+.dropdown-content a i {
+  width: 20px;
+  text-align: center;
+}
+
+.dropdown-content a:hover {
+  background-color: var(--Bright-Sun);
+  color: var(--Big-Stone);
+}
+
+/* Ajout d'une zone de survol invisible pour faciliter la sélection */
+.dropdown-content::before {
+  content: '';
+  position: absolute;
+  top: -20px;
+  left: 0;
+  right: 0;
+  height: 20px;
+  background: transparent;
+}
+
+/* Animation d'apparition/disparition */
+.dropdown-content {
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.3s, visibility 0.3s;
+}
+
+.dropdown:hover .dropdown-content {
+  display: block;
+  opacity: 1;
+  visibility: visible;
+}
+
+/* Délai de fermeture */
+.dropdown {
+  transition-delay: 0.2s;
+}
+
+.dropdown:hover {
+  transition-delay: 0s;
+}
+
+.dropdown > a {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  height: 100%;
+  position: relative;
+}
+
+.dropdown > a i {
+  font-size: 12px;
+  transition: transform 0.3s;
+}
+
+.dropdown:hover > a i {
+  transform: rotate(180deg);
+}
 
