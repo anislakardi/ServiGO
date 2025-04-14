@@ -93,7 +93,8 @@ body {
 }
 
 .register-form button:hover {
-    background-color: #0056b3;
+    background-color: var(--Bright-Sun);
+    color: var(--Big-Stone);
 }
 
 /* Mise en page pour les prestataires */
