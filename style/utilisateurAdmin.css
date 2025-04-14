@@ -88,6 +88,23 @@ nav ul li a#active {
   color: var(--Big-Stone);
 }
 
+nav ul li a:hover {
+  color: #007bff;
+}
+
+.logout-btn {
+  color: white !important;
+  background-color: #ff0000 !important;
+  font-weight: bold;
+  padding: 8px 15px;
+  border-radius: 4px;
+}
+
+.logout-btn:hover {
+  background-color: #cc0000 !important;
+  color: white !important;
+}
+
 /* Main Content Styles */
 .admin-container {
   width: 95%;
