@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Administration des Utilisateurs</title>
+    <link rel="stylesheet" href="../style/utilisateurAdmin.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+    <!-- Navbar -->
+    <nav>
+      <div class="logo">
+          <h1>ServiGO</h1>
+      </div>
+      <ul>
+          <li><a href="dashboard.html">Dashboard</a></li>
+          <li><a href="utilisateurAdmin.html"  id="active">Utilisateurs</a></li>
+          <li><a href="signalementAdmin.html">Signalements</a></li>
+          <li><a href="settings.html">Paramètres</a></li>
+      </ul>
+    </nav>
+
+    <main>
+        <div class="admin-container">
+            <h1>Administration des Utilisateurs</h1>
+            
+            <div class="users-grid">
+                <!-- Section Prestataires -->
+                <div class="users-section">
+                    <div class="section-header">
+                        <h2><i class="fas fa-briefcase"></i> Prestataires</h2>
+                        <div class="search-controls">
+                            <div class="search-bar">
+                                <i class="fas fa-search"></i>
+                                <input type="text" id="searchPrestataires" placeholder="Rechercher un prestataire...">
+                            </div>
+                            <button class="reload-btn" title="Recharger la liste">
+                                <i class="fas fa-sync-alt"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="users-list" id="prestatairesList">
+                        <!-- Exemple de prestataire -->
+                        <div class="user-card">
+                            <div class="user-info">
+                                <h3>Jean Dupont</h3>
+                                <p>Plombier professionnel</p>
+                                <p>jean.dupont@email.com</p>
+                            </div>
+                            <div class="user-actions">
+                                <button class="action-btn profile-btn" title="Voir le profil">
+                                    <i class="fas fa-user"></i>
+                                </button>
+                            </div>
+                        </div>
+                        <div class="user-card">
+                            <div class="user-info">
+                                <h3>Marie Martin</h3>
+                                <p>Électricienne certifiée</p>
+                                <p>marie.martin@email.com</p>
+                            </div>
+                            <div class="user-actions">
+                                <button class="action-btn profile-btn" title="Voir le profil">
+                                    <i class="fas fa-user"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Section Clients -->
+                <div class="users-section">
+                    <div class="section-header">
+                        <h2><i class="fas fa-user"></i> Clients</h2>
+                        <div class="search-controls">
+                            <div class="search-bar">
+                                <i class="fas fa-search"></i>
+                                <input type="text" id="searchClients" placeholder="Rechercher un client...">
+                            </div>
+                            <button class="reload-btn" title="Recharger la liste">
+                                <i class="fas fa-sync-alt"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="users-list" id="clientsList">
+                        <!-- Exemple de client -->
+                        <div class="user-card">
+                            <div class="user-info">
+                                <h3>Sophie Dubois</h3>
+                                <p>Particulier</p>
+                                <p>sophie.dubois@email.com</p>
+                            </div>
+                            <div class="user-actions">
+                                <button class="action-btn profile-btn" title="Voir le profil">
+                                    <i class="fas fa-user"></i>
+                                </button>
+                            </div>
+                        </div>
+                        <div class="user-card">
+                            <div class="user-info">
+                                <h3>Pierre Lambert</h3>
+                                <p>Entreprise</p>
+                                <p>pierre.lambert@email.com</p>
+                            </div>
+                            <div class="user-actions">
+                                <button class="action-btn profile-btn" title="Voir le profil">
+                                    <i class="fas fa-user"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Modal pour ajouter/modifier un utilisateur -->
+    <div class="modal" id="userModal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h2>Ajouter un utilisateur</h2>
+            <form id="userForm">
+                <div class="form-group">
+                    <label for="nom">Nom</label>
+                    <input type="text" id="nom" required>
+                </div>
+                <div class="form-group">
+                    <label for="email">Email</label>
+                    <input type="email" id="email" required>
+                </div>
+                <div class="form-group">
+                    <label for="type">Type d'utilisateur</label>
+                    <select id="type" required>
+                        <option value="prestataire">Prestataire</option>
+                        <option value="client">Client</option>
+                    </select>
+                </div>
+                <button type="submit" class="submit-btn">Enregistrer</button>
+            </form>
+        </div>
+    </div>
+</body>
+</html>

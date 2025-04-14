@@ -34,59 +34,61 @@ main {
     min-height: 100vh;
 }
 
-/* Navbar */
-nav {
-    background-color: var(--Big-Stone);
-    color: white;
-    width: 100%;
-    padding: 15px;
-    box-shadow: 0 2px 8px var(--Shadow);
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    position: fixed;
-    top: 0;
-    z-index: 1000;
+h1, h2, h3, h4, h5, h6 {
+    font-family: var(--font-family-1);
 }
 
-nav .logo h1 {
-    font-style: italic;
-    margin: 0;
-    color: var(--Bright-Sun);
+p, li {
     font-family: var(--font-family-2);
 }
 
+a, button {
+    font-family: var(--font-family-1);
+}
+
+span {
+    font-family: var(--font-family-3);
+}
+
+body {
+  font-family: var(--font-family-1);
+  background-color: var(--Light-Grey);
+}
+
+nav {
+  background-color: var(--Big-Stone);
+  color: white;
+  padding: 15px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  box-shadow: 0 2px 8px var(--Shadow);
+}
+
+nav .logo h1 {
+  font-style: italic;
+  margin: 0;
+}
+
 nav ul {
-    list-style: none;
-    display: flex;
-    gap: 15px;
-    margin: 0;
+  list-style: none;
+  display: flex;
+  gap: 15px;
+  margin: 0;
 }
 
 nav ul li a {
-    color: white;
-    text-decoration: none;
-    padding: 8px;
-    border-radius: 4px;
-    transition: background-color 0.3s;
-    font-family: var(--font-family-3);
+  color: white;
+  text-decoration: none;
+  padding: 8px;
+  border-radius: 4px;
+  transition: background-color 0.3s;
 }
 
 nav ul li a:hover,
 nav ul li a#active {
-    background-color: var(--Bright-Sun);
-    color: var(--Big-Stone);
-}
-
-/* Main Content */
-main {
-    width: 100%;
-    padding: 80px 0 20px;
-    box-sizing: border-box;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    min-height: 100vh;
+  background-color: var(--Bright-Sun);
+  color: var(--Big-Stone);
 }
 
 /* Header */
