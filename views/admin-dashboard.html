@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tableau de Bord Administrateur</title>
+    <link rel="stylesheet" href="../style/admin-dashboard.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+    <!-- Navbar -->
+    <nav>
+        <div class="logo">
+            <h1>ServiGO</h1>
+        </div>
+        <ul>
+            <li><a href="dashboard.html" id="active">Dashboard</a></li>
+            <li><a href="utilisateurAdmin.html">Utilisateurs</a></li>
+            <li><a href="signalementAdmin.html">Signalements</a></li>
+            <li><a href="settings.html">Paramètres</a></li>
+        </ul>
+    </nav>
+
+    <main>
+        <div class="admin-container">
+            <h1>Tableau de Bord</h1>
+            
+            <!-- Statistics Section -->
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-icon">
+                        <i class="fas fa-users"></i>
+                    </div>
+                    <div class="stat-info">
+                        <h3>Total Clients</h3>
+                        <p id="total-clients">0</p>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon">
+                        <i class="fas fa-user-tie"></i>
+                    </div>
+                    <div class="stat-info">
+                        <h3>Total Prestataires</h3>
+                        <p id="total-providers">0</p>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon">
+                        <i class="fas fa-tasks"></i>
+                    </div>
+                    <div class="stat-info">
+                        <h3>Total Services</h3>
+                        <p id="total-services">0</p>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon">
+                        <i class="fas fa-clock"></i>
+                    </div>
+                    <div class="stat-info">
+                        <h3>Services en Cours</h3>
+                        <p id="ongoing-services">0</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Validation Requests Section -->
+            <div class="requests-section">
+                <div class="section-header">
+                    <h2><i class="fas fa-clipboard-check"></i> Demandes de Validation</h2>
+                    <div class="search-controls">
+                        <div class="search-bar">
+                            <i class="fas fa-search"></i>
+                            <input type="text" id="searchRequests" placeholder="Rechercher une demande...">
+                        </div>
+                        <button class="reload-btn" title="Recharger la liste">
+                            <i class="fas fa-sync-alt"></i>
+                        </button>
+                    </div>
+                </div>
+                <div class="requests-list" id="requests-container">
+                    <!-- Les demandes seront ajoutées dynamiquement ici -->
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Modal pour les détails de la demande -->
+    <div class="modal" id="request-modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h2>Détails de la Demande</h2>
+            <div class="modal-body">
+                <div class="request-details">
+                    <div class="personal-info">
+                        <h3>Informations Personnelles</h3>
+                        <div id="personal-info-content"></div>
+                    </div>
+                    <div class="documents">
+                        <h3>Documents</h3>
+                        <div id="documents-content"></div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-actions">
+                <button class="btn reject" id="reject-btn">Refuser</button>
+                <button class="btn accept" id="accept-btn">Accepter</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="../admin-dashboard.js"></script>
+</body>
+</html> 
