@@ -100,7 +100,7 @@ main {
     box-shadow: 0 2px 4px var(--Shadow);
     width: 90%;
     box-sizing: border-box;
-    margin: 10px auto 30px;
+    margin: 40px auto 30px;
 }
 
 .header h1 {
