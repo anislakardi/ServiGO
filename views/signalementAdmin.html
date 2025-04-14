@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gestion des Signalements - Admin</title>
+    <link rel="stylesheet" href="../style/signalementAdmin.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+    <!-- Navbar -->
+    <nav>
+        <div class="logo">
+            <h1>ServiGO</h1>
+        </div>
+        <ul>
+            <li><a href="dashboard.html">Dashboard</a></li>
+            <li><a href="users.html">Utilisateurs</a></li>
+            <li><a href="signalementAdmin.html" id="active">Signalements</a></li>
+            <li><a href="settings.html">Paramètres</a></li>
+        </ul>
+    </nav>
+
+    <main style="padding: 30px; width: 100%; max-width: 1000px; margin: 0 auto;">
+        <div class="header">
+            <h1>Gestion des Signalements</h1>
+            <div class="user-info">
+                <span>Admin</span>
+                <img src="../assets/admin-avatar.png" alt="Admin Avatar">
+            </div>
+        </div>
+        <div class="main-container">
+        <div class="signalements-container">
+            <div class="signalement-type">
+                <h2><i class="fas fa-newspaper"></i> Signalements de Publications</h2>
+                <div class="signalement-list">
+                    <!-- Exemple de signalement de publication -->
+                    <div class="signalement-card">
+                        <div class="signalement-header">
+                            <span class="signalement-id">#123</span>
+                            <span class="signalement-date">12/03/2024</span>
+                        </div>
+                        <div class="signalement-content">
+                            <p class="signalement-title">Publication signalée</p>
+                            <p class="signalement-description">Contenu inapproprié dans la publication</p>
+                            <div class="signalement-actions">
+                                <button class="btn-view">Voir la publication</button>
+                                <button class="btn-delete">Supprimer</button>
+                                <button class="btn-ignore">Ignorer</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="signalement-type">
+                <h2><i class="fas fa-user"></i> Signalements de Profils</h2>
+                <div class="signalement-list">
+                    <!-- Exemple de signalement de profil -->
+                    <div class="signalement-card">
+                        <div class="signalement-header">
+                            <span class="signalement-id">#124</span>
+                            <span class="signalement-date">11/03/2024</span>
+                        </div>
+                        <div class="signalement-content">
+                            <p class="signalement-title">Profil signalé</p>
+                            <p class="signalement-description">Profil suspect ou comportement inapproprié</p>
+                            <div class="signalement-actions">
+                                <button class="btn-view">Voir le profil</button>
+                                <button class="btn-delete">Bannir</button>
+                                <button class="btn-ignore">Ignorer</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="signalement-type">
+                <h2><i class="fas fa-comment"></i> Signalements de Messages</h2>
+                <div class="signalement-list">
+                    <!-- Exemple de signalement de message -->
+                    <div class="signalement-card">
+                        <div class="signalement-header">
+                            <span class="signalement-id">#125</span>
+                            <span class="signalement-date">10/03/2024</span>
+                        </div>
+                        <div class="signalement-content">
+                            <p class="signalement-title">Message signalé</p>
+                            <p class="signalement-description">Message contenant des propos injurieux</p>
+                            <div class="signalement-actions">
+                                <button class="btn-view">Voir le message</button>
+                                <button class="btn-delete">Supprimer</button>
+                                <button class="btn-ignore">Ignorer</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    </main>
+
+    <footer style="text-align: center; padding: 30px; font-size: 14px; color: #666;">
+        &copy; 2025 ServiGO. Tous droits réservés.
+    </footer>
+</body>
+</html>
