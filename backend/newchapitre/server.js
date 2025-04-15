@@ -55,6 +55,11 @@ app.get('/homeClient', (req, res) => {
     res.sendFile(path.join(__dirname, '../../views/homeClient.html'));
 });
 
+// Route pour gérer les requêtes avec l'extension .html
+app.get('/homeClient.html', (req, res) => {
+    res.sendFile(path.join(__dirname, '../../views/homeClient.html'));
+});
+
 app.get('/homePrestataire', (req, res) => {
     res.sendFile(path.join(__dirname, '../../views/homePrestataire.html'));
 });
