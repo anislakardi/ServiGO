@@ -24,11 +24,65 @@
   </nav>
 
   <!-- Contenu principal -->
+  <main>
+    <div class="main-header">
+      <h2>Bienvenue sur ServiGO</h2>
+      <p>Découvrez et partagez vos besoins en services avec la communauté</p>
+    </div>
 
-  
-  <main style="padding: 30px; width: 100%; max-width: 1000px;">
-    <button id="openDialogBtn" style="margin-bottom: 20px; padding: 12px 20px; border: none; background-color: var(--Bright-Sun); color: var(--Big-Stone); border-radius: 8px; font-weight: bold; cursor: pointer;">Créer une Publication</button>
-    <button id="openMyPostsBtn" style="margin-left: 10px; padding: 12px 20px; border: none; background-color: var(--Big-Stone); color: white; border-radius: 8px; font-weight: bold; cursor: pointer;">Mes Publications</button>
+    <div class="action-buttons">
+      <button id="openDialogBtn" class="create-btn">
+        <i class="fas fa-plus-circle"></i> Créer une Publication
+      </button>
+      <button id="openMyPostsBtn" class="my-posts-btn">
+        <i class="fas fa-list"></i> Mes Publications
+      </button>
+    </div>
+
+    <div class="stats-container">
+      <div class="stat-card">
+        <i class="fas fa-users"></i>
+        <h3>1,234</h3>
+        <p>Utilisateurs actifs</p>
+      </div>
+      <div class="stat-card">
+        <i class="fas fa-handshake"></i>
+        <h3>567</h3>
+        <p>Services réalisés</p>
+      </div>
+      <div class="stat-card">
+        <i class="fas fa-star"></i>
+        <h3>4.8</h3>
+        <p>Note moyenne</p>
+      </div>
+    </div>
+
+    <div class="services-preview">
+      <h3>Services populaires</h3>
+      <div class="services-grid">
+        <div class="service-card">
+          <i class="fas fa-wrench"></i>
+          <h4>Plomberie</h4>
+          <p>Réparation et installation</p>
+        </div>
+        <div class="service-card">
+          <i class="fas fa-bolt"></i>
+          <h4>Électricité</h4>
+          <p>Installation et dépannage</p>
+        </div>
+        <div class="service-card">
+          <i class="fas fa-paint-roller"></i>
+          <h4>Peinture</h4>
+          <p>Intérieur et extérieur</p>
+        </div>
+        <div class="service-card">
+          <i class="fas fa-tools"></i>
+          <h4>Menuiserie</h4>
+          <p>Fabrication et réparation</p>
+        </div>
+      </div>
+    </div>
+
     <!-- Dialogue pour créer une publication -->
     <dialog id="publicationDialog">
       <div class="dialog-header">
@@ -80,7 +134,7 @@
         <button onclick="document.getElementById('myPostsDialog').close()">X</button>
       </div>
       <div class="my-posts-content">
-        <!-- Exemple d’annonce -->
+        <!-- Exemple d'annonce -->
         <div class="publication">
           <div class="publication-header">
             <span class="meta">Publié le : 2025-04-10 | Service : Plomberie</span>
@@ -88,7 +142,10 @@
           </div>
           <h3 class="publication-title">Fuite d'eau dans la cuisine</h3>
           <p class="publication-text">Besoin d'un plombier rapidement pour réparer une fuite sous l'évier...</p>
-          <img src="../style/images/hero.png" alt="media" class="publication-media" />
+          <div class="publication-media-container">
+            <img src="../style/images/IMG_7735.JPEG" alt="media 1" class="publication-media" />
+            <img src="../style/images/IMG_7737.JPEG" alt="media 2" class="publication-media" />
+          </div>
         
           <!-- Statistiques -->
           <div class="publication-stats">
@@ -110,7 +167,10 @@
           </div>
           <h3 class="publication-title">Fuite d'eau dans la cuisine</h3>
           <p class="publication-text">Besoin d'un plombier rapidement pour réparer une fuite sous l'évier...</p>
-          <img src="../style/images/hero.png" alt="media" class="publication-media" />
+          <div class="publication-media-container">
+            <img src="../style/images/IMG_7735.JPEG" alt="media 1" class="publication-media" />
+            <img src="../style/images/IMG_7737.JPEG" alt="media 2" class="publication-media" />
+          </div>
         
           <!-- Statistiques -->
           <div class="publication-stats">
@@ -177,7 +237,7 @@
       <!-- Publication 1 -->
       <div class="publication">
         <div class="publication-header">
-          <img src="../style/images/electricity.png" alt="Photo de profil" class="profile-pic">
+          <img src="../style/images/IMG_7737.JPEG" alt="Photo de profil" class="profile-pic">
           <div class="user-info">
             <h4>Mohammed Anis Lakardi</h4>
             <span class="meta">Publié le : 2025-04-10 | Service : Plomberie</span>
@@ -186,13 +246,16 @@
         </div>
         <h3 class="publication-title">Fuite d'eau dans la cuisine</h3>
         <p class="publication-text">Besoin d'un plombier rapidement pour réparer une fuite sous l'évier...</p>
-        <img src="../style/images/hero.png" alt="media" class="publication-media" />
+        <div class="publication-media-container single-image">
+          <img src="../style/images/IMG_7735.JPEG" alt="media 1" class="publication-media" />
+        </div>
         
         <!-- Actions des boutons -->
         <div class="publication-actions">
           <button><i class="fas fa-comment"></i> Commenter</button>
           <button><i class="fas fa-heart"></i> Aimer</button>
           <button class="openRecommandationDialogBtn"><i class="fa-solid fa-user"></i> Recommander</button>
+          <button class="report-btn" onclick="openReportDialog(this)"><i class="fas fa-flag"></i> Signaler</button>
         </div>
         
         <!-- Statistiques -->
@@ -213,13 +276,17 @@
         </div>
         <h3 class="publication-title">Fuite d'eau dans la cuisine</h3>
         <p class="publication-text">Besoin d'un plombier rapidement pour réparer une fuite sous l'évier...</p>
-        <img src="../style/images/hero.png" alt="media" class="publication-media" />
+        <div class="publication-media-container double-image">
+          <img src="../style/images/IMG_7735.JPEG" alt="media 1" class="publication-media" />
+          <img src="../style/images/IMG_7737.JPEG" alt="media 2" class="publication-media" />
+        </div>
         
         <!-- Actions des boutons -->
         <div class="publication-actions">
           <button><i class="fas fa-comment"></i> Commenter</button>
           <button><i class="fas fa-heart"></i> Aimer</button>
           <button class="openRecommandationDialogBtn"><i class="fa-solid fa-user"></i> Recommander</button>
+          <button class="report-btn" onclick="openReportDialog(this)"><i class="fas fa-flag"></i> Signaler</button>
         </div>
         
         <!-- Statistiques -->
@@ -234,6 +301,26 @@
     &copy; 2025 ServiGO. Tous droits réservés.
   </footer>
 
+  <!-- Conteneur pour l'image en plein écran -->
+  <div id="fullscreenContainer" class="fullscreen-container">
+    <img id="fullscreenImage" class="fullscreen-image">
+    <button id="closeFullscreenBtn" class="close-fullscreen">×</button>
+  </div>
+
+  <dialog id="reportDialog">
+    <div class="dialog-header">
+      <h3>Signaler une publication</h3>
+      <button onclick="document.getElementById('reportDialog').close()">X</button>
+    </div>
+    <div class="dialog-content">
+      <p>Êtes-vous sûr de vouloir signaler cette publication ?</p>
+    </div>
+    <div class="dialog-actions">
+      <button class="cancel-btn" onclick="document.getElementById('reportDialog').close()">Annuler</button>
+      <button class="confirm-btn" onclick="confirmReport()">Confirmer</button>
+    </div>
+  </dialog>
+
   <script>
     const dialog = document.getElementById("publicationDialog");
     const myPostsDialog = document.getElementById("myPostsDialog");
@@ -245,6 +332,21 @@
     const searchInput = document.getElementById('searchInput');
     const prestataireList = document.getElementById('prestataireList');
     const confirmerBtn = document.getElementById('confirmerBtn');
+    let currentReportedPublication = null;
+
+    function openReportDialog(button) {
+      currentReportedPublication = button.closest('.publication');
+      document.getElementById('reportDialog').showModal();
+    }
+
+    function confirmReport() {
+      if (currentReportedPublication) {
+        const title = currentReportedPublication.querySelector('.publication-title').textContent;
+        alert("La publication '" + title + "' a été signalée avec succès !");
+        document.getElementById('reportDialog').close();
+        currentReportedPublication = null;
+      }
+    }
 
     openBtn.addEventListener("click", () => {
       dialog.showModal();
@@ -269,8 +371,8 @@
 
     // Vérifiez si l'image a une source valide
     if (image && image.src && image.src !== '' && image.alt.trim() !== '') {
-      image.style.display = 'block';
-    } else {
+      image.style.display = 'block';
+    } else {
       image.style.display = 'none';
       ext.style.display = 'block';
     }
@@ -281,84 +383,84 @@
 
     // Charger les deux fichiers JSON
     Promise.all([
-      fetch('../fichiers/Wilaya_Of_Algeria.json').then(res => res.json()),
-      fetch('../fichiers/Commune_Of_Algeria.json').then(res => res.json())
-    ]).then(([wilayaData, communeData]) => {
+      fetch('../fichiers/Wilaya_Of_Algeria.json').then(res => res.json()),
+      fetch('../fichiers/Commune_Of_Algeria.json').then(res => res.json())
+    ]).then(([wilayaData, communeData]) => {
       wilayas = wilayaData;
       communes = communeData;
 
       populateWilayas(wilayas);
     });
 
-    function populateWilayas(wilayas) {
-      const wilayaSelect = document.getElementById('wilaya');
-      wilayas.forEach(w => {
-        const option = document.createElement('option');
-        option.value = w.id;
-        option.textContent = w.name;
-        wilayaSelect.appendChild(option);
-      });
+    function populateWilayas(wilayas) {
+      const wilayaSelect = document.getElementById('wilaya');
+      wilayas.forEach(w => {
+        const option = document.createElement('option');
+        option.value = w.id;
+        option.textContent = w.name;
+        wilayaSelect.appendChild(option);
+      });
 
-      // Écouteur pour changer les communes quand wilaya change
-      wilayaSelect.addEventListener('change', () => {
-        const selectedId = wilayaSelect.value;
-        populateCommunes(selectedId);
-      });
-    }
-
-    function populateCommunes(wilayaId) {
-      const communeSelect = document.getElementById('commune');
-      communeSelect.innerHTML = '<option value="">-- Sélectionnez une commune --</option>';
-
-      const filtered = communes.filter(c => c.wilaya_id === wilayaId);
-      filtered.forEach(c => {
-        const option = document.createElement('option');
-        option.value = c.name;
-        option.textContent = c.name;
-        communeSelect.appendChild(option);
-      });
-    }
-
-
-    let currentPost = null;
-
-    // Fonction appelée au clic sur "Modifier"
-document.querySelectorAll('.edit-btn').forEach((btn, index) => {
-  btn.addEventListener('click', () => {
-    const publication = btn.closest('.publication');
-    const titleElement = publication.querySelector('.publication-title');
-    const descElement = publication.querySelector('.publication-text');
-    const metaElement = publication.querySelector('.publication-header .meta:first-child');
-
-    const title = titleElement ? titleElement.textContent.trim() : '';
-    const desc = descElement ? descElement.textContent.trim() : '';
-    const metaText = metaElement ? metaElement.innerText : '';
-    const dateMatch = metaText.match(/Publié le\s*:\s*(\d{4}-\d{2}-\d{2})/);
-    const date = dateMatch ? dateMatch[1] : '';
-
-    document.getElementById('editTitre').value = title;
-    document.getElementById('editDescription').value = desc;
-    document.getElementById('editDate').value = date;
-    document.getElementById('editIndex').value = index;
-
-    editPublicationDialog.showModal();
-  });
-});
-
-// Ajouter un événement pour fermer le dialog lorsqu'on clique sur X
-document.querySelector('#editPublicationDialog::before').addEventListener('click', function() {
-  document.getElementById('editPublicationDialog').close();
-});
-  
-
-document.querySelectorAll('.delete-btn').forEach(button => {
-  button.addEventListener('click', (e) => {
-    const publication = e.target.closest('.publication');
-    if (confirm("Es-tu sûr de vouloir supprimer cette publication ?")) {
-      publication.remove();
+      // Écouteur pour changer les communes quand wilaya change
+      wilayaSelect.addEventListener('change', () => {
+        const selectedId = wilayaSelect.value;
+        populateCommunes(selectedId);
+      });
     }
-  });
-});
+
+    function populateCommunes(wilayaId) {
+      const communeSelect = document.getElementById('commune');
+      communeSelect.innerHTML = '<option value="">-- Sélectionnez une commune --</option>';
+
+      const filtered = communes.filter(c => c.wilaya_id === wilayaId);
+      filtered.forEach(c => {
+        const option = document.createElement('option');
+        option.value = c.name;
+        option.textContent = c.name;
+        communeSelect.appendChild(option);
+      });
+    }
+
+
+    let currentPost = null;
+
+    // Fonction appelée au clic sur "Modifier"
+    document.querySelectorAll('.edit-btn').forEach((btn, index) => {
+      btn.addEventListener('click', () => {
+        const publication = btn.closest('.publication');
+        const titleElement = publication.querySelector('.publication-title');
+        const descElement = publication.querySelector('.publication-text');
+        const metaElement = publication.querySelector('.publication-header .meta:first-child');
+
+        const title = titleElement ? titleElement.textContent.trim() : '';
+        const desc = descElement ? descElement.textContent.trim() : '';
+        const metaText = metaElement ? metaElement.innerText : '';
+        const dateMatch = metaText.match(/Publié le\s*:\s*(\d{4}-\d{2}-\d{2})/);
+        const date = dateMatch ? dateMatch[1] : '';
+
+        document.getElementById('editTitre').value = title;
+        document.getElementById('editDescription').value = desc;
+        document.getElementById('editDate').value = date;
+        document.getElementById('editIndex').value = index;
+
+        editPublicationDialog.showModal();
+      });
+    });
+
+    // Ajouter un événement pour fermer le dialog lorsqu'on clique sur X
+    document.querySelector('#editPublicationDialog::before').addEventListener('click', function() {
+      document.getElementById('editPublicationDialog').close();
+    });
+    
+
+    document.querySelectorAll('.delete-btn').forEach(button => {
+      button.addEventListener('click', (e) => {
+        const publication = e.target.closest('.publication');
+        if (confirm("Es-tu sûr de vouloir supprimer cette publication ?")) {
+          publication.remove();
+        }
+      });
+    });
 
     searchInput.addEventListener('input', () => {
       const filter = searchInput.value.toLowerCase();
@@ -375,6 +477,36 @@ document.querySelectorAll('.delete-btn').forEach(button => {
       alert("Prestataires recommandés : " + noms.join(", "));
       recommandationDialog.close();
     };
+
+    // Gestion du zoom plein écran
+    const fullscreenContainer = document.getElementById('fullscreenContainer');
+    const fullscreenImage = document.getElementById('fullscreenImage');
+    const closeFullscreenBtn = document.getElementById('closeFullscreenBtn');
+
+    document.querySelectorAll('.publication-media').forEach(img => {
+      img.addEventListener('click', function() {
+        fullscreenImage.src = this.src;
+        fullscreenContainer.classList.add('active');
+      });
+    });
+
+    closeFullscreenBtn.addEventListener('click', function() {
+      fullscreenContainer.classList.remove('active');
+    });
+
+    fullscreenContainer.addEventListener('click', function(e) {
+      if (e.target === this) {
+        this.classList.remove('active');
+      }
+    });
+
+    closeFullscreenBtn.addEventListener('mouseover', function() {
+      this.style.color = '#fcdb32';
+    });
+
+    closeFullscreenBtn.addEventListener('mouseout', function() {
+      this.style.color = 'white';
+    });
   </script>
 </body>
 </html>
