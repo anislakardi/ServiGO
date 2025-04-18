@@ -19,7 +19,7 @@ exports.ajouterPublication = async (req, res) => {
             });
         }
         
-        const publicationId = await Publication.create({ titre, description, adresse, date_execution, service_vise, budget, client_id, media });
+        const publicationId = await Publication.create({ titre, description, adresse, date_execution, service_vise, budget, client_id, media: media ? Buffer.from(media, 'base64') : null });
         res.status(201).json({ message: "Publication ajoutée avec succès", publicationId });
     } catch (error) {
         console.error("Erreur lors de l'ajout d'une publication:", error);
