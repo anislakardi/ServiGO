@@ -7,23 +7,23 @@
   <link rel="stylesheet" href="../style/homeClient.css" />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 </head>
-<body>
+<body onload="loadAllPublications()">
   <!-- Navbar -->
   <nav>
     <div class="logo">
       <h1>ServiGO</h1>
     </div>
     <ul>
-      <li><a id="active">Accueil</a></li>
-      <li><a href="offreurs.html">Offreurs</a></li>
-      <li><a href="messagerie.html">Messagerie</a></li>
-      <li><a href="notification.html">Notifications</a></li>
-      <li><a href="profileClient.html">Profile</a></li>
+      <li><a href="/views/homeClient.html" id="active">Accueil</a></li>
+      <li><a href="/views/offreurs.html">Offreurs</a></li>
+      <li><a href="/views/messagerie.html">Messagerie</a></li>
+      <li><a href="/views/notification.html">Notifications</a></li>
+      <li><a href="/views/profileClient.html">Profile</a></li>
       <li class="dropdown">
         <a href="#options">Options <i class="fas fa-chevron-down"></i></a>
         <div class="dropdown-content">
           <a href="#donner-avis"><i class="fas fa-star"></i> Donner un avis</a>
-          <a href="profileClient.html"><i class="fas fa-user"></i> Profil</a>
+          <a href="/views/profileClient.html"><i class="fas fa-user"></i> Profil</a>
           <a href="#"><i class="fas fa-ellipsis-h"></i> Autre option</a>
         </div>
       </li>
@@ -96,42 +96,51 @@
         <h3>Nouvelle Publication</h3>
         <button onclick="document.getElementById('publicationDialog').close()">X</button>
       </div>
-      <form method="post" class="register-form">
+      <form id="publicationForm" class="register-form">
         <label for="titre">Titre</label>
         <input type="text" id="titre" name="titre" required />
 
         <label for="description">Description</label>
         <textarea id="description" name="description" rows="4" required></textarea>
 
+        <label for="editBudget">Budget (en DZD)</label>
+        <input type="number" id="budget" name="budget" min="0" step="0.50">
+
         <label for="date_execution">Date d'exécution</label>
         <input type="datetime-local" id="date_execution" name="date_execution" />
 
         <label for="service_vise">Service visé</label>
         <select id="service_vise" name="service_vise">
-          <option>Mecanique automobile</option>
-          <option>Electricité</option>
-          <option>Menuiserie</option>
-          <option>Maconnerie</option>
-          <option>Réparation électromenagé</option>
-          <option>Peinture et décoration</option>
-          <option>Nettoyage</option>
-          <option>Informatique</option>
-          <option>Chauffage et Climatisation</option>
+          <option value="Mecanique automobile">Mécanique automobile</option>
+          <option value="Electricite">Électricité</option>
+          <option value="Menuiserie">Menuiserie</option>
+          <option value="Maconnerie">Maçonnerie</option>
+          <option value="Reparation electromenager">Réparation électroménager</option>
+          <option value="Peinture et decoration">Peinture et décoration</option>
+          <option value="Nettoyage">Nettoyage</option>
+          <option value="Ferblanterie">Ferblanterie</option>
+          <option value="Architecture">Architecture</option>
+          <option value="Plomberie">Plomberie</option>
+          <option value="Jardinier">Jardinier</option>
+          <option value="Demenageur">Déménageur</option>
         </select>
+
         <div class="p-4 max-w-md mx-auto">
           <label for="wilaya">Wilaya</label>
-          <select id="wilaya" class="w-full p-2 border rounded">
+          <select id="wilaya" name="wilaya" class="w-full p-2 border rounded">
             <option value="">-- Sélectionnez une wilaya --</option>
           </select>
       
           <label for="commune" class="mt-4 block">Commune</label>
-          <select id="commune" class="w-full p-2 border rounded">
+          <select id="commune" name="commune" class="w-full p-2 border rounded">
             <option value="">-- Sélectionnez une commune --</option>
-        </select>
+          </select>
+        </div>
+
         <label for="media">Média</label>
         <input type="file" id="media" name="media" accept="image/*" />
 
-        <button type="submit">Publier</button>
+        <button type="submit" id="submitPublicationBtn">Publier</button>
       </form>
     </dialog>
 
@@ -140,56 +149,9 @@
         <h3>Mes Annonces</h3>
         <button onclick="document.getElementById('myPostsDialog').close()">X</button>
       </div>
-      <div class="my-posts-content">
-        <!-- Exemple d'annonce -->
-        <div class="publication">
-          <div class="publication-header">
-            <span class="meta">Publié le : 2025-04-10 | Service : Plomberie</span>
-            <span class="meta">Exécution prévue : 2025-04-11</span>
-          </div>
-          <h3 class="publication-title">Fuite d'eau dans la cuisine</h3>
-          <p class="publication-text">Besoin d'un plombier rapidement pour réparer une fuite sous l'évier...</p>
-          <div class="publication-media-container">
-            <img src="../style/images/IMG_7735.JPEG" alt="media 1" class="publication-media" />
-            <img src="../style/images/IMG_7737.JPEG" alt="media 2" class="publication-media" />
-          </div>
-        
-          <!-- Statistiques -->
-          <div class="publication-stats">
-            <span>12 j'aimes</span> - <span>3 commentaires</span>
-          </div>
-        
-          <!-- Actions des boutons Modifier et Supprimer -->
-          <div class="edit-delete-actions">
-            <button class="edit-btn"><i class="fas fa-edit"></i> Modifier</button>
-            <button class="delete-btn"><i class="fas fa-trash"></i> Supprimer</button>
-          </div>
-        </div>                
-    
-        <!-- Autre exemple -->
-        <div class="publication">
-          <div class="publication-header">
-            <span class="meta">Publié le : 2025-04-10 | Service : Plomberie</span>
-            <span class="meta">Exécution prévue : 2025-04-11</span>
-          </div>
-          <h3 class="publication-title">Fuite d'eau dans la cuisine</h3>
-          <p class="publication-text">Besoin d'un plombier rapidement pour réparer une fuite sous l'évier...</p>
-          <div class="publication-media-container">
-            <img src="../style/images/IMG_7735.JPEG" alt="media 1" class="publication-media" />
-            <img src="../style/images/IMG_7737.JPEG" alt="media 2" class="publication-media" />
-          </div>
-        
-          <!-- Statistiques -->
-          <div class="publication-stats">
-            <span>12 j'aimes</span> - <span>3 commentaires</span>
-          </div>
-        
-          <!-- Actions des boutons Modifier et Supprimer -->
-          <div class="edit-delete-actions">
-            <button class="edit-btn"><i class="fas fa-edit"></i> Modifier</button>
-            <button class="delete-btn"><i class="fas fa-trash"></i> Supprimer</button>
-          </div>
-        </div>                
+      <div class="my-posts-content" id="myPostsContainer">
+        <!-- Les publications seront chargées dynamiquement ici -->
+        <div class="loading-message">Chargement de vos publications...</div>
       </div>
     </dialog>
 
@@ -208,6 +170,9 @@
       
           <label for="editDate">Date d'exécution</label>
           <input type="date" id="editDate" name="date">
+
+          <label for="editBudget">Budget (en DZD)</label>
+          <input type="number" id="editBudget" name="editBudget" min="0" step="0.01">
       
           <input type="hidden" id="editIndex" name="index">
       
@@ -240,79 +205,14 @@
     
 
     <!-- Publications -->
-    <section class="publication-list">
-      <!-- Publication 1 -->
-      <div class="publication">
-        <div class="publication-header">
-          <img src="../style/images/IMG_7737.JPEG" alt="Photo de profil" class="profile-pic">
-          <div class="user-info">
-            <h4>Mohammed Anis Lakardi</h4>
-            <span class="meta">Publié le : 2025-04-10 | Service : Plomberie</span>
-            <span class="meta">Exécution prévue : 2025-04-11</span>
-          </div>
-        </div>
-        <h3 class="publication-title">Fuite d'eau dans la cuisine</h3>
-        <p class="publication-text">Besoin d'un plombier rapidement pour réparer une fuite sous l'évier...</p>
-        <div class="publication-media-container single-image">
-          <img src="../style/images/IMG_7735.JPEG" alt="media 1" class="publication-media" />
-        </div>
-        
-        <!-- Actions des boutons -->
-        <div class="publication-actions">
-          <button><i class="fas fa-comment"></i> Commenter</button>
-          <button><i class="fas fa-heart"></i> Aimer</button>
-          <button class="openRecommandationDialogBtn"><i class="fa-solid fa-user"></i> Recommander</button>
-          <button class="report-btn" onclick="openReportDialog(this)"><i class="fas fa-flag"></i> Signaler</button>
-        </div>
-        
-        <!-- Statistiques -->
-        <div class="publication-stats">
-          <span>12 j'aimes</span> - <span>3 commentaires</span>
-        </div>
-      </div>
-    
-      <!-- Publication 2 -->
-      <div class="publication">
-        <div class="publication-header">
-          <img src="../style/images/builder.png" alt="Photo de profil" class="profile-pic">
-          <div class="user-info">
-            <h4>Mohammed Anis Lakardi</h4>
-            <span class="meta">Publié le : 2025-04-10 | Service : Plomberie</span>
-            <span class="meta">Exécution prévue : 2025-04-11</span>
-          </div>
-        </div>
-        <h3 class="publication-title">Fuite d'eau dans la cuisine</h3>
-        <p class="publication-text">Besoin d'un plombier rapidement pour réparer une fuite sous l'évier...</p>
-        <div class="publication-media-container double-image">
-          <img src="../style/images/IMG_7735.JPEG" alt="media 1" class="publication-media" />
-          <img src="../style/images/IMG_7737.JPEG" alt="media 2" class="publication-media" />
-        </div>
-        
-        <!-- Actions des boutons -->
-        <div class="publication-actions">
-          <button><i class="fas fa-comment"></i> Commenter</button>
-          <button><i class="fas fa-heart"></i> Aimer</button>
-          <button class="openRecommandationDialogBtn"><i class="fa-solid fa-user"></i> Recommander</button>
-          <button class="report-btn" onclick="openReportDialog(this)"><i class="fas fa-flag"></i> Signaler</button>
-        </div>
-        
-        <!-- Statistiques -->
-        <div class="publication-stats">
-          <span>12 j'aimes</span> - <span>3 commentaires</span>
-        </div>
-      </div>
-    </section>    
+    <div class="publication-list" id="allPublicationsContainer">
+      <!-- Les publications seront chargées dynamiquement ici -->
+    </div>    
   </main>
 
   <footer style="text-align: center; padding: 30px; font-size: 14px; color: #666;">
     &copy; 2025 ServiGO. Tous droits réservés.
   </footer>
-
-  <!-- Conteneur pour l'image en plein écran -->
-  <div id="fullscreenContainer" class="fullscreen-container">
-    <img id="fullscreenImage" class="fullscreen-image">
-    <button id="closeFullscreenBtn" class="close-fullscreen">×</button>
-  </div>
 
   <dialog id="reportDialog">
     <div class="dialog-header">
@@ -329,6 +229,42 @@
   </dialog>
 
   <script>
+    // Attendre que le DOM soit complètement chargé
+    document.addEventListener('DOMContentLoaded', function() {
+    // Vérifier l'état de connexion
+    const token = localStorage.getItem('token');
+    const userId = localStorage.getItem('userId');
+    
+    if (!token || !userId) {
+      console.log('Utilisateur non connecté');
+      // Rediriger vers la page de connexion si nécessaire
+      // window.location.href = 'login.html';
+    } else {
+      console.log('Utilisateur connecté avec ID:', userId);
+    }
+    
+    // Gestionnaire pour les liens de navigation
+    document.querySelectorAll('nav ul li a').forEach(link => {
+      link.addEventListener('click', function(e) {
+        // Ne pas empêcher la navigation pour les liens normaux
+        if (this.getAttribute('href').startsWith('#')) {
+          e.preventDefault();
+          return;
+        }
+        
+        // Vérifier si l'utilisateur est connecté avant de naviguer
+        if (!token || !userId) {
+          e.preventDefault();
+          alert('Vous devez être connecté pour accéder à cette page');
+          window.location.href = 'login.html';
+          return;
+        }
+        
+        // Pour les liens de navigation normaux, laisser le comportement par défaut
+        console.log('Navigation vers:', this.getAttribute('href'));
+      });
+    });
+    
     const dialog = document.getElementById("publicationDialog");
     const myPostsDialog = document.getElementById("myPostsDialog");
     const recommandationDialog = document.getElementById("recommandationDialog");
@@ -343,7 +279,11 @@
 
     function openReportDialog(button) {
       currentReportedPublication = button.closest('.publication');
+      if (currentReportedPublication) {
       document.getElementById('reportDialog').showModal();
+      } else {
+        console.error("Impossible de trouver la publication à signaler");
+      }
     }
 
     function confirmReport() {
@@ -355,15 +295,21 @@
       }
     }
 
+      if (openBtn) {
     openBtn.addEventListener("click", () => {
       dialog.showModal();
     });
+      }
+      
+      if (openMyPostsBtn) {
     openMyPostsBtn.addEventListener("click", () => {
       myPostsDialog.showModal();
+      loadUserPublications();
     });
+      }
+      
     if (openRecommandationDialogBtn) {
     openRecommandationDialogBtn.addEventListener("click", () => {
-    const recommandationDialog = document.getElementById("recommandationDialog");
         if (recommandationDialog) {
             recommandationDialog.showModal();
             console.log("Dialogue de recommandation devrait être affiché.");
@@ -379,9 +325,11 @@
     // Vérifiez si l'image a une source valide
     if (image && image.src && image.src !== '' && image.alt.trim() !== '') {
       image.style.display = 'block';
-    } else {
+        } else if (image) {
       image.style.display = 'none';
-      ext.style.display = 'block';
+          if (text) {
+            text.style.display = 'block';
+          }
     }
     });
 
@@ -397,10 +345,14 @@
       communes = communeData;
 
       populateWilayas(wilayas);
+      }).catch(error => {
+        console.error('Erreur lors du chargement des fichiers JSON:', error);
     });
 
     function populateWilayas(wilayas) {
       const wilayaSelect = document.getElementById('wilaya');
+        if (!wilayaSelect) return;
+        
       wilayas.forEach(w => {
         const option = document.createElement('option');
         option.value = w.id;
@@ -417,6 +369,8 @@
 
     function populateCommunes(wilayaId) {
       const communeSelect = document.getElementById('commune');
+        if (!communeSelect) return;
+        
       communeSelect.innerHTML = '<option value="">-- Sélectionnez une commune --</option>';
 
       const filtered = communes.filter(c => c.wilaya_id === wilayaId);
@@ -428,7 +382,6 @@
       });
     }
 
-
     let currentPost = null;
 
     // Fonction appelée au clic sur "Modifier"
@@ -438,16 +391,19 @@
         const titleElement = publication.querySelector('.publication-title');
         const descElement = publication.querySelector('.publication-text');
         const metaElement = publication.querySelector('.publication-header .meta:first-child');
+        const budgetElement = publication.querySelector('.publication-budget');
 
         const title = titleElement ? titleElement.textContent.trim() : '';
         const desc = descElement ? descElement.textContent.trim() : '';
         const metaText = metaElement ? metaElement.innerText : '';
         const dateMatch = metaText.match(/Publié le\s*:\s*(\d{4}-\d{2}-\d{2})/);
         const date = dateMatch ? dateMatch[1] : '';
+          const budget = budgetElement ? budgetElement.textContent.replace('Budget : ', '').replace(' DZD', '') : '';
 
         document.getElementById('editTitre').value = title;
         document.getElementById('editDescription').value = desc;
         document.getElementById('editDate').value = date;
+        document.getElementById('editBudget').value = budget;
         document.getElementById('editIndex').value = index;
 
         editPublicationDialog.showModal();
@@ -455,10 +411,12 @@
     });
 
     // Ajouter un événement pour fermer le dialog lorsqu'on clique sur X
-    document.querySelector('#editPublicationDialog::before').addEventListener('click', function() {
+      const closeEditDialogBtn = document.querySelector('#editPublicationDialog .dialog-header button');
+      if (closeEditDialogBtn) {
+        closeEditDialogBtn.addEventListener('click', function() {
       document.getElementById('editPublicationDialog').close();
     });
-    
+      }
 
     document.querySelectorAll('.delete-btn').forEach(button => {
       button.addEventListener('click', (e) => {
@@ -469,6 +427,7 @@
       });
     });
 
+      if (searchInput && prestataireList) {
     searchInput.addEventListener('input', () => {
       const filter = searchInput.value.toLowerCase();
       const items = prestataireList.getElementsByTagName('li');
@@ -477,43 +436,540 @@
         item.style.display = text.includes(filter) ? '' : 'none';
       });
     });
+      }
   
+      if (confirmerBtn) {
     confirmerBtn.onclick = () => {
       const checked = document.querySelectorAll('#prestataireList input:checked');
       const noms = Array.from(checked).map(input => input.value);
       alert("Prestataires recommandés : " + noms.join(", "));
       recommandationDialog.close();
     };
+      }
 
-    // Gestion du zoom plein écran
-    const fullscreenContainer = document.getElementById('fullscreenContainer');
-    const fullscreenImage = document.getElementById('fullscreenImage');
-    const closeFullscreenBtn = document.getElementById('closeFullscreenBtn');
+    // Gestion de la soumission du formulaire de publication
+    const publicationForm = document.getElementById('publicationForm');
+    if (publicationForm) {
+      publicationForm.addEventListener('submit', function(e) {
+        e.preventDefault();
+        
+        const mediaFile = document.getElementById('media').files[0];
+        const token = localStorage.getItem('token');
+        const userId = localStorage.getItem('userId');
+        
+        if (!token || !userId) {
+          alert('Vous devez être connecté pour créer une publication');
+          return;
+        }
 
-    document.querySelectorAll('.publication-media').forEach(img => {
-      img.addEventListener('click', function() {
-        fullscreenImage.src = this.src;
-        fullscreenContainer.classList.add('active');
+        if (mediaFile) {
+          compressImage(mediaFile, 800, 800, function(compressedBase64Data) {
+            const data = {
+              titre: document.getElementById('titre').value,
+              description: document.getElementById('description').value,
+              date_execution: document.getElementById('date_execution').value,
+              service_vise: document.getElementById('service_vise').value,
+              budget: document.getElementById('budget').value,
+              adresse: `${document.getElementById('commune').value}, ${document.getElementById('wilaya').value}`,
+              client_id: userId,
+              media: compressedBase64Data
+            };
+
+            fetch('http://localhost:5001/api/publications', {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${token}`
+              },
+              body: JSON.stringify(data)
+            })
+            .then(response => {
+              if (response.ok) {
+                alert('Publication créée avec succès !');
+                document.getElementById('publicationDialog').close();
+                window.location.reload();
+              } else {
+                throw new Error('Erreur lors de la création de la publication');
+              }
+            })
+            .catch(error => {
+              console.error('Erreur:', error);
+              alert('Erreur lors de la création de la publication');
+            });
+          });
+        } else {
+          // Si pas d'image, envoyer sans media
+          const data = {
+            titre: document.getElementById('titre').value,
+            description: document.getElementById('description').value,
+            date_execution: document.getElementById('date_execution').value,
+            service_vise: document.getElementById('service_vise').value,
+            budget: document.getElementById('budget').value,
+            adresse: `${document.getElementById('commune').value}, ${document.getElementById('wilaya').value}`,
+            client_id: userId,
+            media: null
+          };
+
+          fetch('http://localhost:5001/api/publications', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              'Authorization': `Bearer ${token}`
+            },
+            body: JSON.stringify(data)
+          })
+          .then(response => {
+            if (response.ok) {
+              alert('Publication créée avec succès !');
+              document.getElementById('publicationDialog').close();
+              window.location.reload();
+            } else {
+              throw new Error('Erreur lors de la création de la publication');
+            }
+          })
+          .catch(error => {
+            console.error('Erreur:', error);
+            alert('Erreur lors de la création de la publication');
+          });
+        }
+      });
+    }
+
+    // Fonction pour charger les publications de l'utilisateur connecté
+    async function loadUserPublications() {
+      const myPostsContainer = document.querySelector('.my-posts-content');
+        if (!myPostsContainer) return;
+        
+      const token = localStorage.getItem('token');
+      const userId = localStorage.getItem('userId');
+
+      if (!token || !userId) {
+        myPostsContainer.innerHTML = '<div class="error-message">Vous devez être connecté pour voir vos publications.</div>';
+        return;
+      }
+
+      try {
+        myPostsContainer.innerHTML = '<div class="loading-message">Chargement de vos publications...</div>';
+        
+        // Utiliser la bonne route API
+        const response = await fetch(`http://localhost:5001/api/publications/client/${userId}`, {
+          method: 'GET',
+          headers: {
+            'Authorization': `Bearer ${token}`
+          }
+        });
+
+        if (!response.ok) {
+          throw new Error('Erreur lors de la récupération des publications');
+        }
+
+        const publications = await response.json();
+        
+        if (publications.length === 0) {
+          myPostsContainer.innerHTML = '<div class="no-posts-message">Vous n\'avez pas encore publié d\'annonces.</div>';
+          return;
+        }
+
+        // Vider le conteneur
+        myPostsContainer.innerHTML = '';
+        
+        // Ajouter chaque publication
+        publications.forEach(publication => {
+          const publicationElement = document.createElement('div');
+          publicationElement.className = 'publication';
+          publicationElement.dataset.id = publication.id;
+          
+          // Formater la date correctement
+          let publishDate = '';
+          let executionDate = '';
+
+          try {
+            if (publication.date_publication) {
+              const dateP = new Date(publication.date_publication);
+              if (!isNaN(dateP.getTime())) {
+                const year = dateP.getFullYear();
+                const month = String(dateP.getMonth() + 1).padStart(2, '0');
+                const day = String(dateP.getDate()).padStart(2, '0');
+                const hours = String(dateP.getHours()).padStart(2, '0');
+                const minutes = String(dateP.getMinutes()).padStart(2, '0');
+                publishDate = `${year}-${month}-${day} à ${hours}:${minutes}h`;
+              }
+            }
+
+            if (publication.date_execution) {
+              const dateE = new Date(publication.date_execution);
+              if (!isNaN(dateE.getTime())) {
+                const year = dateE.getFullYear();
+                const month = String(dateE.getMonth() + 1).padStart(2, '0');
+                const day = String(dateE.getDate()).padStart(2, '0');
+                const hours = String(dateE.getHours()).padStart(2, '0');
+                const minutes = String(dateE.getMinutes()).padStart(2, '0');
+                executionDate = `${year}-${month}-${day} à ${hours}:${minutes}h`;
+              }
+            }
+          } catch (error) {
+            console.error('Erreur de formatage de date:', error);
+          }
+          
+          publicationElement.innerHTML = `
+            <div class="publication-header">
+                <span class="meta">Publié le : ${publishDate} <br> Service : ${publication.service_vise}</span>
+                <span class="meta">Exécution prévue : ${executionDate} <br> Adresse : ${publication.adresse}</span>
+            </div>
+            <h3 class="publication-title">${publication.titre}</h3>
+            <p class="publication-text">${publication.description}</p>
+            <p class="publication-budget">Budget : ${publication.budget ? publication.budget + ' DZD' : 'Non précisé'}</p>
+            ${publication.media ? `
+              <div class="publication-media-container">
+                <img src="data:image/jpeg;base64,${publication.media}" 
+                     alt="Image de la publication" 
+                     class="publication-media" 
+                     onload="this.style.display='block'; this.parentElement.style.display='flex';"
+                     onerror="this.style.display='none'; this.parentElement.style.display='none';" />
+              </div>
+            ` : ''}
+            <div class="publication-stats">
+              <span>${publication.likes || 0} j'aimes</span> - <span>${publication.comments || 0} commentaires</span>
+            </div>
+            <div class="edit-delete-actions">
+              <button class="edit-btn" onclick="editPublication(${publication.id})"><i class="fas fa-edit"></i> Modifier</button>
+              <button class="delete-btn" onclick="deletePublication(${publication.id})"><i class="fas fa-trash"></i> Supprimer</button>
+            </div>
+          `;
+          
+          myPostsContainer.appendChild(publicationElement);
+        });
+
+        // Ajouter des gestionnaires d'événements pour les boutons de recommandation
+        document.querySelectorAll('.openRecommandationDialogBtn').forEach(button => {
+          button.addEventListener('click', () => {
+            if (recommandationDialog) {
+              recommandationDialog.showModal();
+              console.log("Dialogue de recommandation affiché.");
+            }
+          });
+        });
+
+      } catch (error) {
+        console.error('Erreur:', error);
+        myPostsContainer.innerHTML = `<div class="error-message">Erreur lors du chargement de vos publications: ${error.message}</div>`;
+      }
+    }
+
+    // Fonction pour modifier une publication
+    window.editPublication = function(publicationId) {
+      const token = localStorage.getItem('token');
+      if (!token) {
+        alert('Vous devez être connecté pour modifier une publication');
+        return;
+      }
+
+      // Récupérer les détails de la publication
+      fetch(`http://localhost:5001/api/publications/${publicationId}`, {
+        headers: {
+          'Authorization': `Bearer ${token}`
+        }
+      })
+      .then(response => {
+        if (!response.ok) {
+          throw new Error('Erreur lors de la récupération de la publication');
+        }
+        return response.json();
+      })
+      .then(publication => {
+        // Remplir le formulaire d'édition
+        document.getElementById('editTitre').value = publication.titre;
+        document.getElementById('editDescription').value = publication.description;
+        document.getElementById('editDate').value = publication.date_execution ? publication.date_execution.split('T')[0] : '';
+        document.getElementById('editBudget').value = publication.budget;
+        document.getElementById('editIndex').value = publicationId;
+        
+        // Ouvrir le dialogue d'édition
+        document.getElementById('editPublicationDialog').showModal();
+      })
+      .catch(error => {
+        console.error('Erreur:', error);
+        alert('Erreur lors de la récupération des détails de la publication');
+      });
+    };
+
+    // Gestionnaire d'événements pour le formulaire d'édition
+    document.getElementById('editForm').addEventListener('submit', function(e) {
+      e.preventDefault();
+      
+      const token = localStorage.getItem('token');
+      if (!token) {
+        alert('Vous devez être connecté pour modifier une publication');
+        return;
+      }
+
+      const publicationId = document.getElementById('editIndex').value;
+      const data = {
+        titre: document.getElementById('editTitre').value,
+        description: document.getElementById('editDescription').value,
+        date_execution: document.getElementById('editDate').value,
+        budget: document.getElementById('editBudget').value
+      };
+
+      fetch(`http://localhost:5001/api/publications/${publicationId}`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        },
+        body: JSON.stringify(data)
+      })
+      .then(response => {
+        if (!response.ok) {
+          throw new Error('Erreur lors de la modification de la publication');
+        }
+        return response.json();
+      })
+      .then(result => {
+        alert('Publication modifiée avec succès !');
+        document.getElementById('editPublicationDialog').close();
+        window.location.reload();
+      })
+      .catch(error => {
+        console.error('Erreur:', error);
+        alert('Erreur lors de la modification de la publication');
       });
     });
 
-    closeFullscreenBtn.addEventListener('click', function() {
-      fullscreenContainer.classList.remove('active');
-    });
+    // Fonction pour supprimer une publication
+    window.deletePublication = function(publicationId) {
+      if (confirm('Êtes-vous sûr de vouloir supprimer cette publication ?')) {
+        fetch(`http://localhost:5001/api/publications/${publicationId}`, {
+          method: 'DELETE',
+          headers: {
+            'Authorization': `Bearer ${localStorage.getItem('token')}`
+          }
+        })
+        .then(response => {
+          if (response.ok) {
+            // Supprimer l'élément du DOM
+            const publicationElement = document.querySelector(`.publication[data-id="${publicationId}"]`);
+            if (publicationElement) {
+              publicationElement.remove();
+            }
+            alert('Publication supprimée avec succès');
+          } else {
+            throw new Error('Erreur lors de la suppression de la publication');
+          }
+        })
+        .catch(error => {
+          console.error('Erreur:', error);
+          alert('Erreur lors de la suppression de la publication');
+        });
+      }
+    };
 
-    fullscreenContainer.addEventListener('click', function(e) {
-      if (e.target === this) {
-        this.classList.remove('active');
+    // Fonction pour charger toutes les publications
+    window.loadAllPublications = async function() {
+      try {
+          console.log("Chargement des publications...");
+        const response = await fetch('http://localhost:5001/api/publications', {
+          headers: {
+            'Authorization': `Bearer ${localStorage.getItem('token')}`
+          }
+        });
+
+        if (!response.ok) {
+          throw new Error('Erreur lors du chargement des publications');
+        }
+
+        const publications = await response.json();
+
+        const container = document.getElementById('allPublicationsContainer'); // ⚠️ cet ID doit exister dans ton HTML
+          if (!container) {
+            console.error("Conteneur de publications non trouvé");
+            return;
+          }
+          
+        container.innerHTML = '';
+
+        publications.forEach(publication => {
+          let publishDate = '';
+          let executionDate = '';
+
+          try {
+            if (publication.date_publication) {
+              const dateP = new Date(publication.date_publication);
+              if (!isNaN(dateP.getTime())) {
+                const year = dateP.getFullYear();
+                const month = String(dateP.getMonth() + 1).padStart(2, '0');
+                const day = String(dateP.getDate()).padStart(2, '0');
+                const hours = String(dateP.getHours()).padStart(2, '0');
+                const minutes = String(dateP.getMinutes()).padStart(2, '0');
+                publishDate = `${year}-${month}-${day} à ${hours}:${minutes}h`;
+              }
+            }
+
+            if (publication.date_execution) {
+              const dateE = new Date(publication.date_execution);
+              if (!isNaN(dateE.getTime())) {
+                const year = dateE.getFullYear();
+                const month = String(dateE.getMonth() + 1).padStart(2, '0');
+                const day = String(dateE.getDate()).padStart(2, '0');
+                const hours = String(dateE.getHours()).padStart(2, '0');
+                const minutes = String(dateE.getMinutes()).padStart(2, '0');
+                executionDate = `${year}-${month}-${day} à ${hours}:${minutes}h`;
+              }
+            }
+          } catch (error) {
+            console.error('Erreur de formatage de date:', error);
+          }
+
+          const div = document.createElement('div');
+          div.className = 'publication';
+          div.dataset.id = publication.id;
+          div.innerHTML = `
+            <div class="publication-header">
+              <img src="${publication.photo_de_profil ? 'data:image/jpeg;base64,' + publication.photo_de_profil : '../style/images/plus-solid.svg'}" alt="Photo de profil" class="profile-pic">
+              <div class="user-info">
+                <h4>${publication.nom || 'Utilisateur'} ${publication.prenom || ''}</h4>
+                <span class="meta">Publié le : ${publishDate} | Service : ${publication.service_vise}</span>
+                <span class="meta">Exécution prévue : ${executionDate} | Adresse : ${publication.adresse}</span>
+              </div>
+            </div>
+            <h3 class="publication-title">${publication.titre || 'Sans titre'}</h3>
+            <p class="publication-text">${publication.description || 'Aucune description'}</p>
+            <p class="publication-budget">Budget : ${publication.budget ? publication.budget + ' DZD' : 'Non précisé'}</p>
+            ${publication.media ? `
+              <div class="publication-media-container">
+                <img src="data:image/jpeg;base64,${publication.media}" 
+                     alt="Image de la publication" 
+                     class="publication-media" 
+                     onload="this.style.display='block'; this.parentElement.style.display='flex';"
+                     onerror="this.style.display='none'; this.parentElement.style.display='none';" />
+              </div>
+            ` : ''}
+            <div class="publication-stats">
+              <span>${publication.likes || 0} j'aimes</span> - <span>${publication.comments || 0} commentaires</span>
+            </div>
+            <div class="publication-actions">
+              <button><i class="fas fa-comment"></i> Commenter</button>
+              <button><i class="fas fa-heart"></i> Aimer</button>
+              <button class="openRecommandationDialogBtn"><i class="fa-solid fa-user"></i> Recommander</button>
+              <button class="report-btn" onclick="openReportDialog(this)"><i class="fas fa-flag"></i> Signaler</button>
+            </div>
+          `;
+
+          container.appendChild(div);
+          
+          // Vérifier si l'image a été chargée correctement
+          const img = div.querySelector('.publication-media');
+          if (img) {
+            img.onload = function() {
+              // L'image a été chargée avec succès
+              this.style.display = 'block';
+              this.parentElement.style.display = 'flex';
+            };
+            img.onerror = function() {
+              // L'image n'a pas pu être chargée
+              this.style.display = 'none';
+              this.parentElement.style.display = 'none';
+            };
+          }
+        });
+
+        // Ajouter des gestionnaires d'événements pour les boutons de recommandation
+        document.querySelectorAll('.openRecommandationDialogBtn').forEach(button => {
+          button.addEventListener('click', () => {
+            if (recommandationDialog) {
+              recommandationDialog.showModal();
+              console.log("Dialogue de recommandation affiché.");
+            }
+          });
+        });
+
+        // Vérifier et corriger les images après leur chargement
+        setTimeout(() => {
+          document.querySelectorAll('.publication-media').forEach(img => {
+            if (img.complete && img.naturalWidth === 0) {
+              // L'image n'a pas pu être chargée
+              img.style.display = 'none';
+              img.parentElement.style.display = 'none';
+            }
+          });
+        }, 500);
+
+      } catch (error) {
+        console.error('Erreur lors du chargement des publications :', error);
+      }
+    };
+
+    // Charger les publications au chargement de la page
+    loadAllPublications();
+
+    // Fonction pour gérer la navigation
+    function navigateToPage(url) {
+      // Vérifier si l'utilisateur est connecté
+      const token = localStorage.getItem('token');
+      const userId = localStorage.getItem('userId');
+      
+      if (!token || !userId) {
+        alert('Vous devez être connecté pour accéder à cette page');
+        window.location.href = '/views/login.html';
+        return;
+      }
+      
+      // Rediriger vers la page demandée
+      window.location.href = url;
+    }
+    
+    // Ajouter des gestionnaires d'événements pour les liens de navigation
+    document.querySelectorAll('nav ul li a').forEach(link => {
+      const href = link.getAttribute('href');
+      
+      // Ignorer les liens avec des ancres (#)
+      if (href && !href.startsWith('#')) {
+        link.addEventListener('click', function(e) {
+          e.preventDefault();
+          navigateToPage(href);
+        });
       }
     });
+  });
 
-    closeFullscreenBtn.addEventListener('mouseover', function() {
-      this.style.color = '#fcdb32';
-    });
+    // Fonction pour compresser l'image
+    function compressImage(file, maxWidth, maxHeight, callback) {
+    const reader = new FileReader();
 
-    closeFullscreenBtn.addEventListener('mouseout', function() {
-      this.style.color = 'white';
-    });
+    reader.onload = function (event) {
+        const img = new Image();
+        img.onload = function () {
+            const canvas = document.createElement("canvas");
+            let width = img.width;
+            let height = img.height;
+
+            if (width > height) {
+                if (width > maxWidth) {
+                    height *= maxWidth / width;
+                    width = maxWidth;
+                }
+            } else {
+                if (height > maxHeight) {
+                    width *= maxHeight / height;
+                    height = maxHeight;
+                }
+            }
+
+            canvas.width = width;
+            canvas.height = height;
+            const ctx = canvas.getContext("2d");
+            ctx.drawImage(img, 0, 0, width, height);
+
+            const compressedBase64 = canvas.toDataURL("image/jpeg", 0.7); // compression
+            const base64Data = compressedBase64.split(',')[1]; // 🔥 remove "data:image/jpeg;base64,"
+            callback(base64Data);
+        };
+        img.src = event.target.result;
+    };
+
+    reader.readAsDataURL(file);
+}
+
   </script>
 </body>
 </html>

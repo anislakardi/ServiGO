@@ -13,11 +13,11 @@
     </a>
     <div class="register-form">
       <h2>Inscription</h2>
-      <form action="register.php" method="POST">
+      <form id="registerForm">
         <div class="form-row">
           <div>
             <label for="user_type">Vous êtes :</label>
-            <select name="user_type" id="user_type" required>
+            <select name="role" id="user_type" required>
               <option value="client">Client</option>
               <option value="prestataire">Prestataire</option>
             </select>
@@ -100,8 +100,59 @@
     userTypeSelect.addEventListener('change', function() {
       if (this.value === 'prestataire') {
         prestataireFields.style.display = 'grid';
+        // Rendre les champs obligatoires pour les prestataires
+        document.getElementById('specialisation').required = true;
+        document.getElementById('experience').required = true;
       } else {
         prestataireFields.style.display = 'none';
+        // Rendre les champs optionnels pour les clients
+        document.getElementById('specialisation').required = false;
+        document.getElementById('experience').required = false;
+      }
+    });
+
+    // Gestion de la soumission du formulaire
+    document.getElementById('registerForm').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      
+      const formData = new FormData(e.target);
+      const data = {
+        nom_utilisateur: formData.get('nom_utilisateur'),
+        nom: formData.get('nom'),
+        prenom: formData.get('prenom'),
+        date_nee: formData.get('date_nee'),
+        adresse: formData.get('adresse'),
+        email: formData.get('email'),
+        mot_de_passe: formData.get('mot_de_passe'),
+        role: formData.get('role')
+      };
+
+      // Ajouter les champs spécifiques aux prestataires si nécessaire
+      if (data.role === 'prestataire') {
+        data.specialisation = formData.get('specialisation');
+        data.experience = formData.get('experience');
+      }
+
+      try {
+        const response = await fetch('http://localhost:5001/api/auth/register', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify(data)
+        });
+
+        const result = await response.json();
+
+        if (response.ok) {
+          alert('Inscription réussie ! Vous pouvez maintenant vous connecter.');
+          window.location.href = '/login';
+        } else {
+          alert(result.message || 'Erreur lors de l\'inscription');
+        }
+      } catch (error) {
+        console.error('Erreur:', error);
+        alert('Erreur de connexion au serveur');
       }
     });
   </script>

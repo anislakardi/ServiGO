@@ -308,73 +308,78 @@ main {
     line-height: 1.4;
 }
 
+/* Styles pour les images des publications */
 .publication-media-container {
-    display: flex;
-    gap: 10px;
-    margin: 8px auto;
-    justify-content: center;
-    flex-wrap: wrap;
+  margin: 15px 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  justify-content: center;
+  width: 100%;
+  overflow: hidden;
 }
 
 .publication-media {
-    border-radius: 6px;
-    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
-    object-fit: cover;
-    cursor: pointer;
+  max-width: 100%;
+  max-height: 300px; /* Limiter la hauteur maximale */
+  object-fit: contain;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: transform 0.3s ease;
+  display: block;
+  margin: 0 auto;
 }
 
-/* Style pour une seule image */
-.publication-media-container.single-image .publication-media {
-    width: 90%;
-    max-height: 450px;
-    object-fit: contain;
+.publication-media:hover {
+  transform: scale(1.02);
 }
 
-/* Style pour deux images */
-.publication-media-container.double-image .publication-media {
-    width: 45%;
-    max-height: 400px;
+/* Styles pour les conteneurs d'images */
+.single-image {
+  justify-content: center;
 }
 
-/* Conteneur pour l'image en plein écran */
+.double-image {
+  justify-content: space-between;
+}
+
+.double-image .publication-media {
+  max-width: 48%; /* Pour les images doubles, limiter la largeur */
+}
+
+/* Style pour le conteneur plein écran */
 .fullscreen-container {
-    display: none;
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background-color: rgba(0, 0, 0, 0.9);
-    z-index: 1000;
-    justify-content: center;
-    align-items: center;
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.9);
+  z-index: 1000;
+  justify-content: center;
+  align-items: center;
 }
 
 .fullscreen-container.active {
-    display: flex;
+  display: flex;
 }
 
 .fullscreen-image {
-    max-width: 90%;
-    max-height: 90%;
-    object-fit: contain;
+  max-width: 90%;
+  max-height: 90vh;
+  object-fit: contain;
 }
 
 .close-fullscreen {
-    position: fixed;
-    top: 20px;
-    right: 20px;
-    color: white;
-    font-size: 40px;
-    cursor: pointer;
-    z-index: 1001;
-    background: none;
-    border: none;
-    padding: 10px;
-}
-
-.close-fullscreen:hover {
-    color: #fcdb32;
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  background: none;
+  border: none;
+  color: white;
+  font-size: 30px;
+  cursor: pointer;
 }
 
 .publication-actions {

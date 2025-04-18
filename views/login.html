@@ -13,7 +13,7 @@
     </a>
     <div class="login-form">
       <h2>Se Connecter</h2>
-      <form>
+      <form id="loginForm">
         <input type="email" name="email" placeholder="Adresse e-mail" required>
         <input type="password" name="password" placeholder="Mot de passe" required>
         <button type="submit">Connexion</button>
@@ -24,5 +24,48 @@
       </div>
     </div>
   </div>
+
+  <script>
+    document.getElementById('loginForm').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      
+      const formData = new FormData(e.target);
+      const data = {
+        email: formData.get('email'),
+        mot_de_passe: formData.get('password')
+      };
+
+      try {
+        const response = await fetch('http://localhost:5001/api/auth/login', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify(data)
+        });
+
+        const result = await response.json();
+
+        if (response.ok) {
+          // Stocker le token et les informations de l'utilisateur
+          localStorage.setItem('token', result.token);
+          localStorage.setItem('userRole', result.role);
+          localStorage.setItem('userId', result.user.id);
+
+          // Rediriger vers la page appropriée selon le rôle
+          if (result.role === 'client') {
+            window.location.href = '/homeClient';
+          } else if (result.role === 'prestataire') {
+            window.location.href = '/homePrestataire';
+          }
+        } else {
+          alert(result.message || 'Erreur de connexion');
+        }
+      } catch (error) {
+        console.error('Erreur:', error);
+        alert('Erreur de connexion au serveur');
+      }
+    });
+  </script>
 </body>
 </html>

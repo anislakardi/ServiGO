@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ServiGO - Espace Prestataire</title>
+    <link rel="stylesheet" href="../style/homePrestataire.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <nav>
+                <div class="logo">ServiGO</div>
+                <div class="nav-links">
+                    <a href="#" class="active">Accueil</a>
+                    <a href="/messagerie">Messagerie</a>
+                    <a href="/profilePrestataire">Mon Profil</a>
+                    <a href="#" id="logout">Déconnexion</a>
+                </div>
+            </nav>
+        </header>
+
+        <main>
+            <section class="welcome-section">
+                <h1>Bienvenue dans votre espace prestataire</h1>
+                <p>Gérez vos services et vos demandes de clients</p>
+            </section>
+
+            <section class="stats-section">
+                <div class="stat-card">
+                    <h3>Demandes en attente</h3>
+                    <p id="pending-requests">0</p>
+                </div>
+                <div class="stat-card">
+                    <h3>Services en cours</h3>
+                    <p id="active-services">0</p>
+                </div>
+                <div class="stat-card">
+                    <h3>Services terminés</h3>
+                    <p id="completed-services">0</p>
+                </div>
+            </section>
+
+            <section class="requests-section">
+                <h2>Dernières demandes</h2>
+                <div class="requests-list" id="requests-list">
+                    <!-- Les demandes seront chargées dynamiquement ici -->
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <script>
+        // Vérifier si l'utilisateur est connecté
+        const user = JSON.parse(localStorage.getItem('user'));
+        if (!user || user.role !== 'prestataire') {
+            window.location.href = '/login';
+        }
+
+        // Gérer la déconnexion
+        document.getElementById('logout').addEventListener('click', function(e) {
+            e.preventDefault();
+            localStorage.removeItem('token');
+            localStorage.removeItem('user');
+            window.location.href = '/login';
+        });
+
+        // Charger les données du prestataire
+        async function loadPrestataireData() {
+            try {
+                const response = await fetch('http://localhost:5000/api/prestataires/profile', {
+                    headers: {
+                        'Authorization': `Bearer ${localStorage.getItem('token')}`
+                    }
+                });
+
+                if (response.ok) {
+                    const data = await response.json();
+                    // Mettre à jour l'interface avec les données
+                    document.getElementById('pending-requests').textContent = data.pendingRequests || 0;
+                    document.getElementById('active-services').textContent = data.activeServices || 0;
+                    document.getElementById('completed-services').textContent = data.completedServices || 0;
+                }
+            } catch (error) {
+                console.error('Erreur lors du chargement des données:', error);
+            }
+        }
+
+        // Charger les données au chargement de la page
+        loadPrestataireData();
+    </script>
+</body>
+</html> 
