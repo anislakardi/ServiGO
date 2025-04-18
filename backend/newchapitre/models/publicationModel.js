@@ -1,10 +1,10 @@
 const pool = require("../config/database");
 
 class Publication {
-    static async create({ titre, description, adresse, date_execution, service_vise, client_id, media }) {
+    static async create({ titre, description, adresse, date_execution, service_vise, budget, client_id, media }) {
         const [result] = await pool.query(
-            `INSERT INTO client_publication (titre, description, adresse, date_execution, service_vise, client_id, media) VALUES (?, ?, ?, ?, ?, ?)`,
-            [titre, description, adresse, date_execution, service_vise, client_id, media]
+            `INSERT INTO client_publication (titre, description, adresse, date_execution, service_vise, budget, client_id, media) VALUES (?, ?, ?, ?, ?, ?, ?, ?)`,
+            [titre, description, adresse, date_execution, service_vise, budget, client_id, media]
         );
         return result.insertId;
     }
@@ -29,13 +29,20 @@ class Publication {
     }
     static async findByIdClient(client_id) {
       const [rows] = await pool.query("SELECT * FROM client_publication WHERE client_id = ?", [client_id]);
-      return rows;
+      
+      // Convertir les données binaires des médias en base64
+      const publicationsWithMedia = rows.map(pub => ({
+        ...pub,
+        media: pub.media ? Buffer.from(pub.media).toString('base64') : null
+      }));
+      
+      return publicationsWithMedia;
     }  
 
-    static async update(id, { titre, description, adresse, date_execution, statut }) {
+    static async update(id, { titre, description, adresse, budget, date_execution, statut }) {
         const [result] = await pool.query(
-            `UPDATE client_publication SET titre = ?, description = ?, adresse = ?, date_execution = ?, statut = ? WHERE id = ?`,
-            [titre, description, adresse, date_execution, statut, id]
+            `UPDATE client_publication SET titre = ?, description = ?, adresse = ?, budget = ?, date_execution = ?, statut = ? WHERE id = ?`,
+            [titre, description, adresse, budget, date_execution, statut, id]
         );
         return result.affectedRows;
     }

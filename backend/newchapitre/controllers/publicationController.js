@@ -4,11 +4,30 @@ const pool = require('../config/database');
 // ✅ Ajouter une publication
 exports.ajouterPublication = async (req, res) => {
     try {
-        const { titre, description, adresse, date_execution, service_vise, client_id, media } = req.body;
-        const publicationId = await Publication.create({ titre, description, adresse, date_execution, service_vise, client_id, media });
+        const { titre, description, adresse, date_execution, service_vise, budget, client_id, media } = req.body;
+        
+        // Vérifier si les champs requis sont présents
+        if (!titre || !description || !service_vise || !client_id) {
+            return res.status(400).json({ 
+                message: "Champs requis manquants", 
+                details: {
+                    titre: !titre ? "Le titre est requis" : null,
+                    description: !description ? "La description est requise" : null,
+                    service_vise: !service_vise ? "Le service visé est requis" : null,
+                    client_id: !client_id ? "L'ID du client est requis" : null
+                }
+            });
+        }
+        
+        const publicationId = await Publication.create({ titre, description, adresse, date_execution, service_vise, budget, client_id, media });
         res.status(201).json({ message: "Publication ajoutée avec succès", publicationId });
     } catch (error) {
-        res.status(500).json({ message: "Erreur serveur", error: error.message });
+        console.error("Erreur lors de l'ajout d'une publication:", error);
+        res.status(500).json({ 
+            message: "Erreur serveur lors de l'ajout de la publication", 
+            error: error.message,
+            stack: process.env.NODE_ENV === 'development' ? error.stack : undefined
+        });
     }
 };
 
@@ -76,12 +95,10 @@ exports.getPublicationByClient = async (req, res) => {
 
       const publications = await Publication.findByIdClient(clientId);
 
-      if (!publications.length) {
-          return res.status(404).json({ message: "Aucune publication trouvée pour ce client" });
-      }
-
+      // Retourner un tableau vide au lieu d'une erreur 404
       res.json(publications);
   } catch (error) {
+      console.error('Erreur lors de la récupération des publications du client:', error);
       res.status(500).json({ message: "Erreur serveur", error: error.message });
   }
 };
@@ -90,7 +107,7 @@ exports.getPublicationByClient = async (req, res) => {
 exports.modifierPublication = async (req, res) => {
   try {
       const { id } = req.params;
-      const { titre, description, adresse, date_execution, statut } = req.body;
+      const { titre, description, adresse, date_execution, budget, statut } = req.body;
 
       // Récupérer la publication existante
       const publication = await Publication.findById(id);
@@ -103,6 +120,7 @@ exports.modifierPublication = async (req, res) => {
           titre: titre ?? publication.titre,
           description: description ?? publication.description,
           adresse: adresse ?? publication.adresse,
+          budget: budget ?? publication.budget,
           date_execution: date_execution ?? publication.date_execution,
           statut: statut ?? publication.statut
       };
@@ -135,6 +153,7 @@ exports.pausePublication = async (req, res) => {
           titre: publication.titre,
           description: publication.description,
           adresse: publication.adresse,
+          budget: budget ?? publication.budget,
           date_execution: publication.date_execution,
           statut: "En attente"
       });
