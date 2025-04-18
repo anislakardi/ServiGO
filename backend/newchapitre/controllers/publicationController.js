@@ -182,3 +182,25 @@ exports.supprimerPublication = async (req, res) => {
         res.status(500).json({ message: "Erreur serveur", error: error.message });
     }
 };
+
+// ✅ Récupérer une publication par son ID
+exports.getPublicationById = async (req, res) => {
+    try {
+        const { id } = req.params;
+        const publication = await Publication.findById(id);
+        
+        if (!publication) {
+            return res.status(404).json({ message: "Publication non trouvée" });
+        }
+
+        // Convertir le média en base64 si présent
+        if (publication.media) {
+            publication.media = Buffer.from(publication.media).toString('base64');
+        }
+
+        res.json(publication);
+    } catch (error) {
+        console.error('Erreur lors de la récupération de la publication:', error);
+        res.status(500).json({ message: "Erreur serveur", error: error.message });
+    }
+};
