@@ -40,7 +40,16 @@ exports.getByConversation = async (req, res) => {
     try {
         const { conversation_id } = req.params;
         const messages = await Message.findByConversation(conversation_id);
-        res.json(messages);
+
+        const messagesWithMedia = messages.map(msg => {
+            const plainMsg = msg.dataValues || msg; // Sequelize ou non
+        
+            return {
+                ...plainMsg,
+                photos: plainMsg.photos ? Buffer.from(plainMsg.photos).toString('base64') : null,
+            };
+        });
+        res.json(messagesWithMedia);
     } catch (error) {
         res.status(500).json({ message: "Erreur serveur", error: error.message });
     }

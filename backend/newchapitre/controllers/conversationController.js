@@ -42,7 +42,6 @@ exports.getConversationsWithPublications = async (req, res) => {
         console.log("Requête reçue pour les conversations du client:", client_id);
 
         const conversations = await Conversation.findByClient(client_id);
-        console.log("Conversations trouvées:", conversations);
 
         res.json({
             success: true,

@@ -5,7 +5,7 @@ class Message {
         const [result] = await pool.query(
             `INSERT INTO messages (conversation_id, sender_client_id, sender_prestataire_id, description, date_message, status, photos) 
              VALUES (?, ?, ?, ?, NOW(), 'envoyé', ?)`,
-            [conversation_id, sender_client_id || null, sender_prestataire_id || null, description, photos || null]
+            [conversation_id, sender_client_id || null, sender_prestataire_id || null, description, photos]
         );
         return result.insertId;
     }
