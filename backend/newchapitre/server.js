@@ -38,6 +38,12 @@ app.use('/api', messageRoutes);
 app.use('/api', serviceRoutes);
 app.use('/api/auth', authRoutes);
 
+// Log des routes disponibles
+console.log('Routes disponibles:');
+console.log('- /api/conversation/client/:client_id/publications');
+console.log('- /api/messages/:conversation_id');
+console.log('- /api/messages (POST)');
+
 // Routes pour les pages HTML
 app.get('/', (req, res) => {
     res.sendFile(path.join(__dirname, '../../views/index.html'));

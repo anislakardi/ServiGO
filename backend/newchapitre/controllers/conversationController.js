@@ -1,4 +1,5 @@
 const Conversation = require("../models/conversationModel");
+const Message = require("../models/messageModel");
 
 // Créer une conversation avec un titre
 exports.create = async (req, res) => {
@@ -31,6 +32,29 @@ exports.getByClient = async (req, res) => {
         res.json(conversations);
     } catch (error) {
         res.status(500).json({ message: "Erreur serveur", error: error.message });
+    }
+};
+
+// Récupérer les conversations avec publications d'un client
+exports.getConversationsWithPublications = async (req, res) => {
+    try {
+        const { client_id } = req.params;
+        console.log("Requête reçue pour les conversations du client:", client_id);
+
+        const conversations = await Conversation.findByClient(client_id);
+        console.log("Conversations trouvées:", conversations);
+
+        res.json({
+            success: true,
+            data: conversations
+        });
+    } catch (error) {
+        console.error("Erreur lors de la récupération des conversations:", error);
+        res.status(500).json({
+            success: false,
+            message: "Erreur lors de la récupération des conversations",
+            error: error.message
+        });
     }
 };
 

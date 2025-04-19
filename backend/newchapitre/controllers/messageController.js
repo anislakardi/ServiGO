@@ -5,8 +5,8 @@ exports.create = async (req, res) => {
     try {
         const { conversation_id, sender_client_id, sender_prestataire_id, description, photos } = req.body;
 
-        if (!conversation_id || !description) {
-            return res.status(400).json({ message: "conversation_id et description sont requis" });
+        if (!conversation_id || (!description && !photos)) {
+            return res.status(400).json({ message: "Le message doit contenir une description ou une photo" });
         }
 
         // Déterminer l'expéditeur
@@ -15,19 +15,21 @@ exports.create = async (req, res) => {
             return res.status(400).json({ message: "L'expéditeur est requis" });
         }
 
-        console.log("Vérification de l'expéditeur :", sender_id, "dans la conversation", conversation_id); // 🔍 Debug
-
         // Vérifier si l'expéditeur appartient bien à la conversation
         const isParticipant = await Conversation.isParticipant(conversation_id, sender_id);
         if (!isParticipant) {
-            console.log("⚠️ L'utilisateur n'est pas autorisé !"); // 🔍 Debug
             return res.status(403).json({ message: "Vous ne faites pas partie de cette conversation" });
         }
 
-        console.log("✅ L'utilisateur est autorisé à envoyer un message !"); // 🔍 Debug
-
         // Insérer le message
-        const messageId = await Message.create({ conversation_id, sender_client_id, sender_prestataire_id, description, photos });
+        const messageId = await Message.create({
+            conversation_id,
+            sender_client_id,
+            sender_prestataire_id,
+            description: description || null,
+            photos: photos ? Buffer.from(photos, 'base64') : null
+        });
+
         res.status(201).json({ message: "Message envoyé", messageId });
     } catch (error) {
         res.status(500).json({ message: "Erreur serveur", error: error.message });
