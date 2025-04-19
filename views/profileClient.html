@@ -23,8 +23,8 @@
       <li class="dropdown">
         <a href="#options">Options <i class="fas fa-chevron-down"></i></a>
         <div class="dropdown-content">
-          <a href="#donner-avis"><i class="fas fa-star"></i> Donner un avis</a>
-          <a id="active"><i class="fas fa-user"></i> Profil</a>
+          <a href="avisServiGO.html"><i class="fas fa-bell"></i> Avis ServiGO</a>
+          <a href="profileClient.html"><i class="fas fa-user"></i> Profil</a>
           <a href="#"><i class="fas fa-ellipsis-h"></i> Autre option</a>
         </div>
       </li>
@@ -42,11 +42,10 @@
         </label>
         <input type="file" id="profilePicInput" accept="image/*" style="display: none;">
         <div class="profile-info">
-          <h2>Mohammed Anis Lakardi</h2>
-          <p>Email : anis.lakardi@example.com</p>
-          <p>Nom D'utilisateur : june25th</p>
-          <p>Téléphone : +213 5 55 55 55 55</p>
-          <p>Adresse : El Karimia, Chlef, Algérie</p>
+          <h2 id="userFullName">Chargement...</h2>
+          <p id="userEmail">Email : Chargement...</p>
+          <p id="userUsername">Nom D'utilisateur : Chargement...</p>
+          <p id="userAddress">Adresse : Chargement...</p>
         </div>
       </div>
 
@@ -63,8 +62,8 @@
 
         <div class="button-group">
           <button class="btn btn-edit" onclick="openModal()">Modifier Profil</button>
-          <button class="btn btn-delete">Supprimer le Compte</button>
-          <button class="btn btn-logout">Déconnexion</button>
+          <button class="btn btn-delete" onclick="deleteAccount()">Supprimer le Compte</button>
+          <button class="btn btn-logout" onclick="logout()">Déconnexion</button>
         </div>
       </div>
     </div>
@@ -75,21 +74,21 @@
     <div class="modal-content">
       <span class="close" onclick="closeModal()">&times;</span>
       <h2>Modifier mon profil</h2>
-      <form>
+      <form id="editProfileForm">
         <label>Nom :</label>
-        <input type="text" placeholder="Entrer le nom"><br>
+        <input type="text" id="editNom" placeholder="Entrer le nom"><br>
 
         <label>Prénom :</label>
-        <input type="text" placeholder="Entrer le prénom"><br>
+        <input type="text" id="editPrenom" placeholder="Entrer le prénom"><br>
         
         <label>Nom D'utilisateur :</label>
-        <input type="text" placeholder="Entrer le Nom D'utilisateur :"><br>
+        <input type="text" id="editNomUtilisateur" placeholder="Entrer le Nom D'utilisateur :"><br>
 
         <label>Date de naissance :</label>
-        <input type="date"><br>
+        <input type="date" id="editDateNee"><br>
 
         <label>Email :</label>
-        <input type="email" placeholder="Entrer l'email"><br>
+        <input type="email" id="editEmail" placeholder="Entrer l'email"><br>
 
         <label for="wilaya">Wilaya</label>
         <select id="wilaya" name="wilaya">
@@ -107,6 +106,65 @@
   </div>
 
   <script>
+    // Vérifier si l'utilisateur est connecté
+    document.addEventListener('DOMContentLoaded', function() {
+      const token = localStorage.getItem('token');
+      const userId = localStorage.getItem('userId');
+      
+      if (!token || !userId) {
+        alert('Vous devez être connecté pour accéder à cette page');
+        window.location.href = '/login';
+        return;
+      }
+      
+      // Charger les données de l'utilisateur
+      loadUserData();
+    });
+
+    // Fonction pour charger les données de l'utilisateur
+    async function loadUserData() {
+      const token = localStorage.getItem('token');
+      const userId = localStorage.getItem('userId');
+      
+      try {
+        const response = await fetch(`http://localhost:5001/api/clients/${userId}`, {
+          headers: {
+            'Authorization': `Bearer ${token}`
+          }
+        });
+        
+        if (!response.ok) {
+          throw new Error('Erreur lors de la récupération des données utilisateur');
+        }
+        
+        const userData = await response.json();
+        
+        // Mettre à jour l'interface avec les données de l'utilisateur
+        document.getElementById('userFullName').textContent = `${userData.nom} ${userData.prenom}`;
+        document.getElementById('userEmail').textContent = `Email : ${userData.email}`;
+        document.getElementById('userUsername').textContent = `Nom D'utilisateur : ${userData.nom_utilisateur}`;
+        document.getElementById('userAddress').textContent = `Adresse : ${userData.adresse || 'Non renseignée'}`;
+        document.getElementById('bio-text').textContent = `${userData.bio || 'Non renseignée'}`;
+        
+        
+        // Remplir le formulaire d'édition
+        document.getElementById('editNom').value = userData.nom || '';
+        document.getElementById('editPrenom').value = userData.prenom || '';
+        document.getElementById('editNomUtilisateur').value = userData.nom_utilisateur || '';
+        document.getElementById('editDateNee').value = userData.date_nee || '';
+        document.getElementById('editEmail').value = userData.email || '';
+        
+        // Si l'utilisateur a une photo de profil, l'afficher
+        if (userData.photo_de_profil) {
+          document.getElementById('profileImagePreview').src = userData.photo_de_profil;
+        }
+        
+      } catch (error) {
+        console.error('Erreur:', error);
+        alert('Erreur lors du chargement des données utilisateur');
+      }
+    }
+
     function openModal() {
       document.getElementById('editModal').style.display = 'block';
     }
@@ -121,82 +179,256 @@
         modal.style.display = "none";
       }
     }
+    
     const profileInput = document.getElementById("profilePicInput");
-  const profilePreview = document.getElementById("profileImagePreview");
+    const profilePreview = document.getElementById("profileImagePreview");
 
-  profileInput.addEventListener("change", () => {
-    const file = profileInput.files[0];
-    if (file) {
+    // Fonction pour compresser une image
+    function compressImage(file, maxWidth, maxHeight, callback) {
       const reader = new FileReader();
-      reader.onload = e => {
-        profilePreview.src = e.target.result;
-      };
       reader.readAsDataURL(file);
+      reader.onload = function(event) {
+        const img = new Image();
+        img.src = event.target.result;
+        img.onload = function() {
+          const canvas = document.createElement('canvas');
+          let width = img.width;
+          let height = img.height;
+          
+          // Calculer les nouvelles dimensions
+          if (width > height) {
+            if (width > maxWidth) {
+              height = Math.round((height * maxWidth) / width);
+              width = maxWidth;
+            }
+          } else {
+            if (height > maxHeight) {
+              width = Math.round((width * maxHeight) / height);
+              height = maxHeight;
+            }
+          }
+          
+          canvas.width = width;
+          canvas.height = height;
+          
+          const ctx = canvas.getContext('2d');
+          ctx.drawImage(img, 0, 0, width, height);
+          
+          // Convertir en base64 avec une qualité réduite
+          const compressedBase64 = canvas.toDataURL('image/jpeg', 0.7);
+          callback(compressedBase64);
+        };
+      };
     }
-  });
 
-  let wilayas = [];
-  let communes = [];
-
-  // Charger les fichiers JSON
-  Promise.all([
-    fetch('../fichiers/Wilaya_Of_Algeria.json').then(res => res.json()),
-    fetch('../fichiers/Commune_Of_Algeria.json').then(res => res.json())
-  ]).then(([wilayaData, communeData]) => {
-    wilayas = wilayaData;
-    communes = communeData;
-    populateWilayas();
-  });
-
-  function populateWilayas() {
-    const wilayaSelect = document.getElementById('wilaya');
-    wilayas.forEach(w => {
-      const option = document.createElement('option');
-      option.value = w.id;
-      option.textContent = w.name;
-      wilayaSelect.appendChild(option);
+    profileInput.addEventListener("change", () => {
+      const file = profileInput.files[0];
+      if (file) {
+        const reader = new FileReader();
+        reader.onload = e => {
+          profilePreview.src = e.target.result;
+          
+          // Compresser et envoyer la nouvelle photo de profil
+          compressImage(file, 800, 800, async function(compressedBase64Data) {
+            const token = localStorage.getItem('token');
+            const userId = localStorage.getItem('userId');
+            
+            try {
+              const response = await fetch(`http://localhost:5001/api/clients/${userId}/profile-picture`, {
+                method: 'PUT',
+                headers: {
+                  'Content-Type': 'application/json',
+                  'Authorization': `Bearer ${token}`
+                },
+                body: JSON.stringify({
+                  photo_de_profil: compressedBase64Data
+                })
+              });
+              
+              if (!response.ok) {
+                throw new Error('Erreur lors de la mise à jour de la photo de profil');
+              }
+              
+              alert('Photo de profil mise à jour avec succès');
+              
+            } catch (error) {
+              console.error('Erreur:', error);
+              alert('Erreur lors de la mise à jour de la photo de profil');
+              // Restaurer l'ancienne photo
+              loadUserData();
+            }
+          });
+        };
+        reader.readAsDataURL(file);
+      }
     });
 
-    wilayaSelect.addEventListener('change', () => {
-      const selectedId = wilayaSelect.value;
-      populateCommunes(selectedId);
+    let wilayas = [];
+    let communes = [];
+
+    // Charger les fichiers JSON
+    Promise.all([
+      fetch('../fichiers/Wilaya_Of_Algeria.json').then(res => res.json()),
+      fetch('../fichiers/Commune_Of_Algeria.json').then(res => res.json())
+    ]).then(([wilayaData, communeData]) => {
+      wilayas = wilayaData;
+      communes = communeData;
+      populateWilayas();
     });
-  }
 
-  function populateCommunes(wilayaId) {
-    const communeSelect = document.getElementById('commune');
-    communeSelect.innerHTML = '<option value="">-- Sélectionnez une commune --</option>';
-    const filtered = communes.filter(c => c.wilaya_id === wilayaId);
-    filtered.forEach(c => {
-      const option = document.createElement('option');
-      option.value = c.name;
-      option.textContent = c.name;
-      communeSelect.appendChild(option);
+    function populateWilayas() {
+      const wilayaSelect = document.getElementById('wilaya');
+      wilayas.forEach(w => {
+        const option = document.createElement('option');
+        option.value = w.id;
+        option.textContent = w.name;
+        wilayaSelect.appendChild(option);
+      });
+
+      wilayaSelect.addEventListener('change', () => {
+        const selectedId = wilayaSelect.value;
+        populateCommunes(selectedId);
+      });
+    }
+
+    function populateCommunes(wilayaId) {
+      const communeSelect = document.getElementById('commune');
+      communeSelect.innerHTML = '<option value="">-- Sélectionnez une commune --</option>';
+      const filtered = communes.filter(c => c.wilaya_id === wilayaId);
+      filtered.forEach(c => {
+        const option = document.createElement('option');
+        option.value = c.name;
+        option.textContent = c.name;
+        communeSelect.appendChild(option);
+      });
+    }
+
+    function editBio() {
+      const container = document.getElementById("bio-container");
+      const currentText = document.getElementById("bio-text").innerText;
+
+      container.innerHTML = `
+        <h3>À propos de moi</h3>
+        <textarea id="bio-edit" rows="4" style="width:100%; padding:8px;">${currentText}</textarea>
+        <button onclick="saveBio()">Enregistrer</button>
+      `;
+    }
+
+    async function saveBio() {
+      const token = localStorage.getItem('token');
+      const userId = localStorage.getItem('userId');
+      const newBio = document.getElementById("bio-edit").value;
+      const container = document.getElementById("bio-container");
+
+      try {
+        const response = await fetch(`http://localhost:5001/api/clients/${userId}`, {
+          method: 'PUT',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
+          },
+          body: JSON.stringify({
+            bio: newBio
+          })
+        });
+        
+        if (!response.ok) {
+          throw new Error('Erreur lors de la mise à jour de la bio');
+        }
+        
+        // Mettre à jour l'interface
+        container.innerHTML = `
+          <h3>
+            À propos de moi 
+            <button onclick="editBio()" style="font-size: 12px; padding: 4px 8px; margin-left: 10px;">Modifier</button>
+          </h3>
+          <p id="bio-text">${newBio}</p>
+        `;
+        
+        alert('Bio mise à jour avec succès');
+        
+      } catch (error) {
+        console.error('Erreur:', error);
+        alert('Erreur lors de la mise à jour de la bio');
+        // Restaurer l'ancienne bio
+        loadUserData();
+      }
+    }
+    
+    // Gestionnaire pour le formulaire d'édition de profil
+    document.getElementById('editProfileForm').addEventListener('submit', async function(e) {
+      e.preventDefault();
+      
+      const token = localStorage.getItem('token');
+      const userId = localStorage.getItem('userId');
+      
+      const formData = {
+        nom: document.getElementById('editNom').value,
+        prenom: document.getElementById('editPrenom').value,
+        nom_utilisateur: document.getElementById('editNomUtilisateur').value,
+        date_nee: document.getElementById('editDateNee').value,
+        email: document.getElementById('editEmail').value,
+        adresse: `${document.getElementById('commune').value}, ${document.getElementById('wilaya').value}`
+      };
+      
+      try {
+        const response = await fetch(`http://localhost:5001/api/clients/${userId}`, {
+          method: 'PUT',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
+          },
+          body: JSON.stringify(formData)
+        });
+        
+        if (!response.ok) {
+          throw new Error('Erreur lors de la mise à jour du profil');
+        }
+        
+        alert('Profil mis à jour avec succès');
+        closeModal();
+        loadUserData(); // Recharger les données utilisateur
+        
+      } catch (error) {
+        console.error('Erreur:', error);
+        alert('Erreur lors de la mise à jour du profil');
+      }
     });
-  }
-
-  function editBio() {
-  const container = document.getElementById("bio-container");
-  const currentText = document.getElementById("bio-text").innerText;
-
-  container.innerHTML = `
-    <h3>À propos de moi</h3>
-    <textarea id="bio-edit" rows="4" style="width:100%; padding:8px;">${currentText}</textarea>
-    <button onclick="saveBio()">Enregistrer</button>
-  `;
-}
-
-function saveBio() {
-  const newBio = document.getElementById("bio-edit").value;
-  const container = document.getElementById("bio-container");
-
-  container.innerHTML = `
-    <h3>À propos de moi</h3>
-    <p id="bio-text">${newBio}</p>
-    <button onclick="editBio()">Modifier</button>
-  `;
-}
-
+    
+    // Fonction pour supprimer le compte
+    function deleteAccount() {
+      if (confirm('Êtes-vous sûr de vouloir supprimer votre compte ? Cette action est irréversible.')) {
+        const token = localStorage.getItem('token');
+        const userId = localStorage.getItem('userId');
+        
+        fetch(`http://localhost:5001/api/clients/${userId}`, {
+          method: 'DELETE',
+          headers: {
+            'Authorization': `Bearer ${token}`
+          }
+        })
+        .then(response => {
+          if (response.ok) {
+            alert('Compte supprimé avec succès');
+            logout();
+          } else {
+            throw new Error('Erreur lors de la suppression du compte');
+          }
+        })
+        .catch(error => {
+          console.error('Erreur:', error);
+          alert('Erreur lors de la suppression du compte');
+        });
+      }
+    }
+    
+    // Fonction pour se déconnecter
+    function logout() {
+      localStorage.removeItem('token');
+      localStorage.removeItem('userId');
+      localStorage.removeItem('userRole');
+      window.location.href = '/login';
+    }
   </script>
 
 </body>

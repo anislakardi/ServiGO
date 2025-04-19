@@ -1,0 +1,662 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ServiGO - Avis</title>
+    <link rel="stylesheet" href="../style/avisServiGO.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"/>
+</head>
+<body onload="checkUserAvis()">
+    <!-- Navbar -->
+    <nav>
+        <div class="logo">
+            <h1>ServiGO</h1>
+        </div>
+        <ul>
+            <li><a href="homeClient.html">Accueil</a></li>
+            <li><a href="offreurs.html">Offreurs</a></li>
+            <li><a href="messagerie.html">Messagerie</a></li>
+            <li><a href="notification.html">Notifications</a></li>
+            <li><a href="profileClient.html">Profile</a></li>
+            <li class="dropdown">
+                <a href="#options">Options <i class="fas fa-chevron-down"></i></a>
+                <div class="dropdown-content">
+                    <a href="avisServiGO.html" id="active"><i class="fas fa-bell"></i> Avis ServiGO</a>
+                    <a href="profileClient.html"><i class="fas fa-user"></i> Profil</a>
+                    <a href="#"><i class="fas fa-ellipsis-h"></i> Autre option</a>
+                </div>
+            </li>
+        </ul>
+    </nav>
+
+    <div class="main-content">
+        <h1>Avis sur ServiGO</h1>
+        
+        <!-- Conteneur pour l'avis de l'utilisateur -->
+        <div id="userAvisContainer" class="user-avis-container" style="display: none;">
+            <h2>Votre avis</h2>
+            <div class="user-avis-card">
+                <div class="avis-details">
+                    <div class="rating-item">
+                        <span class="rating-label">Note globale :</span>
+                        <span id="userGlobalRating" class="rating-value"></span>
+                    </div>
+                    <div class="rating-item">
+                        <span class="rating-label">Qualité du service :</span>
+                        <span id="userServiceRating" class="rating-value"></span>
+                    </div>
+                    <div class="rating-item">
+                        <span class="rating-label">Communication :</span>
+                        <span id="userCommunicationRating" class="rating-value"></span>
+                    </div>
+                    <div class="rating-item">
+                        <span class="rating-label">Prix :</span>
+                        <span id="userPriceRating" class="rating-value"></span>
+                    </div>
+                    <div class="comment-item">
+                        <span class="rating-label">Votre commentaire :</span>
+                        <p id="userComment" class="comment-text"></p>
+                    </div>
+                </div>
+                <div class="avis-actions">
+                    <button onclick="openEditModal()" class="edit-btn">Modifier</button>
+                    <button onclick="openDeleteModal()" class="delete-btn">Supprimer</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Formulaire d'avis -->
+        <div id="avisForm" class="avis-form">
+            <h2>Donnez votre avis</h2>
+            <form id="reviewForm" onsubmit="submitAvis(event)">
+                <div class="rating-section">
+                    <h3>Note globale</h3>
+                    <div class="stars">
+                        <input type="radio" id="star5" name="rating" value="5" required>
+                        <label for="star5">★</label>
+                        <input type="radio" id="star4" name="rating" value="4">
+                        <label for="star4">★</label>
+                        <input type="radio" id="star3" name="rating" value="3">
+                        <label for="star3">★</label>
+                        <input type="radio" id="star2" name="rating" value="2">
+                        <label for="star2">★</label>
+                        <input type="radio" id="star1" name="rating" value="1">
+                        <label for="star1">★</label>
+                    </div>
+                </div>
+
+                <div class="rating-category">
+                    <h3>Qualité du service</h3>
+                    <div class="stars">
+                        <input type="radio" id="service5" name="service" value="5" required>
+                        <label for="service5">★</label>
+                        <input type="radio" id="service4" name="service" value="4">
+                        <label for="service4">★</label>
+                        <input type="radio" id="service3" name="service" value="3">
+                        <label for="service3">★</label>
+                        <input type="radio" id="service2" name="service" value="2">
+                        <label for="service2">★</label>
+                        <input type="radio" id="service1" name="service" value="1">
+                        <label for="service1">★</label>
+                    </div>
+                </div>
+
+                <div class="rating-category">
+                    <h3>Communication</h3>
+                    <div class="stars">
+                        <input type="radio" id="communication5" name="communication" value="5" required>
+                        <label for="communication5">★</label>
+                        <input type="radio" id="communication4" name="communication" value="4">
+                        <label for="communication4">★</label>
+                        <input type="radio" id="communication3" name="communication" value="3">
+                        <label for="communication3">★</label>
+                        <input type="radio" id="communication2" name="communication" value="2">
+                        <label for="communication2">★</label>
+                        <input type="radio" id="communication1" name="communication" value="1">
+                        <label for="communication1">★</label>
+                    </div>
+                </div>
+
+                <div class="rating-category">
+                    <h3>Prix</h3>
+                    <div class="stars">
+                        <input type="radio" id="price5" name="price" value="5" required>
+                        <label for="price5">★</label>
+                        <input type="radio" id="price4" name="price" value="4">
+                        <label for="price4">★</label>
+                        <input type="radio" id="price3" name="price" value="3">
+                        <label for="price3">★</label>
+                        <input type="radio" id="price2" name="price" value="2">
+                        <label for="price2">★</label>
+                        <input type="radio" id="price1" name="price" value="1">
+                        <label for="price1">★</label>
+                    </div>
+                </div>
+
+                <textarea name="comment" placeholder="Partagez votre expérience avec ServiGO..." required></textarea>
+                <button type="submit" class="submit-btn">Publier mon avis</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Modal de modification -->
+    <div id="editModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeEditModal()">&times;</span>
+            <h2>Modifier mon avis</h2>
+            <form id="editForm">
+                <div class="rating-section">
+                    <h3>Note globale</h3>
+                    <div class="stars">
+                        <input type="radio" id="editStar5" name="editRating" value="5">
+                        <label for="editStar5">★</label>
+                        <input type="radio" id="editStar4" name="editRating" value="4">
+                        <label for="editStar4">★</label>
+                        <input type="radio" id="editStar3" name="editRating" value="3">
+                        <label for="editStar3">★</label>
+                        <input type="radio" id="editStar2" name="editRating" value="2">
+                        <label for="editStar2">★</label>
+                        <input type="radio" id="editStar1" name="editRating" value="1">
+                        <label for="editStar1">★</label>
+                    </div>
+                </div>
+
+                <div class="rating-category">
+                    <h3>Qualité du service</h3>
+                    <div class="stars">
+                        <input type="radio" id="editService5" name="editService" value="5">
+                        <label for="editService5">★</label>
+                        <input type="radio" id="editService4" name="editService" value="4">
+                        <label for="editService4">★</label>
+                        <input type="radio" id="editService3" name="editService" value="3">
+                        <label for="editService3">★</label>
+                        <input type="radio" id="editService2" name="editService" value="2">
+                        <label for="editService2">★</label>
+                        <input type="radio" id="editService1" name="editService" value="1">
+                        <label for="editService1">★</label>
+                    </div>
+                </div>
+
+                <div class="rating-category">
+                    <h3>Communication</h3>
+                    <div class="stars">
+                        <input type="radio" id="editCommunication5" name="editCommunication" value="5">
+                        <label for="editCommunication5">★</label>
+                        <input type="radio" id="editCommunication4" name="editCommunication" value="4">
+                        <label for="editCommunication4">★</label>
+                        <input type="radio" id="editCommunication3" name="editCommunication" value="3">
+                        <label for="editCommunication3">★</label>
+                        <input type="radio" id="editCommunication2" name="editCommunication" value="2">
+                        <label for="editCommunication2">★</label>
+                        <input type="radio" id="editCommunication1" name="editCommunication" value="1">
+                        <label for="editCommunication1">★</label>
+                    </div>
+                </div>
+
+                <div class="rating-category">
+                    <h3>Prix</h3>
+                    <div class="stars">
+                        <input type="radio" id="editPrice5" name="editPrice" value="5">
+                        <label for="editPrice5">★</label>
+                        <input type="radio" id="editPrice4" name="editPrice" value="4">
+                        <label for="editPrice4">★</label>
+                        <input type="radio" id="editPrice3" name="editPrice" value="3">
+                        <label for="editPrice3">★</label>
+                        <input type="radio" id="editPrice2" name="editPrice" value="2">
+                        <label for="editPrice2">★</label>
+                        <input type="radio" id="editPrice1" name="editPrice" value="1">
+                        <label for="editPrice1">★</label>
+                    </div>
+                </div>
+
+                <textarea name="editComment" placeholder="Partagez votre expérience avec ServiGO..."></textarea>
+                <div class="form-actions">
+                    <button type="button" class="cancel-btn" onclick="closeEditModal()">Annuler</button>
+                    <button type="submit" class="submit-btn">Enregistrer les modifications</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Modal de suppression -->
+    <div id="deleteModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeDeleteModal()">&times;</span>
+            <h2>Supprimer mon avis</h2>
+            <p>Êtes-vous sûr de vouloir supprimer votre avis ? Cette action est irréversible.</p>
+            <div class="form-actions">
+                <button class="cancel-btn" onclick="closeDeleteModal()">Annuler</button>
+                <button class="delete-btn" onclick="confirmDelete()">
+                    <i class="fas fa-trash"></i> Supprimer
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Variables globales
+        let currentUserId = null;
+        let userAvis = null;
+        let avisToDelete = null;
+
+        // Fonction pour vérifier si l'utilisateur a déjà donné son avis
+        async function checkUserAvis() {
+            try {
+                const token = localStorage.getItem('token');
+                const userId = localStorage.getItem('userId');
+                
+                if (!token || !userId) {
+                    document.getElementById('avisForm').style.display = 'block';
+                    document.getElementById('userAvisContainer').style.display = 'none';
+                    return;
+                }
+
+                currentUserId = userId;
+                
+                const response = await fetch(`http://localhost:5001/api/avisservigo/user/${userId}`, {
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                    }
+                });
+
+                if (response.ok) {
+                    const data = await response.json();
+                    if (data.avis) {
+                        userAvis = data.avis;
+                        // Afficher l'avis de l'utilisateur
+                        document.getElementById('userAvisContainer').style.display = 'block';
+                        document.getElementById('avisForm').style.display = 'none';
+                        
+                        // Mettre à jour les valeurs dans le conteneur d'avis utilisateur
+                        document.getElementById('userGlobalRating').textContent = `${userAvis.rating}/5`;
+                        document.getElementById('userServiceRating').textContent = `${userAvis.service_rating}/5`;
+                        document.getElementById('userCommunicationRating').textContent = `${userAvis.communication_rating}/5`;
+                        document.getElementById('userPriceRating').textContent = `${userAvis.price_rating}/5`;
+                        document.getElementById('userComment').textContent = userAvis.comment;
+                    } else {
+                        document.getElementById('avisForm').style.display = 'block';
+                        document.getElementById('userAvisContainer').style.display = 'none';
+                    }
+                } else {
+                    document.getElementById('avisForm').style.display = 'block';
+                    document.getElementById('userAvisContainer').style.display = 'none';
+                }
+            } catch (error) {
+                console.error('Erreur lors de la vérification de l\'avis:', error);
+                document.getElementById('avisForm').style.display = 'block';
+                document.getElementById('userAvisContainer').style.display = 'none';
+            }
+        }
+
+        // Fonction pour afficher le formulaire d'avis
+        function showAvisForm() {
+            const container = document.getElementById('avis-form-container');
+            container.innerHTML = `
+                <div class="avis-form">
+                    <form id="avisForm" onsubmit="submitAvis(event)">
+                        <div class="rating-section">
+                            <h3>Votre note globale</h3>
+                            <div class="stars">
+                                <input type="radio" id="star5" name="rating" value="5">
+                                <label for="star5"><i class="fas fa-star"></i></label>
+                                <input type="radio" id="star4" name="rating" value="4">
+                                <label for="star4"><i class="fas fa-star"></i></label>
+                                <input type="radio" id="star3" name="rating" value="3">
+                                <label for="star3"><i class="fas fa-star"></i></label>
+                                <input type="radio" id="star2" name="rating" value="2">
+                                <label for="star2"><i class="fas fa-star"></i></label>
+                                <input type="radio" id="star1" name="rating" value="1">
+                                <label for="star1"><i class="fas fa-star"></i></label>
+                            </div>
+                        </div>
+
+                        <div class="rating-category">
+                            <h3>Qualité du service</h3>
+                            <div class="stars">
+                                <input type="radio" id="service5" name="service" value="5">
+                                <label for="service5"><i class="fas fa-star"></i></label>
+                                <input type="radio" id="service4" name="service" value="4">
+                                <label for="service4"><i class="fas fa-star"></i></label>
+                                <input type="radio" id="service3" name="service" value="3">
+                                <label for="service3"><i class="fas fa-star"></i></label>
+                                <input type="radio" id="service2" name="service" value="2">
+                                <label for="service2"><i class="fas fa-star"></i></label>
+                                <input type="radio" id="service1" name="service" value="1">
+                                <label for="service1"><i class="fas fa-star"></i></label>
+                            </div>
+                        </div>
+
+                        <div class="rating-category">
+                            <h3>Communication</h3>
+                            <div class="stars">
+                                <input type="radio" id="comm5" name="communication" value="5">
+                                <label for="comm5"><i class="fas fa-star"></i></label>
+                                <input type="radio" id="comm4" name="communication" value="4">
+                                <label for="comm4"><i class="fas fa-star"></i></label>
+                                <input type="radio" id="comm3" name="communication" value="3">
+                                <label for="comm3"><i class="fas fa-star"></i></label>
+                                <input type="radio" id="comm2" name="communication" value="2">
+                                <label for="comm2"><i class="fas fa-star"></i></label>
+                                <input type="radio" id="comm1" name="communication" value="1">
+                                <label for="comm1"><i class="fas fa-star"></i></label>
+                            </div>
+                        </div>
+
+                        <div class="rating-category">
+                            <h3>Rapport qualité/prix</h3>
+                            <div class="stars">
+                                <input type="radio" id="price5" name="price" value="5">
+                                <label for="price5"><i class="fas fa-star"></i></label>
+                                <input type="radio" id="price4" name="price" value="4">
+                                <label for="price4"><i class="fas fa-star"></i></label>
+                                <input type="radio" id="price3" name="price" value="3">
+                                <label for="price3"><i class="fas fa-star"></i></label>
+                                <input type="radio" id="price2" name="price" value="2">
+                                <label for="price2"><i class="fas fa-star"></i></label>
+                                <input type="radio" id="price1" name="price" value="1">
+                                <label for="price1"><i class="fas fa-star"></i></label>
+                            </div>
+                        </div>
+
+                        <div class="rating-category">
+                            <h3>Votre commentaire</h3>
+                            <textarea id="comment" placeholder="Partagez votre expérience avec ServiGO..." required></textarea>
+                        </div>
+
+                        <button type="submit" class="submit-btn">Envoyer votre avis</button>
+                    </form>
+                </div>
+            `;
+        }
+
+        // Fonction pour afficher l'avis de l'utilisateur
+        function showUserAvis() {
+            const container = document.getElementById('avis-form-container');
+            container.innerHTML = `
+                <div class="user-avis">
+                    <p><strong>Note globale :</strong> ${userAvis.rating}/5</p>
+                    <p><strong>Qualité du service :</strong> ${userAvis.service_rating}/5</p>
+                    <p><strong>Communication :</strong> ${userAvis.communication_rating}/5</p>
+                    <p><strong>Prix :</strong> ${userAvis.price_rating}/5</p>
+                    <p><strong>Note moyenne :</strong> ${userAvis.note_moyenne?.toFixed(2) || "Non calculée"}/5</p>
+                    <p><strong>Commentaire :</strong> ${userAvis.comment}</p>
+                    <p><strong>Date :</strong> ${new Date(userAvis.date).toLocaleDateString()}</p>
+                </div>
+            `;
+        }
+
+        // Fonction pour soumettre un nouvel avis
+        async function submitAvis(event) {
+            event.preventDefault();
+            
+            const token = localStorage.getItem('token');
+            const userId = localStorage.getItem('userId');
+            
+            if (!token || !userId) {
+                alert('Vous devez être connecté pour donner votre avis');
+                return;
+            }
+
+            const formData = {
+                client_id: userId,
+                rating: document.querySelector('input[name="rating"]:checked').value,
+                service_rating: document.querySelector('input[name="service"]:checked').value,
+                communication_rating: document.querySelector('input[name="communication"]:checked').value,
+                price_rating: document.querySelector('input[name="price"]:checked').value,
+                comment: document.querySelector('textarea[name="comment"]').value
+            };
+
+            try {
+                const response = await fetch('http://localhost:5001/api/avisservigo', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`
+                    },
+                    body: JSON.stringify(formData)
+                });
+
+                const data = await response.json();
+
+                if (response.ok) {
+                    alert('Merci pour votre avis !');
+                    checkUserAvis(); // Recharger pour afficher l'avis de l'utilisateur
+                } else {
+                    alert(data.message || 'Erreur lors de l\'envoi de l\'avis');
+                }
+            } catch (error) {
+                console.error('Erreur:', error);
+                alert('Erreur lors de l\'envoi de l\'avis');
+            }
+        }
+
+        // Ajouter l'écouteur d'événements au formulaire
+        document.getElementById('reviewForm').addEventListener('submit', submitAvis);
+
+        // Fonction pour ouvrir le modal de modification
+        function openEditModal() {
+            // Remplir le formulaire avec les données actuelles
+            document.getElementById('editAvisId').value = userAvis.id;
+            document.querySelector(`input[name="edit-rating"][value="${userAvis.rating}"]`).checked = true;
+            document.querySelector(`input[name="edit-service"][value="${userAvis.service_rating}"]`).checked = true;
+            document.querySelector(`input[name="edit-communication"][value="${userAvis.communication_rating}"]`).checked = true;
+            document.querySelector(`input[name="edit-price"][value="${userAvis.price_rating}"]`).checked = true;
+            document.getElementById('edit-comment').value = userAvis.comment;
+            
+            // Ouvrir le modal
+            document.getElementById('editModal').style.display = 'block';
+        }
+
+        // Fonction pour ouvrir le modal de suppression
+        function openDeleteModal() {
+            avisToDelete = userAvis.id;
+            document.getElementById('deleteModal').style.display = 'block';
+        }
+
+        // Fonction pour mettre à jour un avis
+        async function updateAvis(event) {
+            event.preventDefault();
+            
+            const token = localStorage.getItem('token');
+            const avisId = document.getElementById('editAvisId').value;
+            
+            if (!token || !avisId) {
+                alert('Erreur lors de la modification de l\'avis');
+                return;
+            }
+
+            const formData = {
+                rating: document.querySelector('input[name="edit-rating"]:checked').value,
+                service_rating: document.querySelector('input[name="edit-service"]:checked').value,
+                communication_rating: document.querySelector('input[name="edit-communication"]:checked').value,
+                price_rating: document.querySelector('input[name="edit-price"]:checked').value,
+                comment: document.getElementById('edit-comment').value
+            };
+
+            try {
+                const response = await fetch(`http://localhost:5001/api/avisservigo/${avisId}`, {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`
+                    },
+                    body: JSON.stringify(formData)
+                });
+
+                if (!response.ok) {
+                    throw new Error('Erreur lors de la modification de l\'avis');
+                }
+
+                alert('Votre avis a été mis à jour avec succès !');
+                document.getElementById('editModal').style.display = 'none';
+                checkUserAvis(); // Recharger pour afficher l'avis mis à jour
+            } catch (error) {
+                console.error('Erreur:', error);
+                alert('Erreur lors de la modification de l\'avis');
+            }
+        }
+
+        // Fonction pour supprimer un avis
+        async function deleteAvis() {
+            const token = localStorage.getItem('token');
+
+            try {
+                const response = await fetch(`http://localhost:5001/api/avisservigo/${avisToDelete}`, {
+                    method: 'DELETE',
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                    }
+                });
+
+                if (!response.ok) {
+                    throw new Error('Erreur lors de la suppression de l\'avis');
+                }
+
+                alert('Votre avis a été supprimé avec succès !');
+                document.getElementById('deleteModal').style.display = 'none';
+                userAvis = null;
+                showAvisForm(); // Afficher le formulaire pour donner un nouvel avis
+            } catch (error) {
+                console.error('Erreur:', error);
+                alert('Erreur lors de la suppression de l\'avis');
+            }
+        }
+
+        // Fonctions pour gérer les modals
+        function openEditModal() {
+            document.getElementById('editModal').style.display = 'block';
+        }
+
+        function closeEditModal() {
+            document.getElementById('editModal').style.display = 'none';
+        }
+
+        function openDeleteModal() {
+            document.getElementById('deleteModal').style.display = 'block';
+        }
+
+        function closeDeleteModal() {
+            document.getElementById('deleteModal').style.display = 'none';
+        }
+
+        // Fonction pour confirmer la suppression
+        function confirmDelete() {
+            // Appel à l'API pour supprimer l'avis
+            fetch(`http://localhost:5001/api/avisservigo/${userAvis.id}`, {
+                method: 'DELETE',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${localStorage.getItem('token')}`
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    // Masquer la section d'avis de l'utilisateur
+                    document.getElementById('userAvisContainer').style.display = 'none';
+                    // Afficher le formulaire d'avis
+                    document.getElementById('avisForm').style.display = 'block';
+                    // Fermer le modal
+                    closeDeleteModal();
+                    // Afficher un message de succès
+                    alert('Votre avis a été supprimé avec succès.');
+                } else {
+                    alert('Une erreur est survenue lors de la suppression de votre avis.');
+                }
+            })
+            .catch(error => {
+                console.error('Erreur:', error);
+                alert('Une erreur est survenue lors de la suppression de votre avis.');
+            });
+        }
+
+        // Gestion du formulaire de modification
+        document.getElementById('editForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const formData = {
+                rating: document.querySelector('input[name="editRating"]:checked').value,
+                service_rating: document.querySelector('input[name="editService"]:checked').value,
+                communication_rating: document.querySelector('input[name="editCommunication"]:checked').value,
+                price_rating: document.querySelector('input[name="editPrice"]:checked').value,
+                comment: document.querySelector('textarea[name="editComment"]').value
+            };
+
+            // Appel à l'API pour modifier l'avis
+            fetch(`http://localhost:5001/api/avisservigo/${userAvis.id}`, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${localStorage.getItem('token')}`
+                },
+                body: JSON.stringify(formData)
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    // Mettre à jour l'affichage de l'avis
+                    updateUserReviewDisplay(data.avis);
+                    // Fermer le modal
+                    closeEditModal();
+                    // Afficher un message de succès
+                    alert('Votre avis a été modifié avec succès.');
+                } else {
+                    alert('Une erreur est survenue lors de la modification de votre avis.');
+                }
+            })
+            .catch(error => {
+                console.error('Erreur:', error);
+                alert('Une erreur est survenue lors de la modification de votre avis.');
+            });
+        });
+
+        // Fonction pour mettre à jour l'affichage de l'avis de l'utilisateur
+        function updateUserReviewDisplay(avis) {
+            document.getElementById('userGlobalRating').textContent = `${avis.rating}/5`;
+            document.getElementById('userServiceRating').textContent = `${avis.service_rating}/5`;
+            document.getElementById('userCommunicationRating').textContent = `${avis.communication_rating}/5`;
+            document.getElementById('userPriceRating').textContent = `${avis.price_rating}/5`;
+            document.getElementById('userComment').textContent = avis.comment;
+        }
+
+        // Vérifier si l'utilisateur a déjà publié un avis
+        function checkUserReview() {
+            const userId = localStorage.getItem('userId');
+            if (!userId) return;
+            
+            fetch(`http://localhost:5001/api/avisservigo/user/${userId}`, {
+                headers: {
+                    'Authorization': `Bearer ${localStorage.getItem('token')}`
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.avis) {
+                    // Afficher la section d'avis de l'utilisateur
+                    document.getElementById('userAvisContainer').style.display = 'block';
+                    // Masquer le formulaire d'avis
+                    document.getElementById('avisForm').style.display = 'none';
+                    // Mettre à jour l'affichage
+                    updateUserReviewDisplay(data.avis);
+                    // Stocker l'avis pour les opérations de modification/suppression
+                    userAvis = data.avis;
+                } else {
+                    // Masquer la section d'avis de l'utilisateur
+                    document.getElementById('userAvisContainer').style.display = 'none';
+                    // Afficher le formulaire d'avis
+                    document.getElementById('avisForm').style.display = 'block';
+                }
+            })
+            .catch(error => {
+                console.error('Erreur:', error);
+            });
+        }
+
+        // Initialisation
+        document.addEventListener('DOMContentLoaded', function() {
+            checkUserReview();
+        });
+    </script>
+</body>
+</html> 

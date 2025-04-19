@@ -100,7 +100,7 @@ class AvisServiGOController {
 
             const success = await AvisServiGOModel.updateAvis(id, avisData);
             if (success) {
-                res.json({ message: "Avis mis à jour avec succès" });
+                res.json({ success: true, message: "Avis mis à jour avec succès" });
             } else {
                 res.status(404).json({ message: "Avis non trouvé" });
             }
@@ -123,7 +123,7 @@ class AvisServiGOController {
 
             const success = await AvisServiGOModel.deleteAvis(id);
             if (success) {
-                res.json({ message: "Avis supprimé avec succès" });
+                res.json({ success: true, message: "Avis supprimé avec succès" });
             } else {
                 res.status(404).json({ message: "Avis non trouvé" });
             }
