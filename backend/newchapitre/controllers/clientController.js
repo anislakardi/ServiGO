@@ -33,7 +33,23 @@ exports.createClient = async (req, res) => {
 exports.getAllClients = async (req, res) => {
     try {
         const clients = await Client.findAll();
-        res.status(200).json(clients);
+        
+        // Convertir les BLOB en base64 pour chaque client
+        const formattedClients = clients.map(client => {
+            if (client.photo_de_profil) {
+                // Vérifier si c'est déjà une chaîne base64
+                if (typeof client.photo_de_profil === 'string' && client.photo_de_profil.startsWith('data:image')) {
+                    // C'est déjà au format base64, ne rien faire
+                } else {
+                    // C'est un BLOB, convertir en base64
+                    const base64Image = Buffer.from(client.photo_de_profil).toString('base64');
+                    client.photo_de_profil = `data:image/jpeg;base64,${base64Image}`;
+                }
+            }
+            return client;
+        });
+        
+        res.status(200).json(formattedClients);
     } catch (error) {
         res.status(500).json({ message: "Erreur serveur", error });
     }
@@ -41,9 +57,22 @@ exports.getAllClients = async (req, res) => {
 
 exports.getClientById = async (req, res) => {
     try {
-        const clients = await Client.findById(req.params.id);
-        if (!clients) return res.status(404).json({ message: "Client non trouvé" });
-        res.status(200).json(clients);
+        const client = await Client.findById(req.params.id);
+        if (!client) return res.status(404).json({ message: "Client non trouvé" });
+        
+        // Convertir le BLOB en base64 si la photo existe
+        if (client.photo_de_profil) {
+            // Vérifier si c'est déjà une chaîne base64
+            if (typeof client.photo_de_profil === 'string' && client.photo_de_profil.startsWith('data:image')) {
+                // C'est déjà au format base64, ne rien faire
+            } else {
+                // C'est un BLOB, convertir en base64
+                const base64Image = Buffer.from(client.photo_de_profil).toString('base64');
+                client.photo_de_profil = `data:image/jpeg;base64,${base64Image}`;
+            }
+        }
+        
+        res.status(200).json(client);
     } catch (error) {
         res.status(500).json({ message: "Erreur serveur", error });
     }
@@ -86,5 +115,50 @@ exports.supprimerClient = async (req, res) => {
         res.status(200).json({ message: "Client supprimé avec succès" });
     } catch (error) {
         res.status(500).json({ message: "Erreur serveur", error });
+    }
+};
+
+exports.updateProfilePicture = async (req, res) => {
+    try {
+        const { id } = req.params;
+        const { photo_de_profil } = req.body;
+
+        // Vérifier si le client existe
+        const existingClient = await Client.findById(id);
+        if (!existingClient) {
+            return res.status(404).json({ message: "Client non trouvé" });
+        }
+
+        // Vérifier si la photo est fournie
+        if (!photo_de_profil) {
+            return res.status(400).json({ message: "La photo de profil est requise" });
+        }
+
+        // Vérifier si la photo est au format base64
+        if (!photo_de_profil.startsWith('data:image')) {
+            return res.status(400).json({ message: "Format de photo invalide. Veuillez fournir une image au format base64" });
+        }
+
+        // Extraire les données base64 sans le préfixe "data:image/jpeg;base64,"
+        const base64Data = photo_de_profil.replace(/^data:image\/\w+;base64,/, '');
+        
+        // Convertir en Buffer (BLOB)
+        const buffer = Buffer.from(base64Data, 'base64');
+
+        // Mettre à jour uniquement la photo de profil
+        await pool.query(
+            'UPDATE clients SET photo_de_profil = ? WHERE id = ?',
+            [buffer, id]
+        );
+
+        res.status(200).json({ 
+            message: "Photo de profil mise à jour avec succès"
+        });
+    } catch (error) {
+        console.error('Erreur lors de la mise à jour de la photo de profil:', error);
+        res.status(500).json({ 
+            message: "Erreur lors de la mise à jour de la photo de profil", 
+            error: error.message 
+        });
     }
 };

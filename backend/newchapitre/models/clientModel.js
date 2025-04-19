@@ -20,10 +20,10 @@ class Client {
     }
 
     static async update(id, data) {
-        const { nom_utilisateur, nom, prenom, date_nee, adresse, email, mot_de_passe } = data;
+        const { nom_utilisateur, nom, prenom, date_nee, adresse, email, mot_de_passe, bio} = data;
         const [result] = await pool.query(
-            `UPDATE clients SET nom_utilisateur = ?, nom = ?, prenom = ?, date_nee = ?, adresse = ?, email = ?, mot_de_passe = ? WHERE id = ?`,
-            [nom_utilisateur, nom, prenom, date_nee, adresse, email, mot_de_passe, id]
+            `UPDATE clients SET nom_utilisateur = ?, nom = ?, prenom = ?, date_nee = ?, adresse = ?, email = ?, mot_de_passe = ?, bio = ? WHERE id = ?`,
+            [nom_utilisateur, nom, prenom, date_nee, adresse, email, mot_de_passe, bio, id]
         );
         return result.affectedRows;
     }
