@@ -7,7 +7,7 @@
     <link rel="stylesheet" href="../style/avisServiGO.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"/>
 </head>
-<body onload="checkUserAvis()">
+<body >
     <!-- Navbar -->
     <nav>
         <div class="logo">
@@ -245,6 +245,8 @@
             try {
                 const token = localStorage.getItem('token');
                 const userId = localStorage.getItem('userId');
+                console.log(userId);
+
                 
                 if (!token || !userId) {
                     document.getElementById('avisForm').style.display = 'block';
@@ -388,51 +390,61 @@
 
         // Fonction pour soumettre un nouvel avis
         async function submitAvis(event) {
-            event.preventDefault();
-            
-            const token = localStorage.getItem('token');
-            const userId = localStorage.getItem('userId');
-            
-            if (!token || !userId) {
-                alert('Vous devez être connecté pour donner votre avis');
-                return;
-            }
+    event.preventDefault();
 
-            const formData = {
-                client_id: userId,
-                rating: document.querySelector('input[name="rating"]:checked').value,
-                service_rating: document.querySelector('input[name="service"]:checked').value,
-                communication_rating: document.querySelector('input[name="communication"]:checked').value,
-                price_rating: document.querySelector('input[name="price"]:checked').value,
-                comment: document.querySelector('textarea[name="comment"]').value
-            };
+    const token = localStorage.getItem('token');
+    const userId = localStorage.getItem('userId');
 
-            try {
-                const response = await fetch('http://localhost:5001/api/avisservigo', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'Authorization': `Bearer ${token}`
-                    },
-                    body: JSON.stringify(formData)
-                });
+    if (!token || !userId) {
+        alert('Vous devez être connecté pour donner votre avis');
+        return;
+    }
 
-                const data = await response.json();
+    // Récupération sécurisée des champs
+    const rating = document.querySelector('input[name="rating"]:checked');
+    const service = document.querySelector('input[name="service"]:checked');
+    const communication = document.querySelector('input[name="communication"]:checked');
+    const price = document.querySelector('input[name="price"]:checked');
+    const comment = document.querySelector('textarea[name="comment"]');
 
-                if (response.ok) {
-                    alert('Merci pour votre avis !');
-                    checkUserAvis(); // Recharger pour afficher l'avis de l'utilisateur
-                } else {
-                    alert(data.message || 'Erreur lors de l\'envoi de l\'avis');
-                }
-            } catch (error) {
-                console.error('Erreur:', error);
-                alert('Erreur lors de l\'envoi de l\'avis');
-            }
+    // Vérification des champs requis
+    if (!rating || !service || !communication || !price || !comment.value.trim()) {
+        alert("Veuillez remplir tous les champs avant de soumettre votre avis.");
+        return;
+    }
+
+    const formData = {
+        client_id: parseInt(userId),
+        rating: parseInt(rating.value),
+        service_rating: parseInt(service.value),
+        communication_rating: parseInt(communication.value),
+        price_rating: parseInt(price.value),
+        comment: comment.value.trim()
+    };
+
+    try {
+        const response = await fetch('http://localhost:5001/api/avisservigo', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${token}`
+            },
+            body: JSON.stringify(formData)
+        });
+
+        const data = await response.json();
+
+        if (response.ok) {
+            alert('Merci pour votre avis !');
+            checkUserAvis(); // Rafraîchir les avis
+        } else {
+            alert(data.message || 'Une erreur est survenue lors de l\'envoi de votre avis.');
         }
-
-        // Ajouter l'écouteur d'événements au formulaire
-        document.getElementById('reviewForm').addEventListener('submit', submitAvis);
+    } catch (error) {
+        console.error('Erreur lors de l\'envoi de l\'avis :', error);
+        alert('Erreur de connexion au serveur.');
+    }
+}
 
         // Fonction pour ouvrir le modal de modification
         function openEditModal() {
@@ -498,30 +510,7 @@
         }
 
         // Fonction pour supprimer un avis
-        async function deleteAvis() {
-            const token = localStorage.getItem('token');
-
-            try {
-                const response = await fetch(`http://localhost:5001/api/avisservigo/${avisToDelete}`, {
-                    method: 'DELETE',
-                    headers: {
-                        'Authorization': `Bearer ${token}`
-                    }
-                });
-
-                if (!response.ok) {
-                    throw new Error('Erreur lors de la suppression de l\'avis');
-                }
-
-                alert('Votre avis a été supprimé avec succès !');
-                document.getElementById('deleteModal').style.display = 'none';
-                userAvis = null;
-                showAvisForm(); // Afficher le formulaire pour donner un nouvel avis
-            } catch (error) {
-                console.error('Erreur:', error);
-                alert('Erreur lors de la suppression de l\'avis');
-            }
-        }
+        
 
         // Fonctions pour gérer les modals
         function openEditModal() {
@@ -551,8 +540,8 @@
                 }
             })
             .then(response => response.json())
-            .then(data => {
-                if (data.success) {
+            .then(response => {
+                if (response.success) {
                     // Masquer la section d'avis de l'utilisateur
                     document.getElementById('userAvisContainer').style.display = 'none';
                     // Afficher le formulaire d'avis
@@ -593,10 +582,11 @@
                 body: JSON.stringify(formData)
             })
             .then(response => response.json())
-            .then(data => {
-                if (data.success) {
+            .then(response => {
+                console.log(response.success);
+                if (response.success) {
                     // Mettre à jour l'affichage de l'avis
-                    updateUserReviewDisplay(data.avis);
+                    updateUserReviewDisplay(response.avis);
                     // Fermer le modal
                     closeEditModal();
                     // Afficher un message de succès
