@@ -60,6 +60,10 @@ app.get('/homeClient', (req, res) => {
 });
 
 // Route pour gérer les requêtes avec l'extension .html
+app.get('/admin-dashboard.html', (req, res) => {
+    res.sendFile(path.join(__dirname, '../../views/admin-dashboard.html'));
+});
+
 app.get('/homeClient.html', (req, res) => {
     res.sendFile(path.join(__dirname, '../../views/homeClient.html'));
 });

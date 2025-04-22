@@ -35,37 +35,13 @@
                                 <i class="fas fa-search"></i>
                                 <input type="text" id="searchPrestataires" placeholder="Rechercher un prestataire...">
                             </div>
-                            <button class="reload-btn" title="Recharger la liste">
+                            <button class="reload-btn" id="reloadPrestataires" title="Recharger la liste">
                                 <i class="fas fa-sync-alt"></i>
-                            </button>
+                              </button>     
                         </div>
                     </div>
                     <div class="users-list" id="prestatairesList">
                         <!-- Exemple de prestataire -->
-                        <div class="user-card">
-                            <div class="user-info">
-                                <h3>Jean Dupont</h3>
-                                <p>Plombier professionnel</p>
-                                <p>jean.dupont@email.com</p>
-                            </div>
-                            <div class="user-actions">
-                                <button class="action-btn profile-btn" title="Voir le profil">
-                                    <i class="fas fa-user"></i>
-                                </button>
-                            </div>
-                        </div>
-                        <div class="user-card">
-                            <div class="user-info">
-                                <h3>Marie Martin</h3>
-                                <p>Électricienne certifiée</p>
-                                <p>marie.martin@email.com</p>
-                            </div>
-                            <div class="user-actions">
-                                <button class="action-btn profile-btn" title="Voir le profil">
-                                    <i class="fas fa-user"></i>
-                                </button>
-                            </div>
-                        </div>
                     </div>
                 </div>
 
@@ -78,37 +54,13 @@
                                 <i class="fas fa-search"></i>
                                 <input type="text" id="searchClients" placeholder="Rechercher un client...">
                             </div>
-                            <button class="reload-btn" title="Recharger la liste">
+                            <button class="reload-btn" id="reloadClients" title="Recharger la liste">
                                 <i class="fas fa-sync-alt"></i>
-                            </button>
+                              </button>
                         </div>
                     </div>
                     <div class="users-list" id="clientsList">
                         <!-- Exemple de client -->
-                        <div class="user-card">
-                            <div class="user-info">
-                                <h3>Sophie Dubois</h3>
-                                <p>Particulier</p>
-                                <p>sophie.dubois@email.com</p>
-                            </div>
-                            <div class="user-actions">
-                                <button class="action-btn profile-btn" title="Voir le profil">
-                                    <i class="fas fa-user"></i>
-                                </button>
-                            </div>
-                        </div>
-                        <div class="user-card">
-                            <div class="user-info">
-                                <h3>Pierre Lambert</h3>
-                                <p>Entreprise</p>
-                                <p>pierre.lambert@email.com</p>
-                            </div>
-                            <div class="user-actions">
-                                <button class="action-btn profile-btn" title="Voir le profil">
-                                    <i class="fas fa-user"></i>
-                                </button>
-                            </div>
-                        </div>
                     </div>
                 </div>
             </div>
@@ -140,5 +92,172 @@
             </form>
         </div>
     </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+
+            loadClients();
+            loadPrestataires();
+
+            document.getElementById('reloadClients').addEventListener('click', loadClients);
+            document.getElementById('reloadPrestataires').addEventListener('click', loadPrestataires);
+            // Chargement des clients
+            fetch('http://localhost:5001/api/clients')
+                .then(res => res.json())
+                .then(data => {
+                    const clientsList = document.getElementById('clientsList');
+                    clientsList.innerHTML = ''; // Vider d'abord la liste existante
+        
+                    data.forEach(client => {
+                        const usernameC = client.nom + " " + client.prenom;
+                        const userCard = `
+                            <div class="user-card">
+                            <div class="user-info">
+                                <div class="user-img">
+                                <img src="${client.photo_de_profil}" alt="photo de profil" class="profile-pic">
+                                </div>
+                                <div class="user-details">
+                                <h3>${usernameC || "Nom inconnu"}</h3>
+                                <p>${client.description || "Client"}</p>
+                                <p>${client.email}</p>
+                                </div>
+                            </div>
+                            <div class="user-actions">
+                                <button class="action-btn profile-btn" title="Voir le profil">
+                                <i class="fas fa-user"></i>
+                                </button>
+                            </div>
+                            </div>
+                        `;
+                        clientsList.innerHTML += userCard;
+                    });
+                })
+                .catch(err => console.error('Erreur lors du chargement des clients :', err));
+        
+            // Chargement des prestataires
+            fetch('http://localhost:5001/api/prestataires')
+                .then(res => res.json())
+                .then(data => {
+                    const prestatairesList = document.getElementById('prestatairesList');
+                    prestatairesList.innerHTML = ''; // Vider d'abord la liste existante
+        
+                    data.forEach(prestataire => {
+                        const username = prestataire.nom + " " + prestataire.prenom;
+                        const userCard = `
+                            <div class="user-card">
+                            <div class="user-info">
+                                <div class="user-img">
+                                <img src="${prestataire.photo_de_profil}" alt="photo de profil" class="profile-pic">
+                                </div>
+                                <div class="user-details">
+                                <h3>${username|| "Nom inconnu"}</h3>
+                                <p>${prestataire.specialisation || "prestataire"}</p>
+                                <p>${prestataire.email}</p>
+                                </div>
+                            </div>
+                            <div class="user-actions">
+                                <button class="action-btn profile-btn" title="Voir le profil">
+                                <i class="fas fa-user"></i>
+                                </button>
+                            </div>
+                            </div>
+                        `;
+                        prestatairesList.innerHTML += userCard;
+                    });
+                })
+                .catch(err => console.error('Erreur lors du chargement des prestataires :', err));
+        });
+        function loadClients() {
+            fetch('http://localhost:5001/api/clients')
+                .then(res => res.json())
+                .then(data => {
+                    const clientsList = document.getElementById('clientsList');
+                    clientsList.innerHTML = '';
+                    data.forEach(client => {
+                        const usernameC = client.nom + " " + client.prenom;
+                        const userCard = `
+                            <div class="user-card">
+                                <div class="user-info">
+                                    <div class="user-img">
+                                        <img src="${client.photo_de_profil}" alt="photo de profil" class="profile-pic">
+                                    </div>
+                                    <div class="user-details">
+                                        <h3>${usernameC|| "Nom inconnu"}</h3>
+                                        <p>${client.description || "Client"}</p>
+                                        <p>${client.email}</p>
+                                    </div>
+                                </div>
+                                <div class="user-actions">
+                                    <button class="action-btn profile-btn" title="Voir le profil">
+                                        <i class="fas fa-user"></i>
+                                    </button>
+                                </div>
+                            </div>`;
+                        clientsList.innerHTML += userCard;
+                    });
+                })
+                .catch(err => console.error('Erreur chargement clients :', err));
+        }
+
+        function loadPrestataires() {
+            fetch('http://localhost:5001/api/prestataires')
+                .then(res => res.json())
+                .then(data => {
+                    const prestatairesList = document.getElementById('prestatairesList');
+                    prestatairesList.innerHTML = '';
+                    data.forEach(prestataire => {
+                        const username = prestataire.nom + " " + prestataire.prenom;
+                        const userCard = `
+                            <div class="user-card">
+                                <div class="user-info">
+                                    <div class="user-img">
+                                        <img src="${prestataire.photo_de_profil}" alt="photo de profil" class="profile-pic">
+                                    </div>
+                                    <div class="user-details">
+                                        <h3>${username|| "Nom inconnu"}</h3>
+                                        <p>${prestataire.specialisation || "Prestataire"}</p>
+                                        <p>${prestataire.email}</p>
+                                    </div>
+                                </div>
+                                <div class="user-actions">
+                                    <button class="action-btn profile-btn" title="Voir le profil">
+                                        <i class="fas fa-user"></i>
+                                    </button>
+                                </div>
+                            </div>`;
+                        prestatairesList.innerHTML += userCard;
+                    });
+                })
+                .catch(err => console.error('Erreur lors du chargement des prestataires :', err));
+                
+        }
+        // Fonction de recherche
+        function setupSearch(inputId, listId) {
+            const searchInput = document.getElementById(inputId);
+            const userList = document.getElementById(listId);
+
+            searchInput.addEventListener('input', () => {
+                const searchValue = searchInput.value.toLowerCase();
+
+                const userCards = userList.querySelectorAll('.user-card');
+
+                userCards.forEach(card => {
+                    const text = card.innerText.toLowerCase();
+                    if (text.includes(searchValue)) {
+                        card.style.display = 'flex'; // ou 'block' selon ton style
+                    } else {
+                        card.style.display = 'none';
+                    }
+                });
+            });
+        }
+
+        // Activer la recherche après chargement du contenu
+        setupSearch('searchClients', 'clientsList');
+        setupSearch('searchPrestataires', 'prestatairesList');
+
+
+        </script>
+        
 </body>
 </html>

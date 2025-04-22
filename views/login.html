@@ -34,7 +34,7 @@
         email: formData.get('email'),
         mot_de_passe: formData.get('password')
       };
-
+  
       try {
         const response = await fetch('http://localhost:5001/api/auth/login', {
           method: 'POST',
@@ -43,20 +43,22 @@
           },
           body: JSON.stringify(data)
         });
-
+  
         const result = await response.json();
-
+  
         if (response.ok) {
           // Stocker le token et les informations de l'utilisateur
           localStorage.setItem('token', result.token);
           localStorage.setItem('userRole', result.role);
           localStorage.setItem('userId', result.user.id);
-
+  
           // Rediriger vers la page appropriée selon le rôle
           if (result.role === 'client') {
             window.location.href = '/homeClient';
           } else if (result.role === 'prestataire') {
             window.location.href = '/homePrestataire';
+          } else if (result.role === 'admin') {
+            window.location.href = '/admin-dashboard.html';  // Redirection vers la page admin
           }
         } else {
           alert(result.message || 'Erreur de connexion');
@@ -66,6 +68,6 @@
         alert('Erreur de connexion au serveur');
       }
     });
-  </script>
+  </script>  
 </body>
 </html>
