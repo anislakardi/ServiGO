@@ -99,13 +99,34 @@
                                     <div class="signalement-actions">
                                         <button class="btn-view" data-id="${signalement.id}" data-id_objet="${signalement.id_objet}" data-type="${signalement.type}" data-description="${signalement.description || 'Aucune description disponible'}" data-date="${signalement.date_signalement}" data-statut="${signalement.statut}">Voir</button>
                                         <button class="btn-delete">Supprimer</button>
-                                        <button class="btn-ignore">Ignorer</button>
+                                        <button class="btn-ignore" data-id="${signalement.id}">Ignorer</button>
                                     </div>
                                 </div>
                             `;
 
                             signalementContainer.appendChild(card);
                         }
+                    });
+                    const ignoreBtns = document.querySelectorAll('.btn-ignore');
+                    ignoreBtns.forEach(btn => {
+                        btn.addEventListener('click', function () {
+                            const card = btn.closest('.signalement-card');
+                            const signalementId = card.querySelector('.btn-view').getAttribute('data-id');
+
+                            fetch(`http://localhost:5001/api/signalements/${signalementId}`, {
+                                method: 'DELETE'
+                            })
+                            .then(response => {
+                                if (response.ok) {
+                                    card.remove(); 
+                                } else {
+                                    alert('Erreur lors de la suppression du signalement.');
+                                }
+                            })
+                            .catch(error => {
+                                console.error('Erreur lors de la suppression:', error);
+                            });
+                        });
                     });
 
                     // Ajouter les événements de clic pour les boutons "Voir" après l'ajout des signalements
@@ -114,23 +135,14 @@
                         btn.addEventListener('click', function () {
                             const signalementId = btn.getAttribute('data-id_objet');
                             const type = btn.getAttribute('data-type');
-                            const description = btn.getAttribute('data-description');
-                            const date = btn.getAttribute('data-date');
-                            const statut = btn.getAttribute('data-statut');
 
-                            modalType.textContent = type;
-                            modalDescription.textContent = description;
-                            modalDate.textContent = new Date(date).toLocaleDateString();
-                            modalStatut.textContent = statut;
-
-                            console.log('Modal triggered for:', type, signalementId); // Debugging log
-
-                            if (type === 'message') {
+                            if (type === 'publication') {
+                                fetchPublicationDetails(signalementId);
+                            } else if (type === 'message') {
                                 fetchMessageDetails(parseInt(signalementId));
                             } else {
-                                // Pour publication ou profil (aucune photo à charger ici)
-                                document.getElementById('modal-img').style.display = 'none';
-                                modal.classList.add('show'); // Use class to show modal
+                                // Handle other types if necessary
+                                modal.classList.add('show');
                             }
                         });
                     });
@@ -143,6 +155,7 @@
                 signalementContainer.innerHTML = '<p>Erreur lors de la récupération des signalements.</p>';
             });
     }
+    
 
     // Fonction pour récupérer le message spécifique en fonction de son ID
     function fetchMessageDetails(messageId) {
@@ -177,6 +190,40 @@
         });
 }
 
+// Function to fetch and display publication details
+function fetchPublicationDetails(publicationId) {
+    fetch(`http://localhost:5001/api/publications/${publicationId}`)
+        .then(response => response.json())
+        .then(publication => {
+            if (publication) {
+                modalType.textContent = 'Publication';
+                modalDescription.textContent = publication.description || 'Aucune description disponible';
+                modalDate.textContent = new Date(publication.date_publication).toLocaleDateString();
+                modalStatut.textContent = publication.statut || 'Statut inconnu';
+
+                const modalImg = document.getElementById('modal-img');
+                if (publication.media) {
+                    console.log('Publication media received:', publication.media); // Debugging log
+                    modalImg.src = `data:image/jpeg;base64,${publication.media}`;
+                    modalImg.style.display = 'block';
+                } else {
+                    console.log('No media available for publication'); // Debugging log
+                    modalImg.style.display = 'none';
+                }
+
+                modal.classList.add('show');
+            } else {
+                modalDescription.textContent = 'Publication introuvable';
+                modal.classList.add('show');
+            }
+        })
+        .catch(error => {
+            console.error('Erreur lors de la récupération de la publication:', error);
+            modalDescription.textContent = 'Erreur lors de la récupération de la publication';
+            modal.classList.add('show');
+        });
+}
+
     // Récupérer les signalements pour chaque type
     fetchSignalements('publication');
     fetchSignalements('profil');
@@ -202,7 +249,9 @@
             modal.classList.remove('show'); // Use class to hide modal
         }
     });
+
 });
+
 
 
     </script>
