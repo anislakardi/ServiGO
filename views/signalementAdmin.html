@@ -24,78 +24,29 @@
     <main style="padding: 30px; width: 100%; max-width: 1000px; margin: 0 auto;">
         <div class="header">
             <h1>Gestion des Signalements</h1>
-            <div class="user-info">
-                <span>Admin</span>
-                <img src="../assets/admin-avatar.png" alt="Admin Avatar">
-            </div>
         </div>
         <div class="main-container">
         <div class="signalements-container">
             <div class="signalement-type">
                 <h2><i class="fas fa-newspaper"></i> Signalements de Publications</h2>
-                <div class="signalement-list">
-                    <!-- Exemple de signalement de publication -->
-                    <div class="signalement-card">
-                        <div class="signalement-header">
-                            <span class="signalement-id">#123</span>
-                            <span class="signalement-date">12/03/2024</span>
-                        </div>
-                        <div class="signalement-content">
-                            <p class="signalement-title">Publication signalée</p>
-                            <p class="signalement-description">Contenu inapproprié dans la publication</p>
-                            <div class="signalement-actions">
-                                <button class="btn-view">Voir la publication</button>
-                                <button class="btn-delete">Supprimer</button>
-                                <button class="btn-ignore">Ignorer</button>
-                            </div>
-                        </div>
-                    </div>
+                <div class="signalement-list" id="publication-signalements">
+                    <!-- Les signalements de publications seront injectés ici par JavaScript -->
                 </div>
             </div>
-
+            
             <div class="signalement-type">
                 <h2><i class="fas fa-user"></i> Signalements de Profils</h2>
-                <div class="signalement-list">
-                    <!-- Exemple de signalement de profil -->
-                    <div class="signalement-card">
-                        <div class="signalement-header">
-                            <span class="signalement-id">#124</span>
-                            <span class="signalement-date">11/03/2024</span>
-                        </div>
-                        <div class="signalement-content">
-                            <p class="signalement-title">Profil signalé</p>
-                            <p class="signalement-description">Profil suspect ou comportement inapproprié</p>
-                            <div class="signalement-actions">
-                                <button class="btn-view">Voir le profil</button>
-                                <button class="btn-delete">Bannir</button>
-                                <button class="btn-ignore">Ignorer</button>
-                            </div>
-                        </div>
-                    </div>
+                <div class="signalement-list" id="profil-signalements">
+                    <!-- Les signalements de profils seront injectés ici par JavaScript -->
                 </div>
             </div>
-
+            
             <div class="signalement-type">
                 <h2><i class="fas fa-comment"></i> Signalements de Messages</h2>
-                <div class="signalement-list">
-                    <!-- Exemple de signalement de message -->
-                    <div class="signalement-card">
-                        <div class="signalement-header">
-                            <span class="signalement-id">#125</span>
-                            <span class="signalement-date">10/03/2024</span>
-                        </div>
-                        <div class="signalement-content">
-                            <p class="signalement-title">Message signalé</p>
-                            <p class="signalement-description">Message contenant des propos injurieux</p>
-                            <div class="signalement-actions">
-                                <button class="btn-view">Voir le message</button>
-                                <button class="btn-delete">Supprimer</button>
-                                <button class="btn-ignore">Ignorer</button>
-                            </div>
-                        </div>
-                    </div>
+                <div class="signalement-list" id="message-signalements">
+                    <!-- Les signalements de messages seront injectés ici par JavaScript -->
                 </div>
-            </div>
+            </div>            
         </div>
     </div>
     </main>
@@ -103,5 +54,158 @@
     <footer style="text-align: center; padding: 30px; font-size: 14px; color: #666;">
         &copy; 2025 ServiGO. Tous droits réservés.
     </footer>
+
+    <!-- Modal -->
+    <div id="signalementModal" class="modal">
+        <div class="modal-content">
+            <span class="close-btn">&times;</span>
+            <h2>Signalement Détails</h2>
+            <p><strong>Type:</strong> <span id="modal-type"></span></p>
+            <p><strong>Statut:</strong> <span id="modal-statut"></span></p>
+            <p><strong>Description:</strong> <span id="modal-description"></span></p>
+            <p><strong>Date:</strong> <span id="modal-date"></span></p>
+            <p><strong>Photo:</strong> 
+                <span id="modal-picture">
+                    <img id="modal-img" src="" alt="Image signalée" style="max-width: 100%; display: none;">
+                </span>
+            </p>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+    // Fonction pour récupérer les signalements par type
+    function fetchSignalements(type) {
+        fetch(`http://localhost:5001/api/signalements/type/${type}`)
+            .then(response => response.json())
+            .then(data => {
+                const signalementContainer = document.querySelector(`#${type}-signalements`);
+                signalementContainer.innerHTML = '';  // Vider le contenu existant
+
+                if (data && Array.isArray(data) && data.length > 0) { // Vérification si data est un tableau non vide
+                    data.forEach(signalement => {
+                        if (signalement) { // Vérifie que chaque signalement existe
+                            const card = document.createElement('div');
+                            card.classList.add('signalement-card');
+                            console.log(signalement.id_objet); // Affiche le signalement dans la console pour le débogage
+                            card.innerHTML = `
+                                <div class="signalement-header">
+                                    <span class="signalement-id">#${signalement.id}</span>
+                                    <span class="signalement-date">${new Date(signalement.date_signalement).toLocaleDateString()}</span>
+                                </div>
+                                <div class="signalement-content">
+                                    <p class="signalement-title">${signalement.type === 'publication' ? 'Publication signalée' : signalement.type === 'profil' ? 'Profil signalé' : 'Message signalé'}</p>
+                                    <p class="signalement-description">${signalement.description || 'Aucune description disponible'}</p>
+                                    <div class="signalement-actions">
+                                        <button class="btn-view" data-id="${signalement.id}" data-id_objet="${signalement.id_objet}" data-type="${signalement.type}" data-description="${signalement.description || 'Aucune description disponible'}" data-date="${signalement.date_signalement}" data-statut="${signalement.statut}">Voir</button>
+                                        <button class="btn-delete">Supprimer</button>
+                                        <button class="btn-ignore">Ignorer</button>
+                                    </div>
+                                </div>
+                            `;
+
+                            signalementContainer.appendChild(card);
+                        }
+                    });
+
+                    // Ajouter les événements de clic pour les boutons "Voir" après l'ajout des signalements
+                    const voirBtns = document.querySelectorAll('.btn-view');
+                    voirBtns.forEach(btn => {
+                        btn.addEventListener('click', function () {
+                            const signalementId = btn.getAttribute('data-id_objet');
+                            const type = btn.getAttribute('data-type');
+                            const description = btn.getAttribute('data-description');
+                            const date = btn.getAttribute('data-date');
+                            const statut = btn.getAttribute('data-statut');
+
+                            modalType.textContent = type;
+                            modalDescription.textContent = description;
+                            modalDate.textContent = new Date(date).toLocaleDateString();
+                            modalStatut.textContent = statut;
+
+                            console.log('Modal triggered for:', type, signalementId); // Debugging log
+
+                            if (type === 'message') {
+                                fetchMessageDetails(parseInt(signalementId));
+                            } else {
+                                // Pour publication ou profil (aucune photo à charger ici)
+                                document.getElementById('modal-img').style.display = 'none';
+                                modal.classList.add('show'); // Use class to show modal
+                            }
+                        });
+                    });
+                } else {
+                    signalementContainer.innerHTML = '<p>Aucun signalement trouvé.</p>';
+                }
+            })
+            .catch(error => {
+                console.error('Erreur lors de la récupération des signalements:', error);
+                signalementContainer.innerHTML = '<p>Erreur lors de la récupération des signalements.</p>';
+            });
+    }
+
+    // Fonction pour récupérer le message spécifique en fonction de son ID
+    function fetchMessageDetails(messageId) {
+    fetch(`http://localhost:5001/api/message/${messageId}`)
+        .then(response => response.json())
+        .then(message => {
+            if (message) {
+                modalDescription.textContent = message.description || 'Aucun contenu disponible';
+                modalDate.textContent = new Date(message.date_signalement).toLocaleDateString();
+                modalStatut.textContent = message.statut;
+
+                const modalImg = document.getElementById('modal-img');
+                if (message.photos) {
+                    console.log('Image data received:', message.photos); // Debugging log
+                    modalImg.src = `data:image/jpeg;base64,${message.photos}`;
+                    modalImg.style.display = 'block';
+                } else {
+                    console.log('No image data available'); // Debugging log
+                    modalImg.style.display = 'none';
+                }
+
+                modal.classList.add('show');
+            } else {
+                modalDescription.textContent = 'Message introuvable';
+                modal.classList.add('show');
+            }
+        })
+        .catch(error => {
+            console.error('Erreur lors de la récupération du message:', error);
+            modalDescription.textContent = 'Erreur lors de la récupération du message';
+            modal.classList.add('show');
+        });
+}
+
+    // Récupérer les signalements pour chaque type
+    fetchSignalements('publication');
+    fetchSignalements('profil');
+    fetchSignalements('message');
+
+    // Modal logic
+    const modal = document.getElementById('signalementModal');
+    const modalType = document.getElementById('modal-type');
+    const modalDescription = document.getElementById('modal-description');
+    const modalDate = document.getElementById('modal-date');
+    const modalPicture = document.getElementById('modal-picture'); // Placeholder pour l'image
+    const modalStatut = document.getElementById('modal-statut');
+    const closeBtn = document.querySelector('.close-btn');
+
+    // Fermer le modal lorsque l'utilisateur clique sur le bouton de fermeture
+    closeBtn.addEventListener('click', function () {
+        modal.classList.remove('show'); // Use class to hide modal
+    });
+
+    // Fermer le modal si l'utilisateur clique en dehors du modal
+    window.addEventListener('click', function (event) {
+        if (event.target === modal) {
+            modal.classList.remove('show'); // Use class to hide modal
+        }
+    });
+});
+
+
+    </script>
+    
 </body>
 </html>

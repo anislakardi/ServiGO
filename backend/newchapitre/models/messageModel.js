@@ -19,8 +19,19 @@ class Message {
     }
 
     static async findById(id) {
-        const [rows] = await pool.query(`SELECT * FROM messages WHERE id = ?`, [id]);
-        return rows[0];
+        try {
+            const [rows] = await pool.query(`SELECT * FROM messages WHERE id = ?`, [id]);
+
+    
+            if (!rows || rows.length === 0) {
+                return null; // Aucun message trouvé
+            }
+    
+            return rows[0]; // OK
+        } catch (error) {
+            console.error("Erreur dans findById:", error);
+            throw error; // Rejette l'erreur pour que le contrôleur l'intercepte
+        }
     }
 
     static async markAsRead(id) {

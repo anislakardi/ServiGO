@@ -55,6 +55,30 @@ exports.getByConversation = async (req, res) => {
     }
 };
 
+exports.getById = async (req, res) => {
+    try {
+        const { message_id } = req.params;
+        const message = await Message.findById(message_id); // Récupère un seul message
+        // C'est déjà un objet, pas besoin de message[0]
+
+        if (!message) {
+            return res.status(404).json({ message: "Message non trouvé" });
+        }
+
+        // Conversion de photos en base64 si présentes
+        const messageWithMedia = {
+            ...message,
+            photos: message.photos ? Buffer.from(message.photos).toString('base64') : null
+        };
+
+        res.json(messageWithMedia); // Envoie le message avec les photos converties en base64
+    } catch (error) {
+        console.error("Erreur dans getById:", error);
+        res.status(500).json({ message: "Erreur serveur", error: error.message });
+    }
+};
+
+
 exports.markAsRead = async (req, res) => {
     try {
         const { id } = req.params;

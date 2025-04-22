@@ -15,6 +15,7 @@ const conversationRoutes = require('./routes/conversationRoutes');
 const messageRoutes = require('./routes/messageRoutes');
 const serviceRoutes = require('./routes/serviceRoutes');
 const contactRoutes = require('./routes/contactRoutes');
+const signalementRoutes = require('./routes/signalementRoutes');
 
 const app = express();
 
@@ -40,6 +41,7 @@ app.use('/api', conversationRoutes);
 app.use('/api', messageRoutes);
 app.use('/api', serviceRoutes);
 app.use('/api', contactRoutes);
+app.use('/api', signalementRoutes);
 app.use('/api/auth', authRoutes);
 
 // Routes pour les pages HTML
