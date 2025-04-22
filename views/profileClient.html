@@ -361,16 +361,19 @@
       
       const token = localStorage.getItem('token');
       const userId = localStorage.getItem('userId');
-      
+      const wilayaSelect = document.getElementById('wilaya');
+      const wilayaName = wilayaSelect.options[wilayaSelect.selectedIndex].text;// a explique
+      const communeName = document.getElementById('commune').value;
+
       const formData = {
         nom: document.getElementById('editNom').value,
         prenom: document.getElementById('editPrenom').value,
         nom_utilisateur: document.getElementById('editNomUtilisateur').value,
         date_nee: document.getElementById('editDateNee').value,
         email: document.getElementById('editEmail').value,
-        adresse: `${document.getElementById('commune').value}, ${document.getElementById('wilaya').value}`
+        adresse: `${communeName}, ${wilayaName}`
       };
-      
+      console.log(document.getElementById('wilaya').value);
       try {
         const response = await fetch(`http://localhost:5001/api/clients/${userId}`, {
           method: 'PUT',

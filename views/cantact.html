@@ -11,12 +11,13 @@
     <!-- Formulaire de Contact -->
     <div class="contact-form">
         <h2>Contactez-nous</h2>
-        <form>
+        <form id="contactForm">
             <input type="text" name="name" placeholder="Votre nom" required>
             <input type="email" name="email" placeholder="Votre email" required>
             <textarea name="message" rows="5" placeholder="Votre message" required></textarea>
             <button type="submit">Envoyer</button>
         </form>
+        <p id="responseMsg" style="color: green; margin-top: 10px;"></p>
     </div>
 
     <!-- Informations de contact -->
@@ -42,5 +43,37 @@
         </div>
     </div>
 </div>
+<script>
+    document.getElementById('contactForm').addEventListener('submit', async function (e) {
+      e.preventDefault();
+      const form = e.target;
+  
+      const data = {
+        name: form.name.value,
+        email: form.email.value,
+        message: form.message.value
+      };
+  
+      try {
+        const res = await fetch('http://localhost:5001/api/contact', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(data)
+        });
+  
+        const result = await res.json();
+        if (result.success) {
+          alert("Vous avez envoyé un message !");
+          form.reset(); // vide tous les champs
+        } else {
+          alert("Erreur lors de l'envoi : " + (result.error));
+        }
+  
+      } catch (err) {
+        console.error(err);
+        alert("Une erreur réseau s'est produite.");
+      }
+    });
+  </script>
 </body>
 </html>
