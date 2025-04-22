@@ -4,35 +4,22 @@ class AvisServiGOController {
     // Créer un nouvel avis
     static async createAvis(req, res) {
         try {
-            // Vérifier si l'utilisateur est authentifié
-            if (!req.user || !req.user.id) {
-                return res.status(401).json({ message: "Vous devez être connecté pour donner votre avis" });
-            }
-
-            const clientId = req.user.id;
-            
-            // Vérifier si le client a déjà donné son avis
-            const hasRated = await AvisServiGOModel.hasClientAlreadyRated(clientId);
-            if (hasRated) {
-                return res.status(400).json({ message: "Vous avez déjà donné votre avis" });
-            }
-
-            const avisData = {
-                client_id: clientId,
-                rating: req.body.rating,
-                service_rating: req.body.service_rating,
-                communication_rating: req.body.communication_rating,
-                price_rating: req.body.price_rating,
-                comment: req.body.comment
-            };
-
-            const avisId = await AvisServiGOModel.createAvis(avisData);
-            res.status(201).json({ message: "Avis créé avec succès", id: avisId });
+            const { client_id, rating, service_rating, communication_rating, price_rating, comment } = req.body;
+            const avisId = await AvisServiGOModel.createAvis({
+                client_id,
+                rating,
+                service_rating,
+                communication_rating,
+                price_rating,
+                comment
+            });
+            res.status(201).json({ message: "Avis ajouté avec succès", avisId });
         } catch (error) {
-            console.error("Erreur lors de la création de l'avis:", error);
-            res.status(500).json({ message: "Erreur lors de la création de l'avis" });
+            res.status(500).json({ message: error.message });
         }
     }
+    
+    
 
     // Obtenir tous les avis
     static async getAllAvis(req, res) {
@@ -53,18 +40,6 @@ class AvisServiGOController {
         } catch (error) {
             console.error("Erreur lors de la récupération des avis:", error);
             res.status(500).json({ message: "Erreur lors de la récupération des avis" });
-        }
-    }
-
-    // Obtenir les avis récents
-    static async getRecentAvis(req, res) {
-        try {
-            const limit = parseInt(req.query.limit) || 10;
-            const avis = await AvisServiGOModel.getRecentAvis(limit);
-            res.json(avis);
-        } catch (error) {
-            console.error("Erreur lors de la récupération des avis récents:", error);
-            res.status(500).json({ message: "Erreur lors de la récupération des avis récents" });
         }
     }
 
@@ -98,12 +73,12 @@ class AvisServiGOController {
                 comment: req.body.comment
             };
 
-            const success = await AvisServiGOModel.updateAvis(id, avisData);
-            if (success) {
-                res.json({ success: true, message: "Avis mis à jour avec succès" });
+            const updatedAvis = await AvisServiGOModel.updateAvis(id, avisData);
+            if (updatedAvis) {
+                res.json({ success: true, message: "Avis mis à jour avec succès", avis: updatedAvis });
             } else {
-                res.status(404).json({ message: "Avis non trouvé" });
-            }
+                res.status(404).json({ message: "Avis non trouvé" });}
+
         } catch (error) {
             console.error("Erreur lors de la mise à jour de l'avis:", error);
             res.status(500).json({ message: "Erreur lors de la mise à jour de l'avis" });

@@ -2,43 +2,30 @@ const pool = require("../config/database");
 
 class AvisServiGOModel {
     // Créer un nouvel avis
-    static async createAvis(avisData) {
+    static async createAvis({ client_id, rating, service_rating, communication_rating, price_rating, comment }) {
         const [result] = await pool.query(
-            "INSERT INTO avis_ServiGO (client_id, rating, service_rating, communication_rating, price_rating, comment) VALUES (?, ?, ?, ?, ?, ?)",
-            [
-                avisData.client_id,
-                avisData.rating,
-                avisData.service_rating,
-                avisData.communication_rating,
-                avisData.price_rating,
-                avisData.comment
-            ]
+            `INSERT INTO avis_ServiGO 
+             (client_id, rating, service_rating, communication_rating, price_rating, comment) 
+             VALUES (?, ?, ?, ?, ?, ?)`,
+            [client_id, rating, service_rating, communication_rating, price_rating, comment]
         );
         return result.insertId;
-    }
+    }    
 
     // Obtenir tous les avis
     static async getAllAvis() {
         const [rows] = await pool.query(`
-            SELECT a.*, c.nom as user_name, c.avatar as user_avatar 
+            SELECT 
+                a.*, 
+                CONCAT(c.prenom, ' ', c.nom) AS user_name, 
+                c.photo_de_profil AS user_avatar 
             FROM avis_ServiGO a 
             JOIN clients c ON a.client_id = c.id 
             ORDER BY a.date DESC
         `);
         return rows;
     }
-
-    // Obtenir les avis récents
-    static async getRecentAvis(limit = 10) {
-        const [rows] = await pool.query(`
-            SELECT a.*, c.nom as user_name, c.avatar as user_avatar 
-            FROM avis_ServiGO a 
-            JOIN clients c ON a.client_id = c.id 
-            ORDER BY a.date DESC 
-            LIMIT ?
-        `, [limit]);
-        return rows;
-    }
+    
 
     // Obtenir les statistiques globales
     static async getStats() {
