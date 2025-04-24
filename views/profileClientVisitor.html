@@ -59,6 +59,18 @@
     </div>
   </main>
 
+  <div id="signalementModal" class="modal">
+    <div class="modal-content">
+      <span class="close" onclick="closeSignalementModal()">&times;</span>
+      <h2>Signaler un problème</h2>
+      <form id="signalementForm">
+        <label for="signalementDescription">Description :</label>
+        <textarea id="signalementDescription" rows="4" required></textarea>
+        <button type="submit" class="btn btn-signaler">Envoyer</button>
+      </form>
+    </div>
+  </div>
+
   <script>
     document.addEventListener('DOMContentLoaded', function() {
       const token     = localStorage.getItem('token');
@@ -69,7 +81,7 @@
         return window.location.href = '/login';
       }
       if (!visitorId) {
-        alert('Aucun identifiant de visiteur trouvé dans l’URL');
+        alert('Aucun identifiant de visiteur trouvé dans l\'URL');
         return;
       }
   
@@ -108,6 +120,47 @@
         console.error('Erreur:', error);
         alert('Impossible de charger le profil du visiteur');
       }
+    }
+
+    document.querySelector('.btn-signaler').addEventListener('click', function() {
+      document.getElementById('signalementModal').style.display = 'block';
+    });
+
+    document.getElementById('signalementForm').addEventListener('submit', async function(event) {
+      event.preventDefault();
+      const description = document.getElementById('signalementDescription').value;
+      const visitorId = new URLSearchParams(window.location.search).get('id');
+      const token = localStorage.getItem('token');
+
+      try {
+        const response = await fetch('http://localhost:5001/api/signalements', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
+          },
+          body: JSON.stringify({
+            type: 'Profil',
+            id_objet: visitorId,
+            description: description,
+            date_signalement: new Date().toISOString()
+          })
+        });
+
+        if (!response.ok) {
+          throw new Error('Erreur lors de l\'envoi du signalement');
+        }
+
+        alert('Signalement envoyé avec succès');
+        closeSignalementModal();
+      } catch (error) {
+        console.error('Erreur:', error);
+        alert('Erreur lors de l\'envoi du signalement');
+      }
+    });
+
+    function closeSignalementModal() {
+      document.getElementById('signalementModal').style.display = 'none';
     }
   </script>
   
