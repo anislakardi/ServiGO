@@ -25,6 +25,16 @@ exports.getAvisByPrestataire = async (req, res) => {
     }
 };
 
+exports.getMoyenneAvisByPrestataire = async (req, res) => {
+    const prestataireId = req.params.id;
+    try {
+        const moyenne = await Avis.getAverageEvaluation(prestataireId);
+        res.status(200).json({ moyenne });
+    } catch (err) {
+        res.status(500).json({ message: "Erreur lors du calcul de la moyenne", error: err });
+    }
+};
+
 // ✅ Modifier un avis (Seulement le client qui l'a posté)
 exports.modifierAvis = async (req, res) => {
   try {

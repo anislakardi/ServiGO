@@ -32,6 +32,42 @@ exports.createPrestataire = async (req, res) => {
 exports.getAllPrestataires = async (req, res) => {
     try {
         const prestataires = await Prestataire.findAll();
+
+
+        const formattedPrestataires = prestataires.map(prestataire => {
+            if (prestataire.photo_de_profil) {
+                // Vérifier si c'est déjà une chaîne base64
+                if (typeof prestataire.photo_de_profil === 'string' && prestataire.photo_de_profil.startsWith('data:image')) {
+                    // C'est déjà au format base64, ne rien faire
+                } else {
+                    // C'est un BLOB, convertir en base64
+                    const base64Image = Buffer.from(prestataire.photo_de_profil).toString('base64');
+                    prestataire.photo_de_profil = `data:image/jpeg;base64,${base64Image}`;
+                }
+            }
+            if (prestataire.service1_photo) {
+                // Vérifier si c'est déjà une chaîne base64
+                if (typeof prestataire.service1_photo === 'string' && prestataire.service1_photo.startsWith('data:image')) {
+                    // C'est déjà au format base64, ne rien faire
+                } else {
+                    // C'est un BLOB, convertir en base64
+                    const base64Image = Buffer.from(prestataire.service1_photo).toString('base64');
+                    prestataire.service1_photo = `data:image/jpeg;base64,${base64Image}`;
+                }
+            }
+            if (prestataire.service2_photo) {
+                // Vérifier si c'est déjà une chaîne base64
+                if (typeof prestataire.service2_photo === 'string' && prestataire.service2_photo.startsWith('data:image')) {
+                    // C'est déjà au format base64, ne rien faire
+                } else {
+                    // C'est un BLOB, convertir en base64
+                    const base64Image = Buffer.from(prestataire.service2_photo).toString('base64');
+                    prestataire.service2_photo = `data:image/jpeg;base64,${base64Image}`;
+                }
+            }
+            return prestataire;
+        });
+
         res.status(200).json(prestataires);
     } catch (error) {
         res.status(500).json({ message: "Erreur serveur", error });
@@ -42,6 +78,17 @@ exports.getPrestataireById = async (req, res) => {
     try {
         const prestataires = await Prestataire.findById(req.params.id);
         if (!prestataires) return res.status(404).json({ message: "Prestataire non trouvé" });
+
+        if (prestataires.photo_de_profil) {
+            // Vérifier si c'est déjà une chaîne base64
+            if (typeof prestataires.photo_de_profil === 'string' && prestataires.photo_de_profil.startsWith('data:image')) {
+                // C'est déjà au format base64, ne rien faire
+            } else {
+                // C'est un BLOB, convertir en base64
+                const base64Image = Buffer.from(prestataires.photo_de_profil).toString('base64');
+                prestataires.photo_de_profil = `data:image/jpeg;base64,${base64Image}`;
+            }
+        }
         res.status(200).json(prestataires);
     } catch (error) {
         res.status(500).json({ message: "Erreur serveur", error });

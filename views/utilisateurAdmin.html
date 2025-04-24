@@ -101,6 +101,7 @@
 
             document.getElementById('reloadClients').addEventListener('click', loadClients);
             document.getElementById('reloadPrestataires').addEventListener('click', loadPrestataires);
+            /*
             // Chargement des clients
             fetch('http://localhost:5001/api/clients')
                 .then(res => res.json())
@@ -123,8 +124,10 @@
                                 </div>
                             </div>
                             <div class="user-actions">
-                                <button class="action-btn profile-btn" title="Voir le profil">
-                                <i class="fas fa-user"></i>
+                                <button class="action-btn profile-btn"
+                                        title="Voir le profil"
+                                        onclick="window.location.href='profileClientVisitor.html?id=${client.id}'">
+                                    <i class="fas fa-user"></i>
                                 </button>
                             </div>
                             </div>
@@ -156,8 +159,10 @@
                                 </div>
                             </div>
                             <div class="user-actions">
-                                <button class="action-btn profile-btn" title="Voir le profil">
-                                <i class="fas fa-user"></i>
+                                <button class="action-btn profile-btn"
+                                        title="Voir le profil"
+                                        onclick="window.location.href='profileClientVisitor.html?id=${prestataire.id}'">
+                                    <i class="fas fa-user"></i>
                                 </button>
                             </div>
                             </div>
@@ -165,7 +170,7 @@
                         prestatairesList.innerHTML += userCard;
                     });
                 })
-                .catch(err => console.error('Erreur lors du chargement des prestataires :', err));
+                .catch(err => console.error('Erreur lors du chargement des prestataires :', err));*/
         });
         function loadClients() {
             fetch('http://localhost:5001/api/clients')
@@ -187,11 +192,11 @@
                                         <p>${client.email}</p>
                                     </div>
                                 </div>
-                                <div class="user-actions">
-                                    <button class="action-btn profile-btn" title="Voir le profil">
-                                        <i class="fas fa-user"></i>
-                                    </button>
-                                </div>
+                                <button class="action-btn profile-btn"
+                                        title="Voir le profil"
+                                        onclick="window.location.href='profileClientVisitor.html?id=${client.id}'">
+                                    <i class="fas fa-user"></i>
+                                </button>
                             </div>`;
                         clientsList.innerHTML += userCard;
                     });
@@ -219,11 +224,11 @@
                                         <p>${prestataire.email}</p>
                                     </div>
                                 </div>
-                                <div class="user-actions">
-                                    <button class="action-btn profile-btn" title="Voir le profil">
-                                        <i class="fas fa-user"></i>
-                                    </button>
-                                </div>
+                                <button class="action-btn profile-btn"
+                                        title="Voir le profil"
+                                        onclick="window.location.href='profileClientVisitor.html?id=${prestataire.id}'">
+                                    <i class="fas fa-user"></i>
+                                </button>
                             </div>`;
                         prestatairesList.innerHTML += userCard;
                     });

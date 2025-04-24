@@ -5,6 +5,7 @@ const avisController = require("../controllers/avisController");
 
 router.post("/avis", avisController.ajouterAvis);
 router.get("/avis/prestataire/:prestataireId", avisController.getAvisByPrestataire);
+router.get("/avis/moyenne/:id", avisController.getMoyenneAvisByPrestataire);
 router.put("/avis/:avisId",avisController.modifierAvis); 
 router.delete("/avis/:avisId", avisController.supprimerAvis);
 

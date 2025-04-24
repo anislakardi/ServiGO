@@ -19,6 +19,13 @@ class Avis {
         );
         return rows;
     }
+    static async getAverageEvaluation(prestataire_id) {
+        const [rows] = await pool.query(
+            `SELECT AVG(evaluation) AS moyenne FROM avis WHERE prestataire_id = ?`,
+            [prestataire_id]
+        );
+        return rows[0].moyenne;
+    }
 
     static async findById(id) {
         const [rows] = await pool.query(`SELECT * FROM avis WHERE id = ?`, [id]);

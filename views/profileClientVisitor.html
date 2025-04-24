@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>ServiGO - Profil Visiteur</title>
+  <link rel="stylesheet" href="../style/profileClient.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"/>
+</head>
+<body>
+
+  <!-- NAVBAR -->
+  <nav>
+    <div class="logo">
+      <h1>ServiGO</h1>
+    </div>
+    <ul>
+      <li><a href="homeClient.html">Accueil</a></li>
+      <li><a href="offreurs.html">Offreurs</a></li>
+      <li><a href="messagerie.html">Messagerie</a></li>
+      <li><a href="notification.html">Notifications</a></li>
+      <li><a id="active">Profile</a></li>
+      <li class="dropdown">
+        <a href="#options">Options <i class="fas fa-chevron-down"></i></a>
+        <div class="dropdown-content">
+          <a href="avisServiGO.html"><i class="fas fa-bell"></i> Avis ServiGO</a>
+          <a href="profileClient.html"><i class="fas fa-user"></i> Profil</a>
+          <a href="#"><i class="fas fa-ellipsis-h"></i> Autre option</a>
+        </div>
+      </li>
+    </ul>
+  </nav>
+
+  <!-- PAGE PROFIL VISITEUR -->
+  <main class="profile-container">
+    <h1>Profil Visiteur</h1>
+
+    <div class="profile-box">
+      <div class="profile-header">
+        <img src="../images/avatar-default.png" alt="Photo de profil" class="profile-img" id="profileImagePreview">
+        <div class="profile-info">
+          <h2 id="userFullName">Nom Complet</h2>
+          <p id="userEmail">Email : example@example.com</p>
+          <p id="userUsername">Nom D'utilisateur : utilisateur</p>
+          <p id="userAddress">Adresse : Non renseignée</p>
+        </div>
+      </div>
+
+      <div class="profile-details">
+        <div id="bio-container">
+          <h3>À propos de moi</h3>
+          <p id="bio-text">Je suis un visiteur sur ServiGO.</p>
+        </div>        
+
+        <div class="button-group">
+          <button class="btn btn-signaler">Signaler</button>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      const token     = localStorage.getItem('token');
+      const visitorId = new URLSearchParams(window.location.search).get('id');
+  
+      if (!token) {
+        alert('Vous devez être connecté pour accéder à cette page');
+        return window.location.href = '/login';
+      }
+      if (!visitorId) {
+        alert('Aucun identifiant de visiteur trouvé dans l’URL');
+        return;
+      }
+  
+      loadUserData(visitorId, token);
+    });
+  
+    // Charge les données du profil du visiteur
+    async function loadUserData(userId, token) {
+      try {
+        const response = await fetch(
+          `http://localhost:5001/api/clients/${userId}`,
+          {
+            headers: { 'Authorization': `Bearer ${token}` }
+          }
+        );
+        if (!response.ok) {
+          throw new Error('Erreur lors de la récupération des données utilisateur');
+        }
+        const userData = await response.json();
+  
+        document.getElementById('userFullName').textContent = 
+          `${userData.nom} ${userData.prenom}`;
+        document.getElementById('userEmail').textContent = 
+          `Email : ${userData.email}`;
+        document.getElementById('userUsername').textContent = 
+          `Nom d'utilisateur : ${userData.nom_utilisateur}`;
+        document.getElementById('userAddress').textContent = 
+          `Adresse : ${userData.adresse || 'Non renseignée'}`;
+        document.getElementById('bio-text').textContent = 
+          userData.bio || 'Non renseignée';
+  
+        if (userData.photo_de_profil) {
+          document.getElementById('profileImagePreview').src = userData.photo_de_profil;
+        }
+      } catch (error) {
+        console.error('Erreur:', error);
+        alert('Impossible de charger le profil du visiteur');
+      }
+    }
+  </script>
+  
+
+</body>
+</html> 
