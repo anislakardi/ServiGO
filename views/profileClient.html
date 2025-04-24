@@ -432,6 +432,46 @@
       localStorage.removeItem('userRole');
       window.location.href = '/login';
     }
+
+    document.getElementById('signalementForm').addEventListener('submit', async function(event) {
+      event.preventDefault();
+      const description = document.getElementById('signalementDescription').value;
+      const activeMessage = document.querySelector('.message.active');
+      
+      if (!activeMessage) {
+        alert('Veuillez sélectionner un message à signaler.');
+        return;
+      }
+
+      const messageId = activeMessage.getAttribute('data-message-id');
+      const token = localStorage.getItem('token');
+
+      try {
+        const response = await fetch('http://localhost:5001/api/signalements', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
+          },
+          body: JSON.stringify({
+            type: 'Message',
+            id_objet: messageId,
+            description: description,
+            date_signalement: new Date().toISOString()
+          })
+        });
+
+        if (!response.ok) {
+          throw new Error('Erreur lors de l\'envoi du signalement');
+        }
+
+        alert('Signalement envoyé avec succès');
+        closeSignalementModal();
+      } catch (error) {
+        console.error('Erreur:', error);
+        alert('Erreur lors de l\'envoi du signalement');
+      }
+    });
   </script>
 
 </body>

@@ -201,6 +201,33 @@
         </div>
       </form>
     </dialog>
+    <dialog id="reportDialog">
+      <form id="signalementForm" method="dialog">
+        <div class="dialog-header">
+          <h3>Signaler une publication</h3>
+          <button type="button" onclick="document.getElementById('reportDialog').close()">X</button>
+        </div>
+    
+        <div class="dialog-content">
+          <p>Êtes-vous sûr de vouloir signaler cette publication ?</p>
+          
+          <!-- Ton formulaire ajouté ici -->
+          <label for="signalementDescription">Description :</label><br><br>
+          <textarea id="signalementDescription" rows="4" required></textarea>
+        </div>
+    
+        <div class="dialog-actions">
+          <button type="button" class="cancel-btn"
+                  onclick="document.getElementById('reportDialog').close()">
+            Annuler
+          </button>
+          <!-- Le bouton submit déclenche le submit du form -->
+          <button type="submit" class="btn btn-signaler confirm-btn">
+            Envoyer
+          </button>
+        </div>
+      </form>
+    </dialog>
     
     
 
@@ -214,19 +241,7 @@
     &copy; 2025 ServiGO. Tous droits réservés.
   </footer>
 
-  <dialog id="reportDialog">
-    <div class="dialog-header">
-      <h3>Signaler une publication</h3>
-      <button onclick="document.getElementById('reportDialog').close()">X</button>
-    </div>
-    <div class="dialog-content">
-      <p>Êtes-vous sûr de vouloir signaler cette publication ?</p>
-    </div>
-    <div class="dialog-actions">
-      <button class="cancel-btn" onclick="document.getElementById('reportDialog').close()">Annuler</button>
-      <button class="confirm-btn" onclick="confirmReport()">Confirmer</button>
-    </div>
-  </dialog>
+  
 
   <script>
     // Attendre que le DOM soit complètement chargé
@@ -242,7 +257,13 @@
     } else {
       console.log('Utilisateur connecté avec ID:', userId);
     }
-    
+    const signalementForm = document.getElementById('signalementForm');
+      if (signalementForm) {
+        signalementForm.addEventListener('submit', function(e) {
+          e.preventDefault(); // Empêcher la fermeture automatique du dialogue
+          window.confirmReport(); // Appeler la fonction confirmReport
+        });
+      }
     // Gestionnaire pour les liens de navigation
     document.querySelectorAll('nav ul li a').forEach(link => {
       link.addEventListener('click', function(e) {
@@ -277,23 +298,7 @@
     const confirmerBtn = document.getElementById('confirmerBtn');
     let currentReportedPublication = null;
 
-    function openReportDialog(button) {
-      currentReportedPublication = button.closest('.publication');
-      if (currentReportedPublication) {
-      document.getElementById('reportDialog').showModal();
-      } else {
-        console.error("Impossible de trouver la publication à signaler");
-      }
-    }
-
-    function confirmReport() {
-      if (currentReportedPublication) {
-        const title = currentReportedPublication.querySelector('.publication-title').textContent;
-        alert("La publication '" + title + "' a été signalée avec succès !");
-        document.getElementById('reportDialog').close();
-        currentReportedPublication = null;
-      }
-    }
+    
 
       if (openBtn) {
     openBtn.addEventListener("click", () => {
@@ -764,10 +769,70 @@
       }
     };
 
+    // Fonction pour ouvrir le dialogue de signalement
+    
+
+    // Fonction pour envoyer le signalement
+    window.confirmReport = async function() {
+      if (!window.currentReportedPublication) {
+        return alert("Aucune publication sélectionnée à signaler");
+      }
+
+      // Récupère l'ID de la publication
+      const publicationId = window.currentReportedPublication.dataset.id;
+      // Récupère la description du formulaire
+      const description = document
+        .getElementById('signalementDescription')
+        .value
+        .trim();
+      if (!description) {
+        return alert("Merci de préciser un motif de signalement");
+      }
+
+      // Prépare le token
+      const token = localStorage.getItem('token');
+      if (!token) {
+        return alert("Vous devez être connecté pour signaler");
+      }
+
+      try {
+        console.log("Envoi du signalement pour la publication ID:", publicationId);
+        
+        // Envoi du signalement
+        const response = await fetch('http://localhost:5001/api/signalements', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
+          },
+          body: JSON.stringify({
+            type: 'publication',
+            id_objet: publicationId,
+            description: description,
+            date_signalement: new Date().toISOString()
+          })
+        });
+
+        if (!response.ok) {
+          const err = await response.json().catch(() => ({}));
+          throw new Error(err.message || 'Erreur lors de l\'envoi du signalement');
+        }
+
+        // Feedback utilisateur
+        alert("Signalement de la publication effectué avec succès !");
+        document.getElementById('reportDialog').close();
+        document.getElementById('signalementDescription').value = '';
+        window.currentReportedPublication = null;
+
+      } catch (error) {
+        console.error('Erreur signalement :', error);
+        alert("Erreur lors de l'envoi du signalement : " + error.message);
+      }
+    };
+
     // Fonction pour charger toutes les publications
     window.loadAllPublications = async function() {
       try {
-          console.log("Chargement des publications...");
         const response = await fetch('http://localhost:5001/api/publications', {
           headers: {
             'Authorization': `Bearer ${localStorage.getItem('token')}`
@@ -930,10 +995,19 @@
         });
       }
     });
+
   });
 
-    // Fonction pour compresser l'image
-    function compressImage(file, maxWidth, maxHeight, callback) {
+  function openReportDialog(button) {
+      window.currentReportedPublication = button.closest('.publication');
+      if (!window.currentReportedPublication) {
+        console.error("Impossible de trouver la publication à signaler");
+        return;
+      }
+      document.getElementById('reportDialog').showModal();
+    }
+
+  function compressImage(file, maxWidth, maxHeight, callback) {
     const reader = new FileReader();
 
     reader.onload = function (event) {
@@ -968,7 +1042,7 @@
     };
 
     reader.readAsDataURL(file);
-}
+  }
 
   </script>
 </body>

@@ -6,6 +6,45 @@
   <title>ServiGO - Messagerie</title>
   <link rel="stylesheet" href="../style/messagerie.css" />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"/>
+  <style>
+    .modal {
+      display: none;
+      position: fixed;
+      z-index: 1000;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      overflow: auto;
+      background-color: rgba(0,0,0,0.4);
+    }
+
+    .modal-content {
+      background-color: #fff;
+      margin: 15% auto;
+      padding: 20px;
+      border: 1px solid #888;
+      width: 80%;
+      max-width: 500px;
+      border-radius: 10px;
+      box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+    }
+
+    .close {
+      color: #aaa;
+      float: right;
+      font-size: 28px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    .close:hover,
+    .close:focus {
+      color: black;
+      text-decoration: none;
+      cursor: pointer;
+    }
+  </style>
 </head>
 <body>
 
@@ -69,6 +108,18 @@
     <span class="close-modal">&times;</span>
     <img id="modal-image" class="modal-content">
     <div id="modal-caption"></div>
+  </div>
+
+  <div id="signalementModal" class="modal">
+    <div class="modal-content">
+      <span class="close" onclick="closeSignalementModal()">&times;</span>
+      <h2>Signaler un message</h2>
+      <form id="signalementForm">
+        <label for="signalementDescription">Description :</label>
+        <textarea id="signalementDescription" rows="4" required></textarea>
+        <button type="submit" class="btn btn-signaler">Envoyer</button>
+      </form>
+    </div>
   </div>
 
   <script>
@@ -221,42 +272,44 @@
         }
 
         messages.forEach(message => {
-  const messageDiv = document.createElement('div');
-  messageDiv.className = `message ${message.sender_client_id ? 'sent' : 'received'}`;
+      const messageDiv = document.createElement('div');
+      messageDiv.className = `message ${message.sender_client_id ? 'sent' : 'received'}`;
 
-  let messageContent = `<p>${message.description || ''}</p>`;
+      let messageContent = `<p>${message.description || ''}</p>`;
 
-  // Ajouter l'image si elle existe
-  if (message.photos) {
-    messageContent += `<img src="data:image/jpeg;base64,${message.photos}" alt="${message.description || ''}" />`;
-  }
+      // Ajouter l'image si elle existe
+      if (message.photos) {
+        messageContent += `<img src="data:image/jpeg;base64,${message.photos}" alt="${message.description || ''}" />`;
+      }
 
-  messageDiv.innerHTML = `
-    <div class="message-content">
-      ${messageContent}
-      <span class="message-time">${new Date(message.date_message).toLocaleTimeString()}</span>
-      ${!message.sender_client_id ? `
-        <div class="message-actions">
-          <button class="message-menu-btn">
-            <i class="fas fa-ellipsis-v"></i>
-          </button>
-          <div class="message-menu">
-            <button class="menu-item signal">
-              <i class="fas fa-flag"></i>
-              Signaler
-            </button>
-            <button class="menu-item copy">
-              <i class="fas fa-copy"></i>
-              Copier
-            </button>
-          </div>
+      messageDiv.innerHTML = `
+        <div class="message-content">
+          ${messageContent}
+          <span class="message-time">${new Date(message.date_message).toLocaleTimeString()}</span>
+          ${!message.sender_client_id ? `
+            <div class="message-actions">
+              <button class="message-menu-btn">
+                <i class="fas fa-ellipsis-v"></i>
+              </button>
+              <div class="message-menu">
+                <button class="menu-item signal">
+                  <i class="fas fa-flag"></i>
+                  Signaler
+                </button>
+                <button class="menu-item copy">
+                  <i class="fas fa-copy"></i>
+                  Copier
+                </button>
+              </div>
+            </div>
+          ` : ''}
         </div>
-      ` : ''}
-    </div>
-  `;
+      `;
+       messageDiv.dataset.messageId = message.id;
 
-  messagesContainer.appendChild(messageDiv);
-});
+
+      messagesContainer.appendChild(messageDiv);
+    });
 
 
         // Faire défiler jusqu'au dernier message
@@ -443,16 +496,21 @@
     });
 
     // Gestion des actions du menu
-    document.addEventListener('click', (e) => {
-        if (e.target.closest('.menu-item.signal')) {
-            const message = e.target.closest('.message').querySelector('p').textContent;
-            alert('Message signalé : ' + message);
-        } else if (e.target.closest('.menu-item.copy')) {
-            const message = e.target.closest('.message').querySelector('p').textContent;
-            navigator.clipboard.writeText(message);
-            alert('Message copié !');
-        }
-    });
+    document.addEventListener('click', e => {
+    if (e.target.closest('.menu-item.signal')) {
+      // retire active de toute les autres bulles
+      document.querySelectorAll('.message.active')
+              .forEach(m => m.classList.remove('active'));
+
+      // repère la bulle cliquée
+      const msgEl = e.target.closest('.message');
+      msgEl.classList.add('active');
+
+      // ouvre la fenêtre
+      document.getElementById('signalementDescription').value = '';
+      document.getElementById('signalementModal').style.display = 'block';
+    }
+  });
 
     // Gestion de l'édition du titre de la conversation
     document.getElementById('edit-title-btn').addEventListener('click', async function() {
@@ -538,6 +596,48 @@
       await originalLoadMessages(conversationId);
       setupImageZoom();
     };
+
+    document.getElementById('signalementForm').addEventListener('submit', async function(event) {
+      event.preventDefault();
+      const description = document.getElementById('signalementDescription').value;
+      const token = localStorage.getItem('token');
+      const messageEl = document.querySelector('.message.active');
+      if (!messageEl) {
+        return alert('Aucun message sélectionné');
+      }
+      const messageId = messageEl.dataset.messageId;
+
+      try {
+        const response = await fetch('http://localhost:5001/api/signalements', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
+          },
+          body: JSON.stringify({
+            type: 'Message',
+            id_objet: messageId,
+            description: description,
+            date_signalement: new Date().toISOString()
+          })
+        });
+
+
+        if (!response.ok) {
+          throw new Error('Erreur lors de l\'envoi du signalement');
+        }
+
+        alert('Signalement envoyé avec succès');
+        closeSignalementModal();
+      } catch (error) {
+        console.error('Erreur:', error);
+        alert('Erreur lors de l\'envoi du signalement');
+      }
+    });
+
+    function closeSignalementModal() {
+      document.getElementById('signalementModal').style.display = 'none';
+    }
   </script>  
 </body>
 </html>
