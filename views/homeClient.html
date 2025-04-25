@@ -229,7 +229,17 @@
       </form>
     </dialog>
     
-    
+    <!-- Nouveau dialogue pour afficher les recommandations reçues -->
+    <dialog id="profilsRecommandedDialog">
+      <div class="dialog-header">
+        <h3><i class="fas fa-users"></i> Profils recommandés</h3>
+        <button type="button" onclick="document.getElementById('profilsRecommandedDialog').close()">X</button>
+      </div>
+      <div class="dialog-content" id="recommandedProfilesContainer">
+        <p class="loading-message"><i class="fas fa-spinner fa-pulse"></i> Chargement des recommandations...</p>
+        <!-- Les profils recommandés seront chargés dynamiquement ici -->
+      </div>
+    </dialog>
 
     <!-- Publications -->
     <div class="publication-list" id="allPublicationsContainer">
@@ -289,6 +299,7 @@
     const dialog = document.getElementById("publicationDialog");
     const myPostsDialog = document.getElementById("myPostsDialog");
     const recommandationDialog = document.getElementById("recommandationDialog");
+    const profilsRecommandedDialog = document.getElementById("profilsRecommandedDialog");
     const openBtn = document.getElementById("openDialogBtn");
     const openMyPostsBtn = document.getElementById("openMyPostsBtn");
     const editPublicationDialog = document.getElementById("editPublicationDialog");
@@ -731,6 +742,7 @@ document.addEventListener('click', async function(e) {
             <div class="edit-delete-actions">
               <button class="edit-btn" onclick="editPublication(${publication.id})"><i class="fas fa-edit"></i> Modifier</button>
               <button class="delete-btn" onclick="deletePublication(${publication.id})"><i class="fas fa-trash"></i> Supprimer</button>
+              <button class="view-recommended-profiles-btn" onclick="viewRecommendedProfiles(${publication.id})"><i class="fas fa-users"></i> Voir les recommandations</button>
             </div>
           `;
           
@@ -738,14 +750,27 @@ document.addEventListener('click', async function(e) {
         });
 
         // Ajouter des gestionnaires d'événements pour les boutons de recommandation
-          /*document.querySelectorAll('.openRecommandationDialogBtn').forEach(button => {
-            button.addEventListener('click', () => {
-              if (recommandationDialog) {
-                recommandationDialog.showModal();
-                console.log("Dialogue de recommandation affiché.");
-              }
-            });
-          });*/
+        document.querySelectorAll('.openRecommandationDialogBtn').forEach(button => {
+          button.addEventListener('click', () => {
+            if (recommandationDialog) {
+              // Quand tu ouvres ton dialog (dans la délégation click)
+              recommandationDialog.showModal();
+
+              console.log("Dialogue de recommandation affiché.");
+            }
+          });
+        });
+
+        // Vérifier et corriger les images après leur chargement
+        setTimeout(() => {
+          document.querySelectorAll('.publication-media').forEach(img => {
+            if (img.complete && img.naturalWidth === 0) {
+              // L'image n'a pas pu être chargée
+              img.style.display = 'none';
+              img.parentElement.style.display = 'none';
+            }
+          });
+        }, 500);
 
       } catch (error) {
         console.error('Erreur:', error);
@@ -919,6 +944,90 @@ document.addEventListener('click', async function(e) {
       } catch (error) {
         console.error('Erreur signalement :', error);
         alert("Erreur lors de l'envoi du signalement : " + error.message);
+      }
+    };
+
+    // Fonction pour charger et afficher les profils recommandés pour une publication
+    window.viewRecommendedProfiles = async function(publicationId) {
+      const recommandedProfilesContainer = document.getElementById('recommandedProfilesContainer');
+      const token = localStorage.getItem('token');
+      
+      if (!token) {
+        recommandedProfilesContainer.innerHTML = '<div class="error-message"><i class="fas fa-exclamation-circle"></i> Vous devez être connecté pour voir les recommandations.</div>';
+        return;
+      }
+      
+      try {
+        recommandedProfilesContainer.innerHTML = '<p class="loading-message"><i class="fas fa-spinner fa-pulse"></i> Chargement des recommandations...</p>';
+        
+        const response = await fetch(`http://localhost:5001/api/recommandations/publication/${publicationId}`, {
+          headers: {
+            'Authorization': `Bearer ${token}`
+          }
+        });
+        
+        if (!response.ok) {
+          throw new Error('Erreur lors de la récupération des recommandations');
+        }
+        
+        const recommandations = await response.json();
+        if (recommandations.length === 0) {
+          alert("Aucune recommandation trouvée pour cette publication.");
+          return;
+        }
+        
+        // Vider le conteneur
+        recommandedProfilesContainer.innerHTML = '';
+        
+        // Ajouter chaque recommandation
+        recommandations.forEach(recommandation => {
+          const recommandationElement = document.createElement('div');
+          recommandationElement.className = 'recommandation-item';
+          
+          // Formatage de la date si disponible
+          let recommandationDate = '';
+          try {
+            if (recommandation.date_recommandation) {
+              const date = new Date(recommandation.date_recommandation);
+              if (!isNaN(date.getTime())) {
+                recommandationDate = new Intl.DateTimeFormat('fr-FR', {
+                  year: 'numeric',
+                  month: 'long',
+                  day: 'numeric',
+                  hour: '2-digit',
+                  minute: '2-digit'
+                }).format(date);
+              }
+            }
+          } catch (error) {
+            console.error('Erreur de formatage de date:', error);
+          }
+          
+          recommandationElement.innerHTML = `
+            <div class="recommandation-header">
+              <div class="user-info">
+                <h4><i class="fas fa-user-check"></i> ${recommandation.nom || ''} ${recommandation.prenom}</h4>
+                <span class="meta"><i class="far fa-calendar-alt"></i> Recommandé le : ${recommandationDate}</span>
+                ${recommandation.adresse ? `<span class="meta"><i class="fas fa-home"></i> Adresse : ${recommandation.adresse}</span>` : ''}
+              </div>
+            </div><br>
+            ${recommandation.commentaire ? `<p class="recommandation-comment"><i class="fas fa-quote-left"></i> ${recommandation.commentaire} <i class="fas fa-quote-right"></i></p>` : ''}
+            <br>
+            <div class="recommandation-actions">
+              <button class="contact-btn"><i class="fas fa-envelope"></i> Contacter</button>
+              <button class="view-profile-btn"><i class="fas fa-user"></i> Voir profil</button>
+            </div>
+          `;
+          
+          recommandedProfilesContainer.appendChild(recommandationElement);
+        });
+        
+        // Afficher le dialogue
+        profilsRecommandedDialog.showModal();
+        
+      } catch (error) {
+        console.error('Erreur:', error);
+        recommandedProfilesContainer.innerHTML = `<div class="error-message"><i class="fas fa-exclamation-triangle"></i> Erreur lors du chargement des recommandations: ${error.message}</div>`;
       }
     };
 

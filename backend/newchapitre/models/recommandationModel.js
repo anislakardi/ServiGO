@@ -13,7 +13,8 @@ class Recommandation {
 
   static async getByPublication(id_publication) {
     const [rows] = await pool.query(
-      `SELECT * FROM recommandations_profil WHERE id_publication = ?`,
+      `SELECT rp.*, p.nom, p.prenom, p.adresse FROM recommandations_profil AS rp
+        JOIN prestataires AS p ON rp.id_profil_recommande = p.id WHERE rp.id_publication = ?`,
       [id_publication]
     );
     return rows;
