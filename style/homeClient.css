@@ -145,88 +145,6 @@ main {
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 
-.stats-container {
-    display: flex;
-    justify-content: space-around;
-    margin-bottom: 40px;
-    flex-wrap: wrap;
-    gap: 20px;
-}
-
-.stat-card {
-    background: white;
-    padding: 20px;
-    border-radius: 10px;
-    text-align: center;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-    flex: 1;
-    min-width: 200px;
-}
-
-.stat-card i {
-    font-size: 2em;
-    color: var(--Bright-Sun);
-    margin-bottom: 10px;
-}
-
-.stat-card h3 {
-    color: var(--Big-Stone);
-    font-size: 1.8em;
-    margin-bottom: 5px;
-}
-
-.stat-card p {
-    color: var(--Dark-Grey);
-    font-size: 0.9em;
-}
-
-.services-preview {
-    margin-bottom: 40px;
-}
-
-.services-preview h3 {
-    color: var(--Big-Stone);
-    font-size: 1.5em;
-    margin-bottom: 20px;
-    text-align: center;
-}
-
-.services-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-    gap: 20px;
-}
-
-.service-card {
-    background: white;
-    padding: 20px;
-    border-radius: 10px;
-    text-align: center;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-    transition: transform 0.3s ease;
-}
-
-.service-card:hover {
-    transform: translateY(-5px);
-}
-
-.service-card i {
-    font-size: 2em;
-    color: var(--Bright-Sun);
-    margin-bottom: 10px;
-}
-
-.service-card h4 {
-    color: var(--Big-Stone);
-    margin-bottom: 5px;
-}
-
-.service-card p {
-    color: var(--Dark-Grey);
-    font-size: 0.9em;
-}
-
-/* Conteneur des publications */
 .publication-list {
     display: flex;
     flex-direction: column;
@@ -1085,7 +1003,7 @@ a, button {
 }
 
 .view-recommended-profiles-btn:hover {
-  background-color: #2d4c64 !important;
+  background-color: #2d4c64 ;
 }
 
 .no-recommandations-message {

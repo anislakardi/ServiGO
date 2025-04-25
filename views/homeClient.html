@@ -46,49 +46,6 @@
       </button>
     </div>
 
-    <div class="stats-container">
-      <div class="stat-card">
-        <i class="fas fa-users"></i>
-        <h3>1,234</h3>
-        <p>Utilisateurs actifs</p>
-      </div>
-      <div class="stat-card">
-        <i class="fas fa-handshake"></i>
-        <h3>567</h3>
-        <p>Services réalisés</p>
-      </div>
-      <div class="stat-card">
-        <i class="fas fa-star"></i>
-        <h3>4.8</h3>
-        <p>Note moyenne</p>
-      </div>
-    </div>
-
-    <div class="services-preview">
-      <h3>Services populaires</h3>
-      <div class="services-grid">
-        <div class="service-card">
-          <i class="fas fa-wrench"></i>
-          <h4>Plomberie</h4>
-          <p>Réparation et installation</p>
-        </div>
-        <div class="service-card">
-          <i class="fas fa-bolt"></i>
-          <h4>Électricité</h4>
-          <p>Installation et dépannage</p>
-        </div>
-        <div class="service-card">
-          <i class="fas fa-paint-roller"></i>
-          <h4>Peinture</h4>
-          <p>Intérieur et extérieur</p>
-        </div>
-        <div class="service-card">
-          <i class="fas fa-tools"></i>
-          <h4>Menuiserie</h4>
-          <p>Fabrication et réparation</p>
-        </div>
-      </div>
-    </div>
 
     <!-- Dialogue pour créer une publication -->
     <dialog id="publicationDialog">
@@ -1093,7 +1050,7 @@ document.addEventListener('click', async function(e) {
             <div class="publication-header">
               <img src="${publication.photo_de_profil ? 'data:image/jpeg;base64,' + publication.photo_de_profil : '../style/images/plus-solid.svg'}" alt="Photo de profil" class="profile-pic">
               <div class="user-info">
-                <h4>${publication.nom || 'Utilisateur'} ${publication.prenom || ''}</h4>
+                <h4 style="cursor:pointer;" onclick="window.location.href=(${publication.client_id} === ${localStorage.getItem('userId')} ? '../../views/profileClient.html' : 'views/profileClientVisitor.html?id=${publication.client_id}')">${publication.nom || 'Utilisateur'} ${publication.prenom || ''}</h4>
                 <span class="meta">Publié le : ${publishDate} | Service : ${publication.service_vise}</span>
                 <span class="meta">Exécution prévue : ${executionDate} | Adresse : ${publication.adresse}</span>
               </div>
