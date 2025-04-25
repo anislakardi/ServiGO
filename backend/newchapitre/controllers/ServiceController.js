@@ -79,6 +79,18 @@ class ServiceController {
         res.json(services);
     }
 
+    static async getPrestatairesByClient(req, res) {
+        const { id: clientId } = req.params;
+        try {
+            const prestataires = await ServiceModel.getPrestataireDetailsByClient(clientId);
+            res.json(prestataires);
+        } catch (error) {
+            console.error("Erreur lors de la récupération des prestataires :", error);
+            res.status(500).json({ error: "Erreur serveur" });
+        }
+    }
+    
+
 
     // get Requests
     static async getAllRequests(req, res) {

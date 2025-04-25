@@ -190,11 +190,11 @@
         <input type="text" id="searchInput" placeholder="Rechercher un prestataire..." />
     
         <ul id="prestataireList">
-          <li><input type="checkbox" value="Ahmed"> Ahmed, électricien</li>
-          <li><input type="checkbox" value="Sonia"> Sonia, couturière</li>
-          <li><input type="checkbox" value="Rachid"> Rachid, plombier</li>
+          
         </ul>
-    
+        <!-- Dans ton <dialog id="recommandationDialog"> -->
+        <textarea id="commentaireInput" placeholder="Votre commentaire…" style="width:100%; height: 70px; margin:8px 0;"></textarea>
+
         <div style="margin-top: 10px;">
           <button id="confirmerBtn" type="button">Confirmer</button>
           <button type="reset">Annuler</button>
@@ -299,6 +299,56 @@
     let currentReportedPublication = null;
 
     
+    // DÉLÉGATION : capture tous les clics sur les boutons "Recommander"
+document.addEventListener('click', async function(e) {
+  const btn = e.target.closest('.openRecommandationDialogBtn');
+  if (!btn) return;
+
+  e.preventDefault();
+  const clientId = localStorage.getItem('userId');
+  const token    = localStorage.getItem('token');
+  if (!clientId || !token) {
+    return alert("Utilisateur non identifié");
+  }
+  
+
+  try {
+    const res = await fetch(`http://localhost:5001/api/demande/prestataires/client/${clientId}`, {
+      headers: { 'Authorization': `Bearer ${token}` }
+    });
+    if (!res.ok) throw new Error(res.status);
+    const data = await res.json();
+
+    // Remplissage du <ul>
+    prestataireList.innerHTML = '';
+    data.forEach(p => {
+      const li = document.createElement('li');
+      li.innerHTML = `
+        <label style="display:flex; align-items:center; gap:8px;">
+          <input type="checkbox" value="${p.prestataire_id}">
+          ${p.prenom} ${p.nom}, ${p.specialisation}
+        </label>
+      `;
+      prestataireList.appendChild(li);
+    });
+
+    // Reset filtre et ouverture du dialog
+    searchInput.value = '';
+    Array.from(prestataireList.children).forEach(li => li.style.display = '');
+    // Quand tu ouvres ton dialog (dans la délégation click)
+    // Récupère l'ID de la publication liée au bouton cliqué
+    const publicationEl = btn.closest('.publication');
+    const idPub        = publicationEl?.dataset?.id;
+    recommandationDialog.dataset.publicationId = idPub;
+
+    recommandationDialog.showModal();
+
+  } catch (err) {
+    console.error("Erreur chargement prestataires :", err);
+    alert("Impossible de charger la liste des prestataires.");
+  }
+});
+
 
       if (openBtn) {
     openBtn.addEventListener("click", () => {
@@ -312,15 +362,7 @@
       loadUserPublications();
     });
       }
-      
-    if (openRecommandationDialogBtn) {
-    openRecommandationDialogBtn.addEventListener("click", () => {
-        if (recommandationDialog) {
-            recommandationDialog.showModal();
-            console.log("Dialogue de recommandation devrait être affiché.");
-        }
-    });
-}
+
 
     // Sélectionner les publications et vérifier la présence de l'image
     document.querySelectorAll('.publication').forEach(publication => {
@@ -444,12 +486,62 @@
       }
   
       if (confirmerBtn) {
-    confirmerBtn.onclick = () => {
-      const checked = document.querySelectorAll('#prestataireList input:checked');
-      const noms = Array.from(checked).map(input => input.value);
-      alert("Prestataires recommandés : " + noms.join(", "));
-      recommandationDialog.close();
-    };
+        confirmerBtn.addEventListener('click', async () => {
+          // Récupère userId (recommandeur) et token
+          const id_recommandeur = localStorage.getItem('userId');
+          const token = localStorage.getItem('token');
+          if (!id_recommandeur || !token) {
+            return alert("Vous devez être connecté(e) pour recommander");
+          }
+
+          // Récupère l'ID de la publication sur laquelle on recommande
+          // (Préalablement défini quand on ouvre le dialog)
+          const id_publication = recommandationDialog.dataset.publicationId;
+          if (!id_publication) {
+            return alert("Aucune publication sélectionnée");
+          }
+
+          // Le commentaire saisi
+          const commentaire = document.getElementById('commentaireInput').value.trim();
+
+          // Les prestataires cochés
+          const checkedBoxes = prestataireList.querySelectorAll('input[type="checkbox"]:checked');
+          if (checkedBoxes.length === 0) {
+            return alert("Sélectionnez au moins un prestataire");
+          }
+
+          try {
+            // Pour chaque prestataire, envoie la recommandation
+            for (const cb of checkedBoxes) {
+              const id_profil_recommande = cb.value;
+              const res = await fetch('http://localhost:5001/api/recommandations',
+              {
+                method: 'POST',
+                headers: {
+                  'Content-Type': 'application/json',
+                  'Authorization': `Bearer ${token}`
+                },
+                body: JSON.stringify({
+                  id_recommandeur,
+                  id_publication,
+                  id_profil_recommande,
+                  commentaire
+                })
+              });
+              console.log("Recommandation envoyée pour le prestataire ID:", res);
+              if (!res.ok) {
+                const err = await res.json().catch(() => ({}));
+                throw new Error(err.message || `Erreur ${res.status}`);
+              }
+            }
+
+            alert("Recommandation(s) envoyée(s) avec succès !");
+            recommandationDialog.close();
+          } catch (err) {
+            console.error("Erreur lors de l'envoi des recommandations :", err);
+            alert("Impossible d'envoyer les recommandations : " + err.message);
+          }
+        });
       }
 
     // Gestion de la soumission du formulaire de publication
@@ -646,14 +738,14 @@
         });
 
         // Ajouter des gestionnaires d'événements pour les boutons de recommandation
-        document.querySelectorAll('.openRecommandationDialogBtn').forEach(button => {
-          button.addEventListener('click', () => {
-            if (recommandationDialog) {
-              recommandationDialog.showModal();
-              console.log("Dialogue de recommandation affiché.");
-            }
-          });
-        });
+          /*document.querySelectorAll('.openRecommandationDialogBtn').forEach(button => {
+            button.addEventListener('click', () => {
+              if (recommandationDialog) {
+                recommandationDialog.showModal();
+                console.log("Dialogue de recommandation affiché.");
+              }
+            });
+          });*/
 
       } catch (error) {
         console.error('Erreur:', error);
@@ -942,7 +1034,9 @@
         document.querySelectorAll('.openRecommandationDialogBtn').forEach(button => {
           button.addEventListener('click', () => {
             if (recommandationDialog) {
+              // Quand tu ouvres ton dialog (dans la délégation click)
               recommandationDialog.showModal();
+
               console.log("Dialogue de recommandation affiché.");
             }
           });

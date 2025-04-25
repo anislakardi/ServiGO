@@ -6,6 +6,7 @@ const ServiceController = require("../controllers/ServiceController");
 router.get("/demande/services", ServiceController.getAllServices);
 router.get("/demande/services/:id", ServiceController.getServicesById);
 router.get("/demande/services/users/:id", ServiceController.getServicesByIdUsers);
+router.get("/demande/prestataires/client/:id", ServiceController.getPrestatairesByClient);
 
 //get request
 router.get("/demande/requests", ServiceController.getAllRequests);

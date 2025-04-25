@@ -65,6 +65,27 @@ class ServiceModel {
         const [rows] = await pool.query(`SELECT * FROM services WHERE ${column} = ?`, [id_user]);
         return rows;
     }
+
+
+    static async getPrestataireDetailsByClient(clientId) {
+        const [rows] = await pool.query(`
+            SELECT DISTINCT 
+              u.id             AS prestataire_id,
+              u.nom,
+              u.prenom,
+              u.adresse,
+              u.specialisation
+            FROM services s
+            JOIN prestataires u 
+              ON s.prestataire_id = u.id
+            WHERE s.client_id       = ?
+              AND s.statut_travail  = 'Terminé'
+          `, [clientId]);
+          
+    
+        return rows;
+    }    
+
     static async updateService(serviceId, updateData) {
         return pool.query("UPDATE services SET ? WHERE id = ?", [updateData, serviceId]);
     }
