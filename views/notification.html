@@ -45,8 +45,10 @@
       const userId   = localStorage.getItem('userId');
       const userType = localStorage.getItem('userType') || 'client';
       if (!userId) return console.error('Pas de userId en localStorage');
-
-      fetch(`http://localhost:5001/api/demande/requests/users/${userId}?typeOfUser=${userType}`
+  
+      fetch(
+        `http://localhost:5001/api/demande/requests/users/` +
+        `${userId}?typeOfUser=${userType}`
       )
       .then(res => {
         if (!res.ok) throw new Error(res.status);
@@ -55,18 +57,18 @@
       .then(afficherNotifications)
       .catch(err => console.error('Erreur notifications :', err));
     });
-
+  
     function afficherNotifications(items) {
       const list = document.getElementById('notifications-list');
       list.innerHTML = '';
-
+  
       items.forEach((svc, i) => {
-        // construction du texte suivant type_demande
+        // 1) construire le texte selon type_demande
         const actionText = svc.type_demande === 'création'
           ? 'a créé un nouveau service'
           : 'a demandé une modification sur';
-
-        // ligne de notification
+  
+        // 2) créer la ligne de notification
         const li = document.createElement('li');
         li.className = 'notification';
         li.innerHTML = `
@@ -82,8 +84,8 @@
           <span class="time">${new Date(svc.date_demande).toLocaleString()}</span>
         `;
         list.appendChild(li);
-
-        // dialog
+  
+        // 3) créer le dialog caché
         const dialog = document.createElement('div');
         dialog.className = 'dialog-overlay';
         dialog.id = `dialog-${i}`;
@@ -108,16 +110,62 @@
           </div>
         `;
         document.body.appendChild(dialog);
-
-        // handlers ouverture / fermeture
+  
+        // 4) handlers de la modale
         li.querySelector('.btn-more').addEventListener('click', () => {
           dialog.style.display = 'flex';
         });
         dialog.querySelector('.btn-close').addEventListener('click', () => {
           dialog.style.display = 'none';
         });
+  
+        // ────────────────────────────────────────────────────
+// 5) AJOUTER ICI les handlers "Accepter" et "Refuser"
+const acceptBtn = li.querySelector('.btn-accept');
+const rejectBtn = li.querySelector('.btn-reject');
+const urlDecision = `http://localhost:5001/api/demande/services/decision/${svc.request_id}`;
+
+acceptBtn.addEventListener('click', () => {
+  fetch(urlDecision, {
+    method: 'PUT',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ decision: 'accepté' })
+  })
+  .then(r => {
+    if (!r.ok) throw new Error(r.status);
+    // OK => on supprime notification + modale
+    li.remove();
+    dialog.remove();
+  })
+  .catch(err => {
+    console.error('Erreur acceptation :', err);
+    alert('Erreur lors de l\'acceptation de la demande');
+  });
+});
+
+rejectBtn.addEventListener('click', () => {
+  fetch(urlDecision, {
+    method: 'PUT',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ decision: 'refusé' })
+  })
+  .then(r => {
+    if (!r.ok) throw new Error(r.status);
+    // OK => on supprime notification + modale
+    li.remove();
+    dialog.remove();
+  })
+  .catch(err => {
+    console.error('Erreur refus :', err);
+    alert('Erreur lors du refus de la demande');
+  });
+});
+// ────────────────────────────────────────────────────
+
+        // ────────────────────────────────────────────────────
       });
     }
   </script>
+  
 </body>
 </html>
