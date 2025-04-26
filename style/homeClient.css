@@ -978,11 +978,6 @@ a, button {
   gap: 4px;
 }
 
-.contact-btn {
-  background-color: var(--Bright-Sun);
-  color: var(--Big-Stone);
-}
-
 .view-profile-btn {
   background-color: var(--Big-Stone);
   color: white;

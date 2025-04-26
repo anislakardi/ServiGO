@@ -58,16 +58,64 @@ class GestionServiceModel {
         const [rows] = await pool.query(`SELECT * FROM gestiondes_services WHERE id = ?`, [id_request]);
         return rows;
   }
-  static async getRequestsByIdUsers(id_user,typeOfUser) {
-    let column = '';
-    if (typeOfUser === "client") {
-      column = 'client_id';
-    } else if (typeOfUser === "prestataire") {
-      column = 'prestataire_id';
-    }
-          const [rows] = await pool.query(`SELECT * FROM gestiondes_services WHERE ${column} = ?`, [id_user]);
-          return rows;
+  static async getRequestsByIdUsers(id_user, typeOfUser) {
+    const column = typeOfUser === 'prestataire'
+                 ? 'prestataire_id'
+                 : 'client_id';
+  
+    const [rows] = await pool.query(`
+      SELECT
+        gs.id                AS request_id,
+        gs.prestataire_id,
+        gs.client_id,
+        gs.type_demande,                       -- création / modification
+        gs.details           AS details_json,
+        gs.statut            AS request_statut,
+        gs.date_demande,
+        p.nom                AS prest_nom,     -- nom du prestataire
+        p.prenom             AS prest_prenom,
+        s.titre,
+        s.description,
+        s.prix,
+        s.categorie,
+        s.statut_travail,
+        s.date_creation      AS service_creation,
+        s.date_prevue,
+        s.date_execution,
+        s.date_fin
+      FROM gestiondes_services gs
+      LEFT JOIN services s
+        ON gs.service_id = s.id
+      LEFT JOIN prestataires p
+        ON gs.prestataire_id = p.id
+      WHERE gs.${column} = ?
+        AND gs.statut = 'En attente'
+    `, [id_user]);
+  
+    return rows.map(r => {
+      const details = JSON.parse(r.details_json || '{}');
+      return {
+        request_id:     r.request_id,
+        prestataire:    `${r.prest_nom} ${r.prest_prenom}`,
+        type_demande:   r.type_demande,
+        request_statut: r.request_statut,
+        date_demande:   r.date_demande,
+  
+        // on priorise les valeurs dans details (modif) puis celles du service
+        titre:          details.titre         ?? r.titre,
+        description:    details.description   ?? r.description,
+        prix:           details.prix         ?? r.prix,
+        categorie:      details.categorie     ?? r.categorie,
+        statut_travail: details.statut_travail ?? r.statut_travail,
+  
+        date_creation:  r.service_creation,
+        date_prevue:    details.date_prevue  ?? r.date_prevue,
+        date_execution: r.date_execution,
+        date_fin:       r.date_fin
+      };
+    });
   }
+  
 }
 
 module.exports = GestionServiceModel;

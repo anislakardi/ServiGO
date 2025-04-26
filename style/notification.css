@@ -282,7 +282,7 @@ h1 {
 /* Ajout d'une zone de survol invisible pour faciliter la sélection */
 .dropdown-content::before {
   content: '';
-  position: absolute;
+  position: absolute; 
   top: -20px;
   left: 0;
   right: 0;

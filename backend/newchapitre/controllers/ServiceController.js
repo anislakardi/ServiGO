@@ -102,12 +102,19 @@ class ServiceController {
         const requests = await GestionServiceModel.getRequestsById(id_request);
         res.json(requests);
     }
-    static async getRequestsByIdUsers(req, res) {
-        const { id: id_user } = req.params;
-        const { typeOfUser } = req.body;
-        const requests = await GestionServiceModel.getRequestsByIdUsers(id_user,typeOfUser);
-        res.json(requests);
+    // ServiceController.js
+static async getRequestsByIdUsers(req, res) {
+    const { id: id_user } = req.params;
+    const { typeOfUser }  = req.query;    // <— ici!
+    try {
+      const requests = await GestionServiceModel.getRequestsByIdUsers(id_user, typeOfUser);
+      res.json(requests);
+    } catch (err) {
+      console.error(err);
+      res.status(500).json({ error: 'Erreur serveur' });
     }
+  }
+  
 }
 
 module.exports = ServiceController;

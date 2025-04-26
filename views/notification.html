@@ -34,77 +34,90 @@
   <!-- PAGE DE NOTIFICATIONS -->
   <main class="notifications-container">
     <h1>Mes Notifications</h1>
-
     <section>
       <h2 class="section-title">Demandes de service</h2>
-      <ul class="notifications-list">
-        <li class="notification">
-          <p><strong>Ali Bensalem</strong> vous a proposé un service de plomberie à Chlef.</p>
-          <p>Description : Réparation de fuite sous l'évier.</p>
-          <div class="actions">
-            <button class="btn btn-accept">Accepter</button>
-            <button class="btn btn-reject">Refuser</button>
-            <button class="btn-more" onclick="openDialog(1)">En savoir plus</button>
-          </div>
-          <span class="time">il y a 10 minutes</span>
-        </li>
-
-        <li class="notification">
-          <p><strong>Sarah Tech</strong> propose un service d'installation d'antenne satellite.</p>
-          <p>Description : Installation complète avec réglage signal.</p>
-          <div class="actions">
-            <button class="btn btn-accept">Accepter</button>
-            <button class="btn btn-reject">Refuser</button>
-            <button class="btn-more" onclick="openDialog(1)">En savoir plus</button>
-          </div>
-          <span class="time">il y a 30 minutes</span>
-        </li>
-      </ul>
+      <ul id="notifications-list" class="notifications-list"></ul>
     </section>
-
-    <section>
-      <h2 class="section-title">Autres notifications</h2>
-      <ul class="notifications-list">
-        <li class="notification">
-          <p><strong>Reda</strong> vous a envoyé un message.</p>
-          <span class="time">il y a 1 heure</span>
-        </li>
-
-        <li class="notification">
-          <p><strong>Admin</strong> : Votre mot de passe a été modifié avec succès.</p>
-          <span class="time">il y a 3 heures</span>
-        </li>
-      </ul>
-    </section>
-    <div class="dialog-overlay" id="dialog-1">
-      <div class="dialog-content">
-        <h2>Détails de la demande</h2>
-        <ul>
-          <li><strong>Titre :</strong> Remplacement de robinet</li>
-          <li><strong>Service :</strong> Plomberie</li>
-          <li><strong>Description :</strong> Remplacer le robinet de la cuisine car il fuit.</li>
-          <li><strong>Date de demande :</strong> 2025-04-20 14:30</li>
-          <li><strong>Date programmée :</strong> 2025-04-22</li>
-          <li><strong>Date début réel :</strong> Non commencé</li>
-          <li><strong>Date fin :</strong> Non terminé</li>
-          <li><strong>Prix :</strong> 300 DA</li>
-          <li><strong>Statut demande :</strong> En attente</li>
-          <li><strong>Statut travail :</strong> À faire</li>
-          <li><strong>Confirmation progression :</strong> Non</li>
-        </ul>
-        <button onclick="closeDialog(1)" class="btn-close">Fermer</button>
-      </div>
-    </div>    
   </main>
+
   <script>
-    function openDialog(id) {
-      document.getElementById('dialog-' + id).style.display = 'flex';
-    }
-  
-    function closeDialog(id) {
-      document.getElementById('dialog-' + id).style.display = 'none';
+    document.addEventListener('DOMContentLoaded', () => {
+      const userId   = localStorage.getItem('userId');
+      const userType = localStorage.getItem('userType') || 'client';
+      if (!userId) return console.error('Pas de userId en localStorage');
+
+      fetch(`http://localhost:5001/api/demande/requests/users/${userId}?typeOfUser=${userType}`
+      )
+      .then(res => {
+        if (!res.ok) throw new Error(res.status);
+        return res.json();
+      })
+      .then(afficherNotifications)
+      .catch(err => console.error('Erreur notifications :', err));
+    });
+
+    function afficherNotifications(items) {
+      const list = document.getElementById('notifications-list');
+      list.innerHTML = '';
+
+      items.forEach((svc, i) => {
+        // construction du texte suivant type_demande
+        const actionText = svc.type_demande === 'création'
+          ? 'a créé un nouveau service'
+          : 'a demandé une modification sur';
+
+        // ligne de notification
+        const li = document.createElement('li');
+        li.className = 'notification';
+        li.innerHTML = `
+          <p>
+            <strong>${svc.prestataire}</strong>
+            ${actionText} <em>${svc.titre}</em>
+          </p>
+          <div class="actions">
+            <button class="btn btn-accept">Accepter</button>
+            <button class="btn btn-reject">Refuser</button>
+            <button class="btn btn-more">En savoir plus</button>
+          </div>
+          <span class="time">${new Date(svc.date_demande).toLocaleString()}</span>
+        `;
+        list.appendChild(li);
+
+        // dialog
+        const dialog = document.createElement('div');
+        dialog.className = 'dialog-overlay';
+        dialog.id = `dialog-${i}`;
+        dialog.style.display = 'none';
+        dialog.innerHTML = `
+          <div class="dialog-content">
+            <h2>Détails de la demande</h2>
+            <ul>
+              <li><strong>Prestataire :</strong> ${svc.prestataire}</li>
+              <li><strong>Type de demande :</strong> ${svc.type_demande}</li>
+              <li><strong>Titre :</strong> ${svc.titre}</li>
+              <li><strong>Service :</strong> ${svc.categorie}</li>
+              <li><strong>Description :</strong> ${svc.description || '—'}</li>
+              <li><strong>Date de demande :</strong> ${new Date(svc.date_demande).toLocaleString()}</li>
+              <li><strong>Date prévue :</strong> ${svc.date_prevue || 'Non prévue'}</li>
+              <li><strong>Date début réel :</strong> ${svc.date_execution || 'Non commencé'}</li>
+              <li><strong>Date fin :</strong> ${svc.date_fin || 'Non terminé'}</li>
+              <li><strong>Prix :</strong> ${svc.prix ? svc.prix+' DA' : '—'}</li>
+              <li><strong>Statut travail :</strong> ${svc.statut_travail}</li>
+            </ul>
+            <button class="btn-close">Fermer</button>
+          </div>
+        `;
+        document.body.appendChild(dialog);
+
+        // handlers ouverture / fermeture
+        li.querySelector('.btn-more').addEventListener('click', () => {
+          dialog.style.display = 'flex';
+        });
+        dialog.querySelector('.btn-close').addEventListener('click', () => {
+          dialog.style.display = 'none';
+        });
+      });
     }
   </script>
-  
 </body>
 </html>
