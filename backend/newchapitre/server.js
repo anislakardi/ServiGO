@@ -47,6 +47,8 @@ app.use("/api", recommandationRoutes);
 app.use('/api/auth', authRoutes);
 
 // Routes pour les pages HTML
+
+
 app.get('/', (req, res) => {
     res.sendFile(path.join(__dirname, '../../views/index.html'));
 });
@@ -64,6 +66,11 @@ app.get('/homeClient', (req, res) => {
 });
 
 // Route pour gérer les requêtes avec l'extension .html
+
+
+app.get('/forgot-password.html', (req, res) => {
+    res.sendFile(path.join(__dirname, '../../views/forgot-password.html'));
+  });
 app.get('/admin-dashboard.html', (req, res) => {
     res.sendFile(path.join(__dirname, '../../views/admin-dashboard.html'));
 });

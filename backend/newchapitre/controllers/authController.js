@@ -1,7 +1,8 @@
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const pool = require('../config/database');
-
+const emailService = require('../services/emailService');
+const resetStore = {};
 // Fonction pour générer un token JWT
 const generateToken = (userId, role) => {
     return jwt.sign(
@@ -10,6 +11,97 @@ const generateToken = (userId, role) => {
         { expiresIn: '24h' }
     );
 };
+
+
+
+
+exports.sendResetCode = async (req, res) => {
+    const { email } = req.body;
+    console.log('Received request to send reset code to:', email);
+    
+    if (!email) {
+      console.log('Email field missing in request');
+      return res.status(400).json({ success: false, message: 'Email requis' });
+    }
+  
+    const code = Math.floor(100000 + Math.random()*900000).toString();
+    const expiresAt = Date.now() + 15*60*1000; // 15 minutes
+  
+    resetStore[email] = { code, expiresAt };
+    console.log(`Generated code for ${email}: ${code}, expires at: ${new Date(expiresAt)}`);
+  
+    try {
+      console.log('Attempting to send email...');
+      await emailService.sendResetCode(email, code);
+      console.log('Email sent successfully');
+      res.json({ success: true });
+    } catch (err) {
+      console.error('Error sending email:', err);
+      res.status(500).json({ success: false, message: 'Échec envoi email' });
+    }
+  };
+  
+  exports.verifyResetCode = (req, res) => {
+    const { email, code } = req.body;
+    console.log(`Verifying code for ${email}: input=${code}`);
+    
+    const record = resetStore[email];
+    console.log('Stored record:', record);
+    
+    if (record && record.code === code && record.expiresAt > Date.now()) {
+      console.log('Code verification successful');
+      return res.json({ success: true });
+    }
+    console.log('Code verification failed');
+    res.json({ success: false });
+  };
+  
+  exports.resetPassword = async (req, res) => {
+    const { email, code, newPassword } = req.body;
+    console.log(`Resetting password for ${email} with code: ${code}`);
+    
+    const record = resetStore[email];
+    console.log('Stored record:', record);
+    
+    if (!record || record.code !== code || record.expiresAt <= Date.now()) {
+      console.log('Invalid or expired code');
+      return res.status(400).json({ success: false, message: 'Code invalide ou expiré' });
+    }
+  
+    try {
+      // hash du nouveau mot de passe
+      const salt = await bcrypt.genSalt(10);
+      const hashed = await bcrypt.hash(newPassword, salt);
+    
+      // déterminer si client ou prestataire
+      console.log('Checking user type...');
+      const [clients] = await pool.query('SELECT id FROM clients WHERE email = ?', [email]);
+      
+      if (clients.length > 0) {
+        console.log('Updating client password');
+        await pool.query('UPDATE clients SET mot_de_passe = ? WHERE email = ?', [hashed, email]);
+      } else {
+        console.log('Updating prestataire password');
+        await pool.query('UPDATE prestataires SET mot_de_passe = ? WHERE email = ?', [hashed, email]);
+      }
+    
+      // nettoyer le store
+      console.log('Clearing reset record from store');
+      delete resetStore[email];
+    
+      res.json({ success: true });
+    } catch (error) {
+      console.error('Error resetting password:', error);
+      res.status(500).json({ success: false, message: 'Erreur lors de la réinitialisation du mot de passe' });
+    }
+  };
+
+
+
+
+
+
+
 
 exports.register = async (req, res) => {
     try {
