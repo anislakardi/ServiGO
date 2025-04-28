@@ -19,13 +19,12 @@
       <li><a href="offreurs.html">Offreurs</a></li>
       <li><a href="messagerie.html">Messagerie</a></li>
       <li><a href="notification.html">Notifications</a></li>
-      <li><a id="active">Profile</a></li>
+      <li><a href="profileClient.html">Profile</a></li>
       <li class="dropdown">
         <a href="#options">Options <i class="fas fa-chevron-down"></i></a>
         <div class="dropdown-content">
           <a href="avisServiGO.html"><i class="fas fa-bell"></i> Avis ServiGO</a>
-          <a href="profileClient.html"><i class="fas fa-user"></i> Profil</a>
-          <a href="#"><i class="fas fa-ellipsis-h"></i> Autre option</a>
+          <a onclick="logout()"><i class="fas fa-sign-out-alt"></i> Déconnexion</a>
         </div>
       </li>
     </ul>
@@ -70,7 +69,7 @@
       </form>
     </div>
   </div>
-
+  <script src="../logout.js"></script>
   <script>
     document.addEventListener('DOMContentLoaded', function() {
       const token     = localStorage.getItem('token');

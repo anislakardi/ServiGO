@@ -277,7 +277,7 @@ main.offreurs-container {
 }
 
 /* BOUTON CONTACT */
-.contact-btn {
+.profile-btn {
   padding: 10px 20px;
   background: var(--Big-Stone);
   color: white;
@@ -292,7 +292,7 @@ main.offreurs-container {
   letter-spacing: 0.5px;
 }
 
-.contact-btn:hover {
+.profile-btn:hover {
   background: var(--Bright-Sun);
   color: var(--Big-Stone);
   transform: translateY(-1px);

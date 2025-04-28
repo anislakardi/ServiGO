@@ -24,8 +24,7 @@
         <a href="#options">Options <i class="fas fa-chevron-down"></i></a>
         <div class="dropdown-content">
           <a href="avisServiGO.html"><i class="fas fa-bell"></i> Avis ServiGO</a>
-          <a href="profileClient.html"><i class="fas fa-user"></i> Profil</a>
-          <a href="#"><i class="fas fa-ellipsis-h"></i> Autre option</a>
+          <a onclick="logout()"><i class="fas fa-sign-out-alt"></i> Déconnexion</a>
         </div>
       </li>
     </ul>
@@ -203,6 +202,7 @@
       </div>
     </section>
   </main>
+  <script src="../logout.js"></script>
   <script>
     // 1. Attendre que tout le DOM soit chargé
     document.addEventListener('DOMContentLoaded', () => {
@@ -300,7 +300,7 @@
                 <img src="${svc1}" alt="Preview 1">
                 <img src="${svc2}" alt="Preview 2">
               </div>
-              <button class="contact-btn">Contacter</button>
+              <button class="profile-btn">PROFILE</button>
             `;
             container.appendChild(card);
           }

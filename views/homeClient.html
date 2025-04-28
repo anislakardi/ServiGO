@@ -23,8 +23,7 @@
         <a href="#options">Options <i class="fas fa-chevron-down"></i></a>
         <div class="dropdown-content">
           <a href="../../views/avisServiGO.html"><i class="fas fa-bell"></i> Avis ServiGO</a>
-          <a href="../../views/profileClient.html"><i class="fas fa-user"></i> Profil</a>
-          <a href="#"><i class="fas fa-ellipsis-h"></i> Autre option</a>
+          <a onclick="logout()"><i class="fas fa-sign-out-alt"></i> Déconnexion</a>
         </div>
       </li>
     </ul>
@@ -209,7 +208,7 @@
   </footer>
 
   
-
+  <script src="../logout.js"></script>
   <script>
     // Attendre que le DOM soit complètement chargé
     document.addEventListener('DOMContentLoaded', function() {
