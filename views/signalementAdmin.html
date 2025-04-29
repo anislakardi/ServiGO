@@ -79,8 +79,9 @@
         fetch(`http://localhost:5001/api/signalements/type/${type}`)
             .then(response => response.json())
             .then(data => {
-                const signalementContainer = document.querySelector(`#${type}-signalements`);
-                signalementContainer.innerHTML = '';  // Vider le contenu existant
+                let signalementContainer;
+                signalementContainer = document.querySelector(`#${type}-signalements`);
+                
 
                 if (data && Array.isArray(data) && data.length > 0) { // Vérification si data est un tableau non vide
                     data.forEach(signalement => {
@@ -94,7 +95,8 @@
                                     <span class="signalement-date">${new Date(signalement.date_signalement).toLocaleDateString()}</span>
                                 </div>
                                 <div class="signalement-content">
-                                    <p class="signalement-title">${signalement.type === 'publication' ? 'Publication signalée' : signalement.type === 'profil' ? 'Profil signalé' : 'Message signalé'}</p>
+                                    <p class="signalement-title"> ${ signalement.type === 'publication' ? 'Publication signalée' : 'Message signalé' }</p>
+
                                     <p class="signalement-description">${signalement.description || 'Aucune description disponible'}</p>
                                     <div class="signalement-actions">
                                         <button class="btn-view" data-id="${signalement.id}" data-id_objet="${signalement.id_objet}" data-type="${signalement.type}" data-description="${signalement.description || 'Aucune description disponible'}" data-date="${signalement.date_signalement}" data-statut="${signalement.statut}">Voir</button>
@@ -129,6 +131,57 @@
                         });
                     });
 
+                    // Ajouter les événements de clic pour les boutons "Supprimer"
+                    const deleteBtns = document.querySelectorAll('.btn-delete');
+                    deleteBtns.forEach(btn => {
+                        btn.addEventListener('click', function () {
+                            const card = btn.closest('.signalement-card');
+                            const viewBtn = card.querySelector('.btn-view');
+
+                            const signalementId = viewBtn.getAttribute('data-id');
+                            const objetId = viewBtn.getAttribute('data-id_objet');
+                            const type = viewBtn.getAttribute('data-type');
+
+                            let deleteUrl;
+                            const confirmation = confirm(`Vous allez supprimer le signalement et le ${type} associé.`);
+                            // Déterminer l'URL de suppression selon le type
+                            if ( confirmation && type === 'publication') {
+                                deleteUrl = `http://localhost:5001/api/publications/${objetId}`;
+                            } else if ( confirmation && type === 'message') {
+                                deleteUrl = `http://localhost:5001/api/messages/${objetId}`;
+                            } else {
+                                console.error('Type non pris en charge:', type);
+                                return;
+                            }
+
+                            // Supprimer l'objet (publication/message/profil)
+                            fetch(deleteUrl, {
+                                method: 'DELETE'
+                            })
+                            .then(response => {
+                                if (response.ok) {
+                                    // Ensuite supprimer le signalement
+                                    return fetch(`http://localhost:5001/api/signalements/${signalementId}`, {
+                                        method: 'DELETE'
+                                    });
+                                } else {
+                                    throw new Error('Erreur lors de la suppression du contenu signalé');
+                                }
+                            })
+                            .then(response => {
+                                if (response.ok) {
+                                    card.remove(); // Supprimer la carte du DOM
+                                } else {
+                                    alert('Erreur lors de la suppression du signalement.');
+                                }
+                            })
+                            .catch(error => {
+                                console.error('Erreur lors de la suppression:', error);
+                            });
+                        });
+                    });
+
+
                     // Ajouter les événements de clic pour les boutons "Voir" après l'ajout des signalements
                     const voirBtns = document.querySelectorAll('.btn-view');
                     voirBtns.forEach(btn => {
@@ -156,8 +209,143 @@
             });
     }
     
+    function fetchSignalementsProfils() {
+    Promise.all([
+        fetch('http://localhost:5001/api/signalements/type/profile_client').then(r => r.json()),
+        fetch('http://localhost:5001/api/signalements/type/profile_prestataire').then(r => r.json())
+    ])
+    .then(([clients, prestataires]) => {
+        const clientsArray      = Array.isArray(clients)      ? clients      : [];
+        const prestatairesArray = Array.isArray(prestataires) ? prestataires : [];
+        const allProfiles = [...clientsArray, ...prestatairesArray];
+        const container   = document.querySelector('#profil-signalements');
+        container.innerHTML = '';
 
-    // Fonction pour récupérer le message spécifique en fonction de son ID
+        if (allProfiles.length === 0) {
+        container.innerHTML = '<p>Aucun signalement trouvé.</p>';
+        return;
+        }
+
+        allProfiles.forEach(signalement => {
+        const card = document.createElement('div');
+        card.classList.add('signalement-card');
+        card.innerHTML = `
+            <div class="signalement-header">
+            <span class="signalement-id">#${signalement.id}</span>
+            <span class="signalement-date">${new Date(signalement.date_signalement).toLocaleDateString()}</span>
+            </div>
+            <div class="signalement-content">
+            <p class="signalement-title">Profil signalé</p>
+            <p class="signalement-description">${signalement.description || 'Aucune description disponible'}</p>
+            <div class="signalement-actions">
+                <button class="btn-view"
+                        data-id="${signalement.id}"
+                        data-id_objet="${signalement.id_objet}"
+                        data-type="${signalement.type}"
+                        data-description="${signalement.description || ''}"
+                        data-date="${signalement.date_signalement}"
+                        data-statut="${signalement.statut}">
+                Voir
+                </button>
+                <button class="btn-suspend"
+                        data-id="${signalement.id}"
+                        data-id_objet="${signalement.id_objet}"
+                        data-type="${signalement.type}">
+                Suspendre
+                </button>
+                <button class="btn-ignore" data-id="${signalement.id}">Ignorer</button>
+            </div>
+            </div>
+        `;
+        container.appendChild(card);
+        });
+
+        // Listeners
+        container.querySelectorAll('.btn-view').forEach(btn => {
+        btn.addEventListener('click', () => {
+            const idObj = btn.dataset.id_objet;
+            const type  = btn.dataset.type;
+
+            if (type === 'publication') {
+            fetchPublicationDetails(idObj);
+            }
+            else if (type === 'message') {
+            fetchMessageDetails(+idObj);
+            }
+            else if (type === 'profile_client') {
+            // rediriger vers la page client
+            window.open(`profileClientVisitor.html?id=${idObj}`, '_blank');
+            }
+            else if (type === 'profile_prestataire') {
+            // rediriger vers la page prestataire
+            window.open(`profileClientVisitor.html?id=${idObj}`, '_blank');
+            }
+        });
+        });
+
+
+        container.querySelectorAll('.btn-suspend').forEach(btn => {
+            btn.addEventListener('click', () => {
+                const signalementId   = btn.dataset.id;        // id du signalement
+                const idObj           = btn.dataset.id_objet;  // id du profil
+                const type            = btn.dataset.type;      // "profile_client" ou "profile_prestataire"
+
+                // 1) Demander la durée de suspension
+                const input = prompt('Suspendre ce profil pour combien de jours ?');
+                const jours_suspension = parseInt(input, 10);
+                if (!jours_suspension || jours_suspension < 1) {
+                alert('Nombre de jours invalide : opération annulée.');
+                return;
+                }
+
+                // 2) Choisir l’URL de suspension
+                const suspendUrl = type === 'profile_client'
+                ? `http://localhost:5001/api/clients/${idObj}/suspendre`
+                : `http://localhost:5001/api/prestataires/${idObj}/suspendre`;
+
+                // 3) Appeler l’API de suspension
+                fetch(suspendUrl, {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ jours_suspension })
+                })
+                .then(res => {
+                if (!res.ok) throw new Error('Erreur suspension');
+                // 4) Une fois suspendu, supprimer le signalement
+                return fetch(`http://localhost:5001/api/signalements/${signalementId}`, { method: 'DELETE' });
+                })
+                .then(res => {
+                if (!res.ok) throw new Error('Erreur suppression signalement');
+                alert(`Profil suspendu pour ${jours_suspension} jours.`);
+                // 5) Retirer la carte du DOM
+                btn.closest('.signalement-card').remove();
+                })
+                .catch(err => {
+                console.error(err);
+                alert('Échec de la suspension ou de la suppression du signalement.');
+                });
+            });
+            });
+
+
+
+        container.querySelectorAll('.btn-ignore').forEach(btn => {
+        btn.addEventListener('click', () => {
+            const signalementId = btn.dataset.id;
+            fetch(`http://localhost:5001/api/signalements/${signalementId}`, { method: 'DELETE' })
+            .then(res => {
+                if (res.ok) btn.closest('.signalement-card').remove();
+                else throw new Error();
+            })
+            .catch(() => alert('Erreur lors de la suppression du signalement.'));
+        });
+        });
+    })
+    .catch(err => {
+        console.error('Erreur lors de la récupération des signalements de profils :', err);
+        document.querySelector('#profil-signalements').innerHTML = '<p>Erreur serveur.</p>';
+    });
+    }// Fonction pour récupérer le message spécifique en fonction de son ID
     function fetchMessageDetails(messageId) {
     fetch(`http://localhost:5001/api/message/${messageId}`)
         .then(response => response.json())
@@ -227,7 +415,7 @@ function fetchPublicationDetails(publicationId) {
 
     // Récupérer les signalements pour chaque type
     fetchSignalements('publication');
-    fetchSignalements('profil');
+    fetchSignalementsProfils();       // remplace les deux appels séparés
     fetchSignalements('message');
 
     // Modal logic

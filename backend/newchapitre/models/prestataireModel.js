@@ -28,6 +28,16 @@ class Prestataire {
         return result.affectedRows;
     }
 
+    static async suspend(id, dateSuspension) {
+            const [result] = await pool.query(`UPDATE prestataires SET suspendu_jusqu = ? WHERE id = ?`, [dateSuspension, id]);
+            return result.affectedRows;
+        }
+    
+    static async activate(id) {
+        const [result] = await pool.query(`UPDATE prestataires SET suspendu_jusqu = NULL WHERE id = ?`, [id]);
+        return result.affectedRows;
+    }
+
     static async delete(id) {
         const [result] = await pool.query(`DELETE FROM prestataires WHERE id = ?`, [id]);
         return result.affectedRows;

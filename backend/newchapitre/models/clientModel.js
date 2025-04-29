@@ -28,6 +28,16 @@ class Client {
         return result.affectedRows;
     }
 
+    static async suspend(id, dateSuspension) {
+        const [result] = await pool.query(`UPDATE clients SET suspendu_jusqu = ? WHERE id = ?`, [dateSuspension, id]);
+        return result.affectedRows;
+    }
+
+    static async activate(id) {
+        const [result] = await pool.query(`UPDATE clients SET suspendu_jusqu = NULL WHERE id = ?`, [id]);
+        return result.affectedRows;
+    }
+
     static async delete(id) {
         const [result] = await pool.query(`DELETE FROM clients WHERE id = ?`, [id]);
         return result.affectedRows;

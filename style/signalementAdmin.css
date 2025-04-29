@@ -245,7 +245,7 @@ nav ul li a:hover {
     border-top: 1px solid rgba(0, 0, 0, 0.05);
 }
 
-.btn-view, .btn-delete, .btn-ignore {
+.btn-view, .btn-delete, .btn-ignore, .btn-suspend{
     padding: 12px 20px;
     border: none;
     border-radius: 8px;
@@ -273,6 +273,10 @@ nav ul li a:hover {
     background-color: #e74c3c;
     color: white;
 }
+.btn-suspend {
+    background-color: #e74c3c;
+    color: white;
+}
 
 .btn-ignore {
     background-color: var(--Dark-Grey);
@@ -282,20 +286,16 @@ nav ul li a:hover {
 .btn-view:hover {
     background-color: var(--Bright-Sun);
     color: var(--Big-Stone);
-    transform: translateY(-1px);
-    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
 }
 
 .btn-delete:hover {
     background-color: #c0392b;
-    transform: translateY(-1px);
-    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
 }
-
+.btn-suspend:hover {
+    background-color: #c0392b;
+}
 .btn-ignore:hover {
     background-color: var(--Big-Stone);
-    transform: translateY(-1px);
-    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
 }
 
 /* Responsive Design */
@@ -317,7 +317,7 @@ nav ul li a:hover {
         padding: 18px;
     }
     
-    .btn-view, .btn-delete, .btn-ignore {
+    .btn-view, .btn-delete, .btn-ignore , .btn-suspend{
         padding: 8px 12px;
         font-size: 0.85em;
     }
@@ -366,7 +366,7 @@ nav ul li a:hover {
         font-size: 0.9em;
     }
     
-    .btn-view, .btn-delete, .btn-ignore {
+    .btn-view, .btn-delete, .btn-ignore, .btn-suspend {
         padding: 8px 10px;
         font-size: 0.8em;
     }

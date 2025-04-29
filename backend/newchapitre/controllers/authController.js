@@ -191,7 +191,19 @@ exports.login = async (req, res) => {
             if (!isPasswordValid) {
                 return res.status(401).json({ message: 'Mot de passe incorrect' });
             }
+
+            // Si prestataire suspendu
+                const now = new Date();
+                if (user.suspendu_jusqu && new Date(user.suspendu_jusqu) > now) {
+                    const diffTime = new Date(user.suspendu_jusqu) - now;
+                    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+                    return res.status(403).json({
+                        message: `Votre compte est suspendu. Il reste ${diffDays} jour(s) avant la réactivation.`
+                    });
+                }
         }
+
+        
 
         // Générer le token
         const token = generateToken(user.id, userRole);

@@ -118,6 +118,58 @@ exports.supprimerClient = async (req, res) => {
     }
 };
 
+exports.suspendreClient = async (req, res) => {
+    try {
+        const { id } = req.params;
+        const { jours_suspension } = req.body;  // Nombre de jours pendant lesquels le client sera suspendu
+
+        // Vérifier si le client existe
+        const existingClient = await Client.findById(id);
+        if (!existingClient) {
+            return res.status(404).json({ message: "Client non trouvé" });
+        }
+
+        // Calculer la date de suspension
+        const dateSuspension = new Date();
+        dateSuspension.setDate(dateSuspension.getDate() + jours_suspension);  // Suspension pour X jours
+
+        // Suspendre le client
+        const result = await Client.suspend(id, dateSuspension);
+        if (result === 0) {
+            return res.status(400).json({ message: "Erreur lors de la suspension du client" });
+        }
+
+        res.status(200).json({ message: "Client suspendu avec succès jusqu'au " + dateSuspension.toISOString().split('T')[0] });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ message: 'Erreur lors de la suspension du client', error });
+    }
+};
+
+exports.reactiverClient = async (req, res) => {
+    try {
+        const { id } = req.params;
+
+        // Vérifier si le client existe
+        const existingClient = await Client.findById(id);
+        if (!existingClient) {
+            return res.status(404).json({ message: "Client non trouvé" });
+        }
+
+        // Réactiver le client (réinitialisation du champ suspendu_jusqu à NULL)
+        const result = await Client.activate(id);
+        if (result === 0) {
+            return res.status(400).json({ message: "Erreur lors de la réactivation du client" });
+        }
+
+        res.status(200).json({ message: "Client réactivé avec succès" });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ message: 'Erreur lors de la réactivation du client', error });
+    }
+};
+
+
 exports.updateProfilePicture = async (req, res) => {
     try {
         const { id } = req.params;
