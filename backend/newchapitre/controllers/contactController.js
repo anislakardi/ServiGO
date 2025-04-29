@@ -17,6 +17,33 @@ const createContact = async (req, res) => {
   }
 };
 
+const getAllContacts = async (req, res) => {
+  try {
+    const contacts = await Contact.getAllContacts();
+    return res.status(200).json({ success: true, contacts });
+  } catch (error) {
+    return res.status(500).json({ success: false, error: 'Erreur lors de la récupération des contacts.' });
+  }
+};
+
+const deleteContact = async (req, res) => {
+  const { id } = req.params;
+
+  try {
+    const success = await Contact.deleteContact(id);
+    
+    if (success) {
+      return res.status(200).json({ success: true, message: 'Contact supprimé avec succès.' });
+    } else {
+      return res.status(404).json({ success: false, error: 'Contact non trouvé.' });
+    }
+  } catch (error) {
+    return res.status(500).json({ success: false, error: 'Erreur lors de la suppression du contact.' });
+  }
+};
+
 module.exports = {
-  createContact
+  createContact,
+  getAllContacts,
+  deleteContact
 };

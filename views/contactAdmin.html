@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gestion des Contacts - ServiGO</title>
+    <link rel="stylesheet" href="../style/contactAdmin.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+    <!-- Navbar -->
+    <nav>
+        <div class="logo">
+            <h1>ServiGO</h1>
+        </div>
+        <ul>
+            <li><a href="../views/admin-dashboard.html">Tableau de Bord</a></li>
+            <li><a href="../views/utilisateurAdmin.html">Utilisateurs</a></li>
+            <li><a href="../views/signalementAdmin.html">Signalements</a></li>
+            <li><a id="active">Contacts</a></li>
+            <li><a href="../views/login.html" class="logout-btn">Déconnexion</a></li>
+        </ul>
+    </nav>
+
+    <main>
+        <div class="admin-container">
+            <h1>Gestion des Contacts</h1>
+            
+            <!-- Search and Filter Section -->
+            <div class="search-controls">
+                <div class="search-bar">
+                    <i class="fas fa-search"></i>
+                    <input type="text" id="searchContacts" placeholder="Rechercher un contact...">
+                </div>
+                <button class="reload-btn" title="Recharger la liste">
+                    <i class="fas fa-sync-alt"></i>
+                </button>
+            </div>
+
+            <!-- Contacts Table -->
+            <div class="table-container">
+                <table class="admin-table">
+                    <thead>
+                        <tr>
+                            <th>Nom</th>
+                            <th>Email</th>
+                            <th>Message</th>
+                            <th>Date</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="contacts-container">
+                        <!-- Les contacts seront ajoutés dynamiquement ici -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </main>
+
+    <!-- Modal de confirmation de suppression -->
+    <div class="modal" id="delete-modal">
+        <div class="modal-content">
+            <h2>Confirmer la suppression</h2>
+            <p>Êtes-vous sûr de vouloir supprimer ce contact ?</p>
+            <div class="modal-actions">
+                <button class="btn cancel" id="cancel-delete">Annuler</button>
+                <button class="btn delete" id="confirm-delete">Supprimer</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', async () => {
+            const token = localStorage.getItem('token');
+            
+            if (!token) {
+                window.location.href = '/login';
+                return;
+            }
+
+            // Charger les contacts au chargement de la page
+            await loadContacts();
+
+            async function loadContacts() {
+    try {
+        const response = await fetch('http://localhost:5001/api/contacts', {
+            headers: {
+                'Authorization': `Bearer ${localStorage.getItem('token')}`
+            }
+        });
+
+        if (!response.ok) {
+            throw new Error('Erreur lors de la récupération des contacts');
+        }
+
+        const data = await response.json();
+        displayContacts(data.contacts);
+    } catch (error) {
+        console.error('Erreur:', error);
+        alert('Erreur lors du chargement des contacts');
+    }
+}
+
+function displayContacts(contacts) {
+  const container = document.getElementById('contacts-container');
+  container.innerHTML = '';
+
+  contacts.forEach(contact => {
+      const row = document.createElement('tr');
+      row.innerHTML = `
+          <td>${contact.name}</td>
+          <td>${contact.email}</td>
+          <td>${contact.message}</td>
+          <td>${new Date(contact.created_at).toLocaleDateString()}</td>
+          <td>
+              <button class="btn delete" data-id="${contact.id}">
+                  <i class="fas fa-trash"></i>
+              </button>
+          </td>
+      `;
+      container.appendChild(row);
+  });
+
+  // **Ici**, on attache les listeners
+  container.querySelectorAll('.btn.delete').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const id = btn.dataset.id;
+      confirmDelete(id);
+    });
+  });
+}
+
+let contactToDelete = null;
+
+function confirmDelete(contactId) {
+    contactToDelete = contactId;
+    const modal = document.getElementById('delete-modal');
+    modal.style.display = 'block';
+}
+// en dehors de la définition, dans le même scope que confirmDelete
+window.confirmDelete = confirmDelete;
+
+
+document.getElementById('cancel-delete').addEventListener('click', () => {
+    const modal = document.getElementById('delete-modal');
+    modal.style.display = 'none';
+    contactToDelete = null;
+});
+
+document.getElementById('confirm-delete').addEventListener('click', async () => {
+    if (!contactToDelete) return;
+
+    try {
+        const response = await fetch(`http://localhost:5001/api/contacts/${contactToDelete}`, {
+            method: 'DELETE',
+            headers: {
+                'Authorization': `Bearer ${localStorage.getItem('token')}`
+            }
+        });
+
+        if (!response.ok) {
+            throw new Error('Erreur lors de la suppression du contact');
+        }
+
+        const modal = document.getElementById('delete-modal');
+        modal.style.display = 'none';
+        contactToDelete = null;
+
+        // Recharger la liste des contacts
+        await loadContacts();
+    } catch (error) {
+        console.error('Erreur:', error);
+        alert('Erreur lors de la suppression du contact');
+    }
+});
+
+// Gestion de la recherche
+document.getElementById('searchContacts')?.addEventListener('input', (e) => {
+    const searchTerm = e.target.value.toLowerCase();
+    const rows = document.querySelectorAll('#contacts-container tr');
+
+    rows.forEach(row => {
+        const text = row.textContent.toLowerCase();
+        row.style.display = text.includes(searchTerm) ? '' : 'none';
+    });
+});
+
+// Gestion du bouton de rechargement
+document.querySelector('.reload-btn')?.addEventListener('click', async () => {
+    await loadContacts();
+});
+        });
+    </script>
+</body>
+</html> 

@@ -1,0 +1,339 @@
+@import url('https://fonts.googleapis.com/css2?family=Figtree:ital,wght@0,300..900;1,300..900&family=Josefin+Sans:ital,wght@0,100..700;1,100..700&family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap');
+
+:root {
+    --Bright-Sun: #fcdb32;
+    --Big-Stone: #141D38;
+    --Light-Grey: #eef0f5;
+    --Dark-Grey: #444b54;
+    --Shadow: rgba(0, 0, 0, 0.2);
+    --font-family-1: "Montserrat", sans-serif;
+    --font-family-2: "Josefin Sans", sans-serif;
+    --font-family-3: "Figtree", sans-serif;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: var(--font-family-1);
+    background-color: var(--Light-Grey);
+    color: var(--Dark-Grey);
+    min-height: 100vh;
+    overflow-y: hidden;
+}
+
+main {
+    width: 100%;
+    padding: 80px 0 20px;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    min-height: 100vh;
+    overflow-y: auto;
+}
+
+h1, h2, h3, h4, h5, h6 {
+    font-family: var(--font-family-1);
+}
+
+p, li {
+    font-family: var(--font-family-2);
+}
+
+a, button {
+    font-family: var(--font-family-1);
+}
+
+span {
+    font-family: var(--font-family-3);
+}
+
+/* Navbar Styles */
+nav {
+    background-color: var(--Big-Stone);
+    color: white;
+    padding: 15px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    box-shadow: 0 2px 8px var(--Shadow);
+    position: fixed;
+    width: 100%;
+    top: 0;
+    z-index: 1000;
+}
+
+nav .logo h1 {
+    font-style: italic;
+    margin: 0;
+}
+
+nav ul {
+    list-style: none;
+    display: flex;
+    gap: 15px;
+    margin: 0;
+}
+
+nav ul li a {
+    color: white;
+    text-decoration: none;
+    padding: 8px;
+    border-radius: 4px;
+    transition: background-color 0.3s;
+}
+
+nav ul li a:hover,
+nav ul li a#active {
+    background-color: var(--Bright-Sun);
+    color: var(--Big-Stone);
+}
+
+nav ul li a:hover {
+    color: var(--Big-Stone);
+}
+
+.logout-btn {
+    color: white !important;
+    background-color: #ff0000 !important;
+    font-weight: bold;
+    padding: 8px 15px;
+    border-radius: 4px;
+}
+
+.logout-btn:hover {
+    background-color: #cc0000 !important;
+    color: white !important;
+}
+
+main h1 {
+  text-align: center;
+  color: var(--Big-Stone);
+  margin-bottom: 2rem;
+}
+
+
+.table-container {
+  background-color: white;
+  border-radius: 8px;
+  box-shadow: 0 2px 5px var(--Shadow);
+  padding: 1.5rem;
+  margin-top: 2rem;
+  overflow-x: auto;
+  max-height: 70vh;
+  overflow-y: auto;
+}
+
+/* Styles pour la barre de défilement */
+.table-container::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+.table-container::-webkit-scrollbar-track {
+  background: var(--Light-Grey);
+  border-radius: 4px;
+}
+
+.table-container::-webkit-scrollbar-thumb {
+  background: var(--Dark-Grey);
+  border-radius: 4px;
+}
+
+.table-container::-webkit-scrollbar-thumb:hover {
+  background: var(--Big-Stone);
+}
+
+.admin-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-family: var(--font-family-2);
+  min-width: 800px; /* Assure une largeur minimale pour éviter la compression */
+}
+
+.admin-table th,
+.admin-table td {
+  padding: 1rem;
+  text-align: left;
+  border-bottom: 1px solid var(--Light-Grey);
+}
+
+.admin-table th {
+  background-color: var(--Big-Stone);
+  color: white;
+  font-weight: 500;
+  top: 0;
+}
+
+.admin-table tr:hover {
+  background-color: var(--Light-Grey);
+}
+
+.admin-table td {
+  color: var(--Dark-Grey);
+}
+
+.admin-table td:last-child {
+  text-align: center;
+}
+
+/* Styles pour les boutons d'action */
+.btn.delete {
+  background-color: #e84118;
+  color: white;
+  border: none;
+  padding: 0.5rem 1rem;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.btn.delete:hover {
+  background-color: #c23616;
+  transform: translateY(-2px);
+}
+
+.btn.delete i {
+  font-size: 1rem;
+}
+
+/* Styles pour la barre de recherche */
+.search-controls {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.5rem;
+  background-color: white;
+  padding: 1rem;
+  border-radius: 8px;
+  box-shadow: 0 2px 5px var(--Shadow);
+}
+
+.search-bar {
+  display: flex;
+  align-items: center;
+  background-color: var(--Light-Grey);
+  border-radius: 4px;
+  padding: 0.5rem 1rem;
+  width: 300px;
+}
+
+.search-bar i {
+  color: var(--Dark-Grey);
+  margin-right: 0.5rem;
+}
+
+.search-bar input {
+  border: none;
+  background: none;
+  outline: none;
+  width: 100%;
+  font-family: var(--font-family-2);
+  color: var(--Dark-Grey);
+}
+
+.reload-btn {
+  background: none;
+  border: none;
+  color: var(--Big-Stone);
+  cursor: pointer;
+  padding: 0.5rem;
+  border-radius: 4px;
+  transition: all 0.3s ease;
+}
+
+.reload-btn:hover {
+  background-color: var(--Light-Grey);
+  transform: rotate(180deg);
+}
+
+/* Styles pour le modal de suppression */
+#delete-modal {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  z-index: 1000;
+}
+
+#delete-modal .modal-content {
+  background-color: white;
+  margin: 15% auto;
+  padding: 2rem;
+  width: 90%;
+  max-width: 500px;
+  border-radius: 8px;
+  box-shadow: 0 4px 20px var(--Shadow);
+}
+
+#delete-modal h2 {
+  color: var(--Big-Stone);
+  margin-bottom: 1rem;
+}
+
+#delete-modal p {
+  color: var(--Dark-Grey);
+  margin-bottom: 2rem;
+}
+
+#delete-modal .modal-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 1rem;
+}
+
+#delete-modal .btn {
+  padding: 0.5rem 1.5rem;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+#delete-modal .btn.cancel {
+  background-color: var(--Big-Stone);
+  color: white;
+  border: none;
+}
+
+#delete-modal .btn.delete {
+  background-color: #e84118;
+  color: white;
+}
+
+#delete-modal .btn:hover {
+  opacity: 0.9;
+  transform: translateY(-2px);
+}
+
+/* Responsive styles */
+@media (max-width: 768px) {
+  .search-controls {
+      flex-direction: column;
+      gap: 1rem;
+  }
+
+  .search-bar {
+      width: 100%;
+  }
+
+  .admin-table {
+      font-size: 0.9rem;
+  }
+
+  .admin-table th,
+  .admin-table td {
+      padding: 0.75rem;
+  }
+
+  #delete-modal .modal-content {
+      margin: 20% auto;
+      padding: 1.5rem;
+  }
+} 

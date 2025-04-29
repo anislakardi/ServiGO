@@ -16,6 +16,31 @@ class Contact {
       throw error;
     }
   }
+
+  static async getAllContacts() {
+    try {
+      const [contacts] = await pool.query(
+        'SELECT * FROM contacts ORDER BY created_at DESC'
+      );
+      return contacts;
+    } catch (error) {
+      console.error("Erreur lors de la récupération des contacts:", error);
+      throw error;
+    }
+  }
+
+  static async deleteContact(contactId) {
+    try {
+      const [result] = await pool.query(
+        'DELETE FROM contacts WHERE id = ?',
+        [contactId]
+      );
+      return result.affectedRows > 0;
+    } catch (error) {
+      console.error("Erreur lors de la suppression du contact:", error);
+      throw error;
+    }
+  }
 }
 
 module.exports = Contact;
