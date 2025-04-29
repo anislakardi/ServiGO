@@ -733,7 +733,7 @@ document.addEventListener('click', async function(e) {
         myPostsContainer.innerHTML = `<div class="error-message">Erreur lors du chargement de vos publications: ${error.message}</div>`;
       }
     }
-
+    
     // Fonction pour modifier une publication
     window.editPublication = function(publicationId) {
       const token = localStorage.getItem('token');

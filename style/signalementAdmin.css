@@ -10,6 +10,7 @@
   --font-family-1: "Montserrat", sans-serif;
   --font-family-2: "Josefin Sans", sans-serif;
   --font-family-3: "Figtree", sans-serif;
+  --transition-speed: 0.3s;
 }
 
 * {
@@ -152,7 +153,6 @@ nav ul li a:hover {
     align-items: center;
     gap: 15px;
     font-family: var(--font-family-2);
-    position: sticky;
     top: 0;
     background-color: white;
     padding: 15px 0;
@@ -169,20 +169,21 @@ nav ul li a:hover {
 .signalement-card {
     background-color: white;
     border-radius: 12px;
-    padding: 20px;
+    padding: 25px;
     border: 1px solid rgba(0, 0, 0, 0.1);
     width: 100%;
     box-sizing: border-box;
     display: flex;
     flex-direction: column;
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    transition: all var(--transition-speed) ease;
     position: relative;
     overflow: hidden;
+    margin-bottom: 15px;
 }
 
 .signalement-card:hover {
     transform: translateY(-1px);
-    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 12px 24px rgba(0, 0, 0, 0.1);
 }
 
 .signalement-card::before {
@@ -190,25 +191,25 @@ nav ul li a:hover {
     position: absolute;
     top: 0;
     left: 0;
-    width: 4px;
+    width: 5px;
     height: 100%;
-    background-color: var(--Bright-Sun);
+    transition: width var(--transition-speed) ease;
 }
 
 .signalement-header {
     display: flex;
     justify-content: space-between;
-    margin-bottom: 15px;
+    margin-bottom: 20px;
     color: var(--Dark-Grey);
     font-size: 0.9rem;
-    padding-bottom: 10px;
+    padding-bottom: 15px;
     border-bottom: 1px solid rgba(0, 0, 0, 0.05);
 }
 
 .signalement-content {
     display: flex;
     flex-direction: column;
-    gap: 15px;
+    gap: 20px;
     width: 100%;
     flex: 1;
 }
@@ -218,44 +219,49 @@ nav ul li a:hover {
     color: var(--Big-Stone);
     font-family: var(--font-family-2);
     word-break: break-word;
-    font-size: 1.1em;
+    font-size: 1.2em;
     line-height: 1.4;
+    margin-bottom: 10px;
 }
 
 .signalement-description {
     color: var(--Dark-Grey);
-    font-size: 0.95em;
+    font-size: 1em;
     word-break: break-word;
-    line-height: 1.5;
+    line-height: 1.6;
     opacity: 0.9;
+    padding: 15px;
+    background-color: rgba(0, 0, 0, 0.02);
+    border-radius: 8px;
 }
 
 .signalement-actions {
     display: flex;
-    gap: 10px;
-    margin-top: 20px;
+    gap: 15px;
+    margin-top: 25px;
     justify-content: space-between;
     width: 100%;
-    padding-top: 15px;
+    padding-top: 20px;
     border-top: 1px solid rgba(0, 0, 0, 0.05);
 }
 
 .btn-view, .btn-delete, .btn-ignore {
-    padding: 10px 15px;
+    padding: 12px 20px;
     border: none;
     border-radius: 8px;
     cursor: pointer;
-    font-weight: 500;
-    transition: all 0.3s ease;
+    font-weight: 600;
+    transition: all var(--transition-speed) ease;
     font-family: var(--font-family-3);
     white-space: nowrap;
-    font-size: 0.9em;
+    font-size: 0.95em;
     flex: 1;
     text-align: center;
     min-width: 0;
     overflow: hidden;
     text-overflow: ellipsis;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    letter-spacing: 0.5px;
 }
 
 .btn-view {
@@ -277,19 +283,19 @@ nav ul li a:hover {
     background-color: var(--Bright-Sun);
     color: var(--Big-Stone);
     transform: translateY(-1px);
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
 }
 
 .btn-delete:hover {
     background-color: #c0392b;
     transform: translateY(-1px);
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
 }
 
 .btn-ignore:hover {
     background-color: var(--Big-Stone);
     transform: translateY(-1px);
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
 }
 
 /* Responsive Design */
@@ -366,7 +372,7 @@ nav ul li a:hover {
     }
 }
 
-/* Enhanced Modal Styles */
+/* Modal Styles */
 .modal {
     display: none;
     position: fixed;
@@ -374,10 +380,11 @@ nav ul li a:hover {
     left: 0;
     width: 100%;
     height: 100%;
-    background-color: rgba(0, 0, 0, 0.5);
+    background-color: rgba(0, 0, 0, 0.6);
+    backdrop-filter: blur(5px);
     justify-content: center;
     align-items: center;
-    transition: opacity 0.3s ease;
+    transition: opacity var(--transition-speed) ease;
     opacity: 0;
     z-index: 1000;
 }
@@ -389,51 +396,148 @@ nav ul li a:hover {
 
 .modal-content {
     background-color: white;
-    padding: 20px;
-    border-radius: 10px;
+    padding: 30px;
+    border-radius: 20px;
     width: 90%;
     max-width: 700px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    box-shadow: 0 15px 40px rgba(0, 0, 0, 0.2);
     position: relative;
     text-align: left;
+    animation: modalSlideIn 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+    transform-origin: center;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+}
+
+@keyframes modalSlideIn {
+    from {
+        transform: translateY(-30px) scale(0.95);
+        opacity: 0;
+    }
+    to {
+        transform: translateY(0) scale(1);
+        opacity: 1;
+    }
+}
+
+.modal-content h2 {
+    grid-column: 1 / -1;
+    margin-bottom: 20px;
+    color: var(--Big-Stone);
+    font-size: 1.8em;
+    font-weight: 700;
+    position: relative;
+    padding-bottom: 10px;
+    border-bottom: 2px solid var(--Big-Stone);
+}
+
+.modal-info {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.modal-info p {
+    margin: 0;
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    line-height: 1.6;
+    font-size: 1em;
+    color: var(--Dark-Grey);
+}
+
+.modal-info strong {
+    color: var(--Big-Stone);
+    font-weight: 600;
+    min-width: 100px;
+    display: inline-block;
+}
+
+.modal-info span {
+    flex: 1;
+    padding: 8px 12px;
+    background-color: rgba(0, 0, 0, 0.02);
+    border-radius: 8px;
+    transition: all var(--transition-speed) ease;
+}
+
+.modal-image {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 15px;
+}
+
+#modal-img {
+    max-width: 100%;
+    max-height: 300px;
+    width: auto;
+    height: auto;
+    display: block;
+    border-radius: 12px;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+    transition: transform var(--transition-speed) ease;
+}
+
+#modal-img:hover {
+    transform: scale(1.02);
 }
 
 .close-btn {
     position: absolute;
-    top: 10px;
-    right: 10px;
-    font-size: 24px;
+    top: 15px;
+    right: 15px;
+    font-size: 28px;
     cursor: pointer;
     color: var(--Dark-Grey);
-    transition: color 0.3s ease;
+    transition: all var(--transition-speed) ease;
+    background: none;
+    border: none;
+    padding: 5px;
+    width: 35px;
+    height: 35px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
 }
 
 .close-btn:hover {
-    color: var(--Bright-Sun);
+    color: var(--Big-Stone);
+    transform: rotate(90deg);
+    background-color: rgba(0, 0, 0, 0.05);
 }
 
-/* Enhanced Modal Content Spacing */
-.modal-content p {
-    margin-bottom: 10px;
-    line-height: 1.6;
-}
+/* Responsive adjustments for modal */
+@media (max-width: 768px) {
+    .modal-content {
+        grid-template-columns: 1fr;
+        padding: 20px;
+        width: 95%;
+    }
 
-.modal-content h2 {
-    margin-bottom: 20px;
-}
+    .modal-content h2 {
+        font-size: 1.5em;
+    }
 
-.modal-content span {
-    display: block;
-    margin-bottom: 10px;
-}
+    .modal-info p {
+        flex-direction: column;
+        gap: 5px;
+    }
 
-/* Limit Image Size in Modal */
-#modal-img {
-    max-width: 100%;
-    max-height: 400px;
-    width: auto;
-    height: auto;
-    display: block;
-    margin: 0 auto;
+    .modal-info strong {
+        min-width: auto;
+    }
+
+    .modal-info span {
+        width: 100%;
+    }
+
+    #modal-img {
+        max-height: 250px;
+    }
 }
   

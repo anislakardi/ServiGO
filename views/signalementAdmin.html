@@ -163,9 +163,10 @@
         .then(response => response.json())
         .then(message => {
             if (message) {
+                modalType.textContent = 'Message';
                 modalDescription.textContent = message.description || 'Aucun contenu disponible';
-                modalDate.textContent = new Date(message.date_signalement).toLocaleDateString();
-                modalStatut.textContent = message.statut;
+                modalDate.textContent = new Date(message.date_message).toLocaleDateString();
+                modalStatut.textContent = 'Active';
 
                 const modalImg = document.getElementById('modal-img');
                 if (message.photos) {
