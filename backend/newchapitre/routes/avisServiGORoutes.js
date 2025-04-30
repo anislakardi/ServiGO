@@ -5,6 +5,7 @@ const authMiddleware = require('../middleware/authMiddleware');
 
 // Routes publiques (pas besoin d'authentification)
 router.get('/avisservigo', AvisServiGOController.getAllAvis);
+router.get('/avisservigo/stats', AvisServiGOController.getStats);
 
 // Routes protégées (nécessitent une authentification)
 router.get('/avisservigo/user/:id', authMiddleware, AvisServiGOController.hasClientAlreadyRated);

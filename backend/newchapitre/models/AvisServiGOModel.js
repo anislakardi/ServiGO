@@ -31,9 +31,15 @@ class AvisServiGOModel {
     static async getStats() {
         const [rows] = await pool.query(`
             SELECT 
-                AVG(note_moyenne) as moyenne_globale,
+                AVG(rating) as moyenne_rating,
+                AVG(service_rating) as moyenne_service,
+                AVG(communication_rating) as moyenne_communication,
+                AVG(price_rating) as moyenne_prix,
                 COUNT(*) as total_avis,
-                (COUNT(CASE WHEN note_moyenne >= 4 THEN 1 END) * 100.0 / COUNT(*)) as pourcentage_satisfaction
+                (COUNT(CASE WHEN rating >= 4 THEN 1 END) * 100.0 / COUNT(*)) as pourcentage_satisfaction_rating,
+                (COUNT(CASE WHEN service_rating >= 4 THEN 1 END) * 100.0 / COUNT(*)) as pourcentage_satisfaction_service,
+                (COUNT(CASE WHEN communication_rating >= 4 THEN 1 END) * 100.0 / COUNT(*)) as pourcentage_satisfaction_communication,
+                (COUNT(CASE WHEN price_rating >= 4 THEN 1 END) * 100.0 / COUNT(*)) as pourcentage_satisfaction_prix
             FROM avis_ServiGO
         `);
         return rows[0];

@@ -1,0 +1,322 @@
+@import url('https://fonts.googleapis.com/css2?family=Figtree:ital,wght@0,300..900;1,300..900&family=Josefin+Sans:ital,wght@0,100..700;1,100..700&family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap');
+
+:root {
+    --Bright-Sun: #fcdb32;
+    --Big-Stone: #141D38;
+    --Light-Grey: #eef0f5;
+    --Dark-Grey: #444b54;
+    --font-family-1: "Montserrat", sans-serif;
+    --font-family-2: "Josefin Sans", sans-serif;
+    --font-family-3: "Figtree", sans-serif;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: var(--font-family-1);
+    background-color: var(--Light-Grey);
+    color: var(--Dark-Grey);
+    line-height: 1.6;
+    display: flex;
+    min-height: 100vh;
+}
+
+.reviews-container {
+    display: flex;
+    width: 100%;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 2rem 1rem;
+    gap: 2rem;
+    margin-top: 60px;
+}
+
+.reviews-header {
+    text-align: center;
+    margin-bottom: 2rem;
+}
+
+.reviews-header h1 {
+    color: var(--Big-Stone);
+    font-size: 2rem;
+    margin-bottom: 1.5rem;
+    font-family: var(--font-family-3);
+}
+
+/* Conteneur des statistiques (partie gauche) */
+.ratings-container {
+    width: 300px;
+    position: fixed;
+    left: 0;
+    top: 0;
+    height: 100vh;
+    background-color: var(--Big-Stone);
+    padding: 2rem 1rem;
+    box-shadow: 2px 0 10px rgba(0, 0, 0, 0.1);
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+}
+
+.logo-container {
+    text-align: center;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.logo {
+    font-family: var(--font-family-3);
+    font-style: italic;
+    font-size: 2rem;
+    color: white;
+    margin: 0;
+    line-height: 1;
+}
+
+.auth-buttons {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    margin-bottom: 2rem;
+}
+
+.auth-button {
+    padding: 0.8rem 1.5rem;
+    border-radius: 25px;
+    border: none;
+    font-size: 1rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-align: center;
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+}
+
+.auth-button.login {
+    background-color: var(--Bright-Sun);
+    color: var(--Big-Stone);
+}
+
+.auth-button.register {
+    background-color: transparent;
+    color: white;
+    border: 2px solid var(--Bright-Sun);
+}
+
+.auth-button.home {
+    background-color: var(--Big-Stone);
+    color: white;
+    border: 2px solid var(--Bright-Sun);
+}
+
+.auth-button.home:hover {
+    background-color: var(--Bright-Sun);
+    color: var(--Big-Stone);
+    border-color: var(--Big-Stone);
+}
+
+.auth-button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.auth-button i {
+    font-size: 1.1rem;
+}
+
+.ratings-summary {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.rating-category {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem;
+    background-color: rgba(255, 255, 255, 0.1);
+    border-radius: 8px;
+    transition: transform 0.3s ease;
+}
+
+.rating-category:hover {
+    transform: translateX(5px);
+    background-color: rgba(255, 255, 255, 0.15);
+}
+
+.category-info {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.category-info i {
+    font-size: 1.2rem;
+    color: var(--Bright-Sun);
+}
+
+.category-name {
+    font-size: 1rem;
+    color: white;
+    font-weight: 500;
+}
+
+.rating-value {
+    font-size: 1.2rem;
+    font-weight: bold;
+    color: var(--Bright-Sun);
+}
+
+/* Conteneur des avis (partie droite) */
+.reviews-list-container {
+    flex: 1;
+    max-width: 800px;
+    margin-left: 320px;
+    overflow-y: auto;
+    height: calc(100vh - 4rem);
+    padding-right: 1rem;
+}
+
+.reviews-list {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+.review-card {
+    background-color: white;
+    border-radius: 12px;
+    padding: 1.5rem;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    margin-bottom: 1.5rem;
+    transition: transform 0.3s ease;
+}
+
+.review-card:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.review-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem;
+}
+
+.user-info {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.user-info img {
+    width: 45px;
+    height: 45px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 2px solid var(--Bright-Sun);
+}
+
+.user-name {
+    color: var(--Big-Stone);
+    font-weight: 600;
+    font-size: 1.1rem;
+}
+
+.review-date {
+    color: var(--Dark-Grey);
+    font-size: 0.9rem;
+    opacity: 0.8;
+}
+
+.review-content {
+    margin: 1rem 0;
+    color: var(--Dark-Grey);
+    line-height: 1.6;
+    font-size: 1rem;
+}
+
+.review-ratings {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1rem;
+    margin-top: 1.5rem;
+    background-color: whitesmoke;
+    padding: 1rem;
+    border-radius: 8px;
+}
+
+.rating-item {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.rating-item span:first-child {
+    font-size: 0.9rem;
+    color: var(--Dark-Grey);
+    font-weight: 500;
+}
+
+.rating-stars {
+    color: var(--Bright-Sun);
+    font-size: 1rem;
+}
+
+.rating-number {
+    font-size: 0.9rem;
+    color: var(--Dark-Grey);
+    font-weight: 500;
+}
+
+/* Responsive styles */
+@media (max-width: 1024px) {
+    .reviews-container {
+        flex-direction: column;
+    }
+
+    .ratings-container {
+        position: relative;
+        width: 100%;
+        height: auto;
+        margin-bottom: 2rem;
+    }
+
+    .reviews-list-container {
+        margin-left: 0;
+        max-width: 100%;
+        height: auto;
+        overflow-y: visible;
+    }
+}
+
+@media (max-width: 768px) {
+    .reviews-container {
+        padding: 1.5rem 1rem;
+    }
+
+    .reviews-header h1 {
+        font-size: 1.8rem;
+    }
+
+    .rating-category {
+        flex-direction: column;
+        gap: 0.5rem;
+        text-align: center;
+    }
+
+    .category-info {
+        justify-content: center;
+    }
+} 

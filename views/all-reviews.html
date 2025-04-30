@@ -1,45 +1,171 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="fr">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>All Reviews</title>
-  <link rel="stylesheet" href="../style/index.css">
+    <title>Avis - ServiGO</title>
+    <link rel="stylesheet" href="../style/all-reviews.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
 <body>
-  <section class="all-reviews">
-    <h2>All User Reviews</h2>
-    <div class="testimonials">
-      <!-- Ajoute ici toutes les cartes de témoignages comme dans la section précédente -->
-      <div class="testimonial-card">
-        <div class="user-image">
-          <img src="user1.jpg" alt="User 1">
+    <div class="reviews-container">
+        <div class="ratings-container">
+            <div class="logo-container">
+                <h1 class="logo">ServiGO</h1>
+            </div>
+            <div class="auth-buttons">
+                <a href="../views/login.html" class="auth-button login">
+                    <i class="fas fa-sign-in-alt"></i>
+                    Se connecter
+                </a>
+                <a href="../views/index.html" class="auth-button home">
+                    <i class="fas fa-home"></i>
+                    Retour à l'accueil
+                </a>
+            </div>
+            <div class="ratings-summary">
+                <div class="rating-category">
+                    <div class="category-info">
+                        <i class="fas fa-star"></i>
+                        <span class="category-name">Note Globale</span>
+                    </div>
+                    <span class="rating-value" id="average-rating">4.5</span>
+                </div>
+                <div class="rating-category">
+                    <div class="category-info">
+                        <i class="fas fa-handshake"></i>
+                        <span class="category-name">Service</span>
+                    </div>
+                    <span class="rating-value" id="service-rating">4.3</span>
+                </div>
+                <div class="rating-category">
+                    <div class="category-info">
+                        <i class="fas fa-comments"></i>
+                        <span class="category-name">Communication</span>
+                    </div>
+                    <span class="rating-value" id="communication-rating">4.7</span>
+                </div>
+                <div class="rating-category">
+                    <div class="category-info">
+                        <i class="fas fa-tag"></i>
+                        <span class="category-name">Prix</span>
+                    </div>
+                    <span class="rating-value" id="price-rating">4.2</span>
         </div>
-        <div class="quote-icon">“</div>
-        <p>"This service has made my life so much easier. Highly recommended!"</p>
-        <div class="user-name">John Doe</div>
-        <div class="user-position">Software Engineer</div>
       </div>
-      <div class="testimonial-card">
-        <div class="user-image">
-          <img src="user2.jpg" alt="User 2">
         </div>
-        <div class="quote-icon">“</div>
-        <p>"A game changer in terms of efficiency. Excellent customer support!"</p>
-        <div class="user-name">Jane Smith</div>
-        <div class="user-position">Product Manager</div>
+        <div class="reviews-list-container">
+            <div class="reviews-header">
+                <h1>Les Avis de Nos Clients</h1>
+            </div>
+
+            <div class="reviews-list" id="reviews-container">
+                <!-- Les avis seront ajoutés dynamiquement ici -->
       </div>
-      <div class="testimonial-card">
-        <div class="user-image">
-          <img src="user3.jpg" alt="User 3">
         </div>
-        <div class="quote-icon">“</div>
-        <p>"I can't imagine going back to how things were before using this!"</p>
-        <div class="user-name">Alex Brown</div>
-        <div class="user-position">Designer</div>
-      </div>
-      <!-- Ajoute encore plus d'avis ici -->
     </div>
-  </section>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', async () => {
+            try {
+                // Récupérer les statistiques
+                const statsResponse = await fetch('http://localhost:5001/api/avisservigo/stats');
+                const stats = await statsResponse.json();
+                
+                document.getElementById('average-rating').textContent = parseFloat(stats.moyenne_rating)?.toFixed(1) ?? 'N/A';
+                document.getElementById('service-rating').textContent = parseFloat(stats.moyenne_service)?.toFixed(1) ?? 'N/A';
+                document.getElementById('communication-rating').textContent = parseFloat(stats.moyenne_communication)?.toFixed(1) ?? 'N/A';
+                document.getElementById('price-rating').textContent = parseFloat(stats.moyenne_prix)?.toFixed(1) ?? 'N/A';
+
+
+                // Récupérer tous les avis
+                const reviewsResponse = await fetch('http://localhost:5001/api/avisservigo');
+                const reviews = await reviewsResponse.json();
+                
+                // Afficher les avis
+                displayReviews(reviews);
+            } catch (error) {
+                console.error('Erreur lors du chargement des avis:', error);
+            }
+        });
+
+        function bufferToBase64(buffer) {
+            const binary = String.fromCharCode.apply(null, buffer.data);
+            return `data:image/jpeg;base64,${btoa(binary)}`;
+        }
+
+        function displayReviews(reviews) {
+            const container = document.getElementById('reviews-container');
+            container.innerHTML = '';
+
+            reviews.forEach(review => {
+                const reviewCard = document.createElement('div');
+                reviewCard.className = 'review-card';
+                
+                // Convertir le buffer de l'image en base64 si disponible
+                const avatarSrc = review.user_avatar && review.user_avatar.data 
+                    ? bufferToBase64(review.user_avatar)
+                    : '../style/images/default-avatar.png';
+
+                reviewCard.innerHTML = `
+                    <div class="review-header">
+                        <div class="user-info">
+                            <img src="${avatarSrc}" alt="${review.user_name}">
+                            <span class="user-name">${review.user_name}</span>
+                        </div>
+                        <div class="review-date">
+                            ${new Date(review.date).toLocaleDateString('fr-FR', {
+                                year: 'numeric',
+                                month: 'long',
+                                day: 'numeric'
+                            })}
+                        </div>
+                    </div>
+                    <div class="review-content">
+                        <p>${review.comment}</p>
+                    </div>
+                    <div class="review-ratings">
+                        <div class="rating-item">
+                            <span>Note Globale</span>
+                            <div class="rating-stars">
+                                ${generateStars(review.rating)}
+                            </div>
+                            <span class="rating-number">${review.rating}/5</span>
+                        </div>
+                        <div class="rating-item">
+                            <span>Service</span>
+                            <div class="rating-stars">
+                                ${generateStars(review.service_rating)}
+                            </div>
+                            <span class="rating-number">${review.service_rating}/5</span>
+                        </div>
+                        <div class="rating-item">
+                            <span>Communication</span>
+                            <div class="rating-stars">
+                                ${generateStars(review.communication_rating)}
+                            </div>
+                            <span class="rating-number">${review.communication_rating}/5</span>
+                        </div>
+                        <div class="rating-item">
+                            <span>Prix</span>
+                            <div class="rating-stars">
+                                ${generateStars(review.price_rating)}
+                            </div>
+                            <span class="rating-number">${review.price_rating}/5</span>
+                        </div>
+                    </div>
+                `;
+                container.appendChild(reviewCard);
+            });
+        }
+
+        function generateStars(rating) {
+            let stars = '';
+            for (let i = 1; i <= 5; i++) {
+                stars += `<i class="fas fa-star ${i <= rating ? 'active' : ''}"></i>`;
+            }
+            return stars;
+        }
+    </script>
 </body>
 </html>
