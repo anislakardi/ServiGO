@@ -33,15 +33,31 @@ class VerificationModel {
 
     static async getVerification(prestataire_id) {
         try {
-            const [rows] = await pool.query(
-                "SELECT * FROM verifications WHERE prestataire_id = ?",
-                [prestataire_id]
-            );
-            return rows[0];
-      } catch (error) {
+          const [rows] = await pool.query(
+            `SELECT 
+               v.*,
+               p.nom,
+               p.prenom,
+               p.specialisation,
+               p.telephone,
+               p.date_nee,
+               p.adresse,
+               p.email,
+               p.nom_utilisateur
+             FROM verifications v
+             JOIN prestataires p 
+               ON v.prestataire_id = p.id
+             WHERE v.prestataire_id = ?
+             ORDER BY v.date_creation DESC
+             LIMIT 1`,
+            [prestataire_id]
+          );
+          return rows[0] || null;
+        } catch (error) {
           throw error;
+        }
       }
-  }
+      
 
   static async updateFileField(prestataire_id, fieldName, fileBuffer) {
     try {
@@ -101,10 +117,20 @@ static async updateMetadata(prestataire_id, annees_experience, description_exper
 
     static async updateVerificationStatus(prestataire_id, status) {
         try {
+            // 1) Si on accepte, on met à jour le statut du prestataire
+            if (status.toLowerCase() === 'accepte') {
+                await pool.query(
+                    "UPDATE prestataires SET statuts = ? WHERE id = ?",
+                    ['active', prestataire_id]
+                );
+            }
+    
+            // 2) Puis on met à jour le statut global de la vérification
             const [result] = await pool.query(
                 "UPDATE verifications SET statut_global = ? WHERE prestataire_id = ?",
                 [status, prestataire_id]
             );
+    
             return result.affectedRows > 0;
         } catch (error) {
             throw error;
@@ -114,12 +140,22 @@ static async updateMetadata(prestataire_id, annees_experience, description_exper
     static async getAllVerifications() {
         try {
             const [rows] = await pool.query(
-                "SELECT v.*, p.nom, p.prenom, p.email, p.telephone " +
-                "FROM verifications v " +
-                "JOIN prestataires p ON v.prestataire_id = p.id " +
-                "ORDER BY v.date_creation DESC"
+                `SELECT v.*, 
+                p.nom, 
+                p.prenom, 
+                v.statut_global,
+                p.specialisation,
+                p.telephone,
+                p.date_nee,
+                p.adresse,
+                p.email,
+                p.nom_utilisateur
+                FROM verifications v 
+                JOIN prestataires p ON v.prestataire_id = p.id 
+                ORDER BY v.date_creation DESC`
             );
             return rows;
+            
         } catch (error) {
             console.error('Erreur lors de la récupération des vérifications:', error);
             throw error;

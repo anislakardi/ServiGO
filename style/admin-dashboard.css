@@ -454,10 +454,9 @@ main h1 {
 
 .document-pdf {
     width: 100%;
-    height: 400px;
+    height: 480px;
     border: 1px solid #ddd;
     border-radius: 4px;
-    overflow: hidden;
 }
 
 .document-pdf iframe {
@@ -576,37 +575,43 @@ main h1 {
 .pdf-actions {
     display: flex;
     gap: 10px;
-    padding: 10px;
-    background-color: var(--Light-Grey);
-    border-top: 1px solid rgba(0, 0, 0, 0.1);
+    margin-top: 10px;
+    justify-content: flex-end;
 }
 
-.download-btn, .view-btn {
+.view-pdf-btn {
+    background-color: var(--Big-Stone);
+    color: white;
+    padding: 8px 15px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
     display: flex;
     align-items: center;
     gap: 5px;
-    padding: 8px 15px;
-    border-radius: 4px;
-    font-size: 0.9rem;
-    text-decoration: none;
-    transition: all 0.3s;
+    transition: all 0.3s ease;
 }
 
-.download-btn {
-    background-color: var(--Big-Stone);
-    color: white;
-}
-
-.view-btn {
-    background-color: var(--Dark-Grey);
-    color: white;
-    border: none;
-    cursor: pointer;
-}
-
-.download-btn:hover, .view-btn:hover {
-    opacity: 0.9;
+.view-pdf-btn:hover {
+    background-color: var(--Bright-Sun);
+    color: var(--Big-Stone);
     transform: translateY(-2px);
+}
+
+.view-pdf-btn i {
+    font-size: 0.9rem;
+}
+
+/* Responsive adjustments for PDF buttons */
+@media (max-width: 768px) {
+    .pdf-actions {
+        flex-direction: column;
+    }
+    
+    .view-pdf-btn {
+        width: 100%;
+        justify-content: center;
+    }
 }
 
 /* Responsive adjustments */
@@ -713,4 +718,42 @@ main h1 {
 
 .document-preview:hover {
     transform: scale(1.02);
+}
+
+/* Styles pour les sections d'information */
+.info-section {
+    background-color: var(--Light-Grey);
+    padding: 15px;
+    border-radius: 8px;
+    margin-bottom: 20px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.info-section h4 {
+    color: var(--Big-Stone);
+    margin-bottom: 15px;
+    padding-bottom: 10px;
+    border-bottom: 2px solid var(--Bright-Sun);
+}
+
+.info-section p {
+    margin-bottom: 10px;
+    line-height: 1.5;
+}
+
+.info-section p strong {
+    color: var(--Big-Stone);
+    font-weight: 600;
+    margin-right: 5px;
+}
+
+/* Responsive adjustments for info sections */
+@media (max-width: 768px) {
+    .info-section {
+        padding: 12px;
+    }
+
+    .info-section p {
+        font-size: 0.9rem;
+    }
 }
