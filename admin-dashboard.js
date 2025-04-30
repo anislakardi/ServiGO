@@ -202,6 +202,207 @@ function handleValidation(status, requestId) {
     }
 }
 
+// Fonction pour charger les vérifications
+async function loadVerifications() {
+    try {
+        const token = localStorage.getItem('token');
+        if (!token) {
+            window.location.href = '/login';
+            return;
+        }
+
+        const response = await fetch('/api/verifications', {
+            headers: {
+                'Authorization': `Bearer ${token}`
+            }
+        });
+
+        if (!response.ok) {
+            throw new Error('Erreur lors de la récupération des vérifications');
+        }
+
+        const data = await response.json();
+        displayVerifications(data.data);
+    } catch (error) {
+        console.error('Erreur:', error);
+        // Afficher un message d'erreur à l'utilisateur
+    }
+}
+
+// Fonction pour afficher les vérifications
+function displayVerifications(verifications) {
+    const container = document.getElementById('requests-container');
+    container.innerHTML = ''; // Vider le conteneur
+
+    verifications.forEach(verification => {
+        const card = document.createElement('div');
+        card.className = 'request-card';
+        card.innerHTML = `
+            <div class="request-info">
+                <h3>${verification.nom} ${verification.prenom}</h3>
+                <p>Email: ${verification.email}</p>
+                <p>Téléphone: ${verification.telephone}</p>
+                <p>Date de création: ${new Date(verification.date_creation).toLocaleDateString()}</p>
+            </div>
+            <div class="request-actions">
+                <button class="action-btn details-btn" onclick="showRequestDetails(${verification.prestataire_id})">
+                    Voir les détails
+                </button>
+            </div>
+        `;
+        container.appendChild(card);
+    });
+}
+
+// Fonction pour afficher les détails d'une vérification
+async function showRequestDetails(prestataireId) {
+    try {
+        const token = localStorage.getItem('token');
+        const response = await fetch(`/api/verification/${prestataireId}`, {
+            headers: {
+                'Authorization': `Bearer ${token}`
+            }
+        });
+
+        if (!response.ok) {
+            throw new Error('Erreur lors de la récupération des détails');
+        }
+
+        const verification = await response.json();
+        displayVerificationDetails(verification);
+    } catch (error) {
+        console.error('Erreur:', error);
+    }
+}
+
+// Fonction pour convertir un Buffer en base64
+function bufferToBase64(buffer) {
+    if (!buffer || !buffer.data) return '';
+    try {
+        // Convertir le tableau de bytes en chaîne de caractères
+        const binary = buffer.data.reduce((acc, byte) => acc + String.fromCharCode(byte), '');
+        // Convertir en base64
+        return btoa(binary);
+    } catch (error) {
+        console.error('Erreur lors de la conversion du buffer:', error);
+        return '';
+    }
+}
+
+// Fonction pour afficher les détails dans le modal
+function displayVerificationDetails(verification) {
+    const modal = document.getElementById('request-modal');
+    const personalInfo = document.getElementById('personal-info-content');
+    const identityDocuments = document.getElementById('identity-documents');
+    const cvDiplomas = document.getElementById('cv-diplomas');
+    const experienceProofs = document.getElementById('experience-proofs');
+    const identityStatus = document.getElementById('identity-status');
+    const cvStatus = document.getElementById('cv-status');
+    const experienceStatus = document.getElementById('experience-status');
+
+    // Afficher les informations personnelles
+    personalInfo.innerHTML = `
+        <p><strong>ID:</strong> ${verification.id}</p>
+        <p><strong>Prestataire ID:</strong> ${verification.prestataire_id}</p>
+        <p><strong>Années d'expérience:</strong> ${verification.annees_experience}</p>
+        <p><strong>Description de l'expérience:</strong> ${verification.description_experience}</p>
+        <p><strong>Date de création:</strong> ${new Date(verification.date_creation).toLocaleDateString()}</p>
+    `;
+
+    // Afficher les documents d'identité
+    identityDocuments.innerHTML = `
+        <div class="document-item">
+            <h4>Face avant</h4>
+            <img src="data:image/jpeg;base64,${bufferToBase64(verification.identite_face_avant)}" 
+                 alt="Face avant" 
+                 class="document-preview"
+                 onclick="showZoomedPhoto(this.src)">
+        </div>
+        <div class="document-item">
+            <h4>Face arrière</h4>
+            <img src="data:image/jpeg;base64,${bufferToBase64(verification.identite_face_arriere)}" 
+                 alt="Face arrière" 
+                 class="document-preview"
+                 onclick="showZoomedPhoto(this.src)">
+        </div>
+    `;
+
+    // Afficher le CV et les diplômes
+    cvDiplomas.innerHTML = `
+        <div class="document-item">
+            <h4>CV</h4>
+            <iframe src="data:application/pdf;base64,${bufferToBase64(verification.cv_pdf)}" 
+                    class="pdf-iframe"></iframe>
+            <div class="pdf-actions">
+                <a href="data:application/pdf;base64,${bufferToBase64(verification.cv_pdf)}" 
+                   download="CV.pdf" 
+                   class="btn download-btn">
+                    <i class="fas fa-download"></i> Télécharger
+                </a>
+            </div>
+        </div>
+        <div class="document-item">
+            <h4>Diplômes</h4>
+            <iframe src="data:application/pdf;base64,${bufferToBase64(verification.diplomes)}" 
+                    class="pdf-iframe"></iframe>
+            <div class="pdf-actions">
+                <a href="data:application/pdf;base64,${bufferToBase64(verification.diplomes)}" 
+                   download="Diplomes.pdf" 
+                   class="btn download-btn">
+                    <i class="fas fa-download"></i> Télécharger
+                </a>
+            </div>
+        </div>
+    `;
+
+    // Afficher les preuves d'expérience
+    experienceProofs.innerHTML = `
+        <div class="document-item">
+            <img src="data:image/jpeg;base64,${bufferToBase64(verification.preuves_experience)}" 
+                 alt="Preuves d'expérience" 
+                 class="document-preview"
+                 onclick="showZoomedPhoto(this.src)">
+        </div>
+    `;
+
+    // Afficher les statuts de validation
+    identityStatus.textContent = verification.statut_identite;
+    identityStatus.setAttribute('data-status', verification.statut_identite);
+    
+    cvStatus.textContent = verification.statut_cv_diplomes;
+    cvStatus.setAttribute('data-status', verification.statut_cv_diplomes);
+    
+    experienceStatus.textContent = verification.statut_experience;
+    experienceStatus.setAttribute('data-status', verification.statut_experience);
+
+    modal.style.display = 'block';
+}
+
+// Fonction pour afficher une image en grand
+function showZoomedPhoto(src) {
+    const zoomModal = document.createElement('div');
+    zoomModal.className = 'photo-zoom-modal';
+    zoomModal.innerHTML = `
+        <div class="photo-zoom-content">
+            <span class="photo-zoom-close">&times;</span>
+            <img src="${src}" alt="Zoomed document" class="zoomed-photo">
+        </div>
+    `;
+    document.body.appendChild(zoomModal);
+
+    // Gérer la fermeture du modal
+    const closeBtn = zoomModal.querySelector('.photo-zoom-close');
+    closeBtn.onclick = () => {
+        document.body.removeChild(zoomModal);
+    };
+
+    zoomModal.onclick = (event) => {
+        if (event.target === zoomModal) {
+            document.body.removeChild(zoomModal);
+        }
+    };
+}
+
 // Initialisation
 document.addEventListener('DOMContentLoaded', () => {
     console.log('DOM loaded');
@@ -229,4 +430,19 @@ document.addEventListener('DOMContentLoaded', () => {
             document.body.style.overflow = 'auto';
         }
     });
+
+    loadVerifications();
+    
+    // Ajouter l'événement de fermeture du modal
+    const closeBtn = document.getElementById('request-modal').querySelector('.close');
+    
+    closeBtn.onclick = () => {
+        document.getElementById('request-modal').style.display = 'none';
+    };
+
+    window.onclick = (event) => {
+        if (event.target === document.getElementById('request-modal')) {
+            document.getElementById('request-modal').style.display = 'none';
+        }
+    };
 }); 

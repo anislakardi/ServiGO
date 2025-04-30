@@ -1,0 +1,489 @@
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap');
+
+:root {
+    --primary-color: #fcdb32;
+    --secondary-color: #141D38;
+    --success-color: #4CAF50;
+    --warning-color: #FFC107;
+    --danger-color: #F44336;
+    --text-color: #333;
+    --light-gray: #f5f5f5;
+    --border-radius: 8px;
+    --box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    --transition: all 0.3s ease;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Montserrat', sans-serif;
+    background-color: var(--light-gray);
+    color: var(--text-color);
+    line-height: 1.6;
+}
+
+.verification-container {
+    max-width: 1200px;
+    margin: 2rem auto;
+    padding: 0 1rem;
+}
+
+/* En-tête */
+.verification-header {
+    text-align: center;
+    margin-bottom: 2rem;
+}
+
+.verification-header h1 {
+    color: var(--secondary-color);
+    margin-bottom: 1rem;
+}
+
+.subtitle {
+    color: #666;
+    margin-bottom: 2rem;
+}
+
+/* Barre de progression */
+.progress-container {
+    max-width: 600px;
+    margin: 0 auto;
+}
+
+.progress-bar {
+    height: 10px;
+    background-color: #e0e0e0;
+    border-radius: var(--border-radius);
+    overflow: hidden;
+    margin-bottom: 0.5rem;
+}
+
+.progress {
+    height: 100%;
+    background-color: var(--primary-color);
+    width: 0;
+    transition: var(--transition);
+}
+
+.progress-text {
+    font-size: 0.9rem;
+    color: #666;
+}
+
+/* Grille des étapes */
+.steps-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 1.5rem;
+    margin-bottom: 2rem;
+}
+
+/* Cartes d'étape */
+.step-card {
+    background: white;
+    border-radius: var(--border-radius);
+    box-shadow: var(--box-shadow);
+    overflow: hidden;
+    transition: var(--transition);
+}
+
+.step-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+}
+
+.step-header {
+    padding: 1rem;
+    background-color: var(--light-gray);
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.step-header i {
+    font-size: 1.5rem;
+    color: var(--secondary-color);
+}
+
+.step-header h3 {
+    flex: 1;
+    font-size: 1.1rem;
+}
+
+.status-badge {
+    padding: 0.3rem 0.8rem;
+    border-radius: 20px;
+    font-size: 0.8rem;
+    font-weight: 500;
+}
+
+.status-badge.pending {
+    background-color: var(--warning-color);
+    color: #000;
+}
+
+.status-badge.validated {
+    background-color: var(--success-color);
+    color: white;
+}
+
+.status-badge.missing {
+    background-color: var(--danger-color);
+    color: white;
+}
+
+.step-content {
+    padding: 1.5rem;
+}
+
+/* Zones de téléchargement */
+.upload-section {
+    display: grid;
+    gap: 1rem;
+}
+
+.upload-zone {
+    border: 2px dashed #ddd;
+    border-radius: var(--border-radius);
+    padding: 1.5rem;
+    text-align: center;
+    cursor: pointer;
+    transition: var(--transition);
+    position: relative;
+}
+
+.upload-zone:hover {
+    border-color: var(--primary-color);
+    background-color: rgba(252, 219, 50, 0.05);
+}
+
+.upload-zone i {
+    font-size: 2rem;
+    color: var(--secondary-color);
+    margin-bottom: 0.5rem;
+}
+
+.upload-zone span {
+    display: block;
+    color: #666;
+}
+
+.upload-zone .btn-delete {
+    position: absolute;
+    top: 0.5rem;
+    right: 0.5rem;
+    background: none;
+    border: none;
+    color: var(--danger-color);
+    cursor: pointer;
+    padding: 0.5rem;
+    font-size: 1.2rem;
+    opacity: 0.7;
+    transition: var(--transition);
+}
+
+.upload-zone .btn-delete:hover {
+    opacity: 1;
+    transform: scale(1.1);
+}
+
+.upload-zone img {
+    max-width: 100%;
+    max-height: 150px;
+    margin-bottom: 0.5rem;
+}
+
+/* Formulaires */
+.form-group {
+    margin-bottom: 1rem;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 0.5rem;
+    font-weight: 500;
+}
+
+.form-group input,
+.form-group textarea,
+.form-group select {
+    width: 100%;
+    padding: 0.8rem;
+    border: 1px solid #ddd;
+    border-radius: var(--border-radius);
+    font-family: inherit;
+}
+
+.form-group textarea {
+    min-height: 100px;
+    resize: vertical;
+}
+
+/* Boutons */
+.step-actions {
+    padding: 1rem;
+    display: flex;
+    gap: 1rem;
+    border-top: 1px solid #eee;
+}
+
+.btn-upload,
+.btn-validate,
+.btn-verify,
+.btn-save,
+.btn-submit {
+    padding: 0.8rem 1.5rem;
+    border: none;
+    border-radius: var(--border-radius);
+    font-weight: 500;
+    cursor: pointer;
+    transition: var(--transition);
+}
+
+.btn-upload {
+    background-color: var(--primary-color);
+    color: var(--secondary-color);
+}
+
+.btn-validate {
+    background-color: var(--success-color);
+    color: white;
+}
+
+.btn-verify {
+    background-color: var(--secondary-color);
+    color: white;
+}
+
+.btn-save {
+    background-color: #666;
+    color: white;
+}
+
+.btn-submit {
+    background-color: var(--secondary-color);
+    color: white;
+}
+
+.btn-upload:hover,
+.btn-validate:hover,
+.btn-verify:hover,
+.btn-save:hover,
+.btn-submit:hover {
+    opacity: 0.9;
+    transform: translateY(-2px);
+}
+
+/* Modale */
+.modal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    z-index: 1000;
+    justify-content: center;
+    align-items: center;
+}
+
+.modal-content {
+    background: white;
+    padding: 2rem;
+    border-radius: var(--border-radius);
+    max-width: 400px;
+    width: 90%;
+    text-align: center;
+    position: relative;
+}
+
+.close {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    font-size: 1.5rem;
+    cursor: pointer;
+}
+
+.modal-body i {
+    font-size: 3rem;
+    color: var(--success-color);
+    margin-bottom: 1rem;
+}
+
+/* Actions globales */
+.global-actions {
+    display: flex;
+    justify-content: center;
+    gap: 1rem;
+    margin-top: 2rem;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .steps-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .global-actions {
+        flex-direction: column;
+    }
+
+    .btn-upload,
+    .btn-validate,
+    .btn-verify,
+    .btn-save,
+    .btn-submit {
+        width: 100%;
+    }
+}
+
+/* Animations */
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.step-card {
+    animation: fadeIn 0.5s ease-out;
+}
+
+/* Sécurité */
+.security-info {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-top: 1rem;
+    color: #666;
+    font-size: 0.9rem;
+}
+
+.security-info i {
+    color: var(--success-color);
+}
+
+/* Photo de profil */
+.photo-upload {
+    position: relative;
+    text-align: center;
+}
+
+.photo-preview {
+    width: 150px;
+    height: 150px;
+    margin: 0 auto 1rem;
+    border-radius: 50%;
+    background-color: var(--light-gray);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.photo-preview i {
+    font-size: 3rem;
+    color: #666;
+}
+
+.photo-guidelines {
+    color: #666;
+    font-size: 0.9rem;
+    text-align: center;
+}
+
+.photo-upload .btn-delete {
+    position: absolute;
+    top: 0;
+    right: 0;
+    background: none;
+    border: none;
+    color: var(--danger-color);
+    cursor: pointer;
+    padding: 0.5rem;
+    font-size: 1.2rem;
+    opacity: 0.7;
+    transition: var(--transition);
+}
+
+.photo-upload .btn-delete:hover {
+    opacity: 1;
+    transform: scale(1.1);
+}
+
+/* Zone d'intervention */
+.map-container {
+    height: 200px;
+    background-color: var(--light-gray);
+    border-radius: var(--border-radius);
+    margin-bottom: 1rem;
+}
+
+.zone-selector {
+    margin-top: 1rem;
+}
+
+.zone-selector select {
+    width: 100%;
+    padding: 0.8rem;
+    border: 1px solid #ddd;
+    border-radius: var(--border-radius);
+}
+
+/* Charte de qualité */
+.charter-content {
+    margin-bottom: 1.5rem;
+}
+
+.charter-content h4 {
+    margin-bottom: 1rem;
+    color: var(--secondary-color);
+}
+
+.charter-content ul {
+    list-style: none;
+    padding-left: 1rem;
+}
+
+.charter-content li {
+    margin-bottom: 0.5rem;
+    position: relative;
+    padding-left: 1.5rem;
+}
+
+.charter-content li:before {
+    content: "✓";
+    position: absolute;
+    left: 0;
+    color: var(--success-color);
+}
+
+.charter-acceptance {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-top: 1rem;
+}
+
+.charter-acceptance input[type="checkbox"] {
+    width: auto;
+}
+
+/* Vérification téléphone/email */
+.phone-verification,
+.email-verification {
+    display: flex;
+    gap: 0.5rem;
+}
+
+.phone-verification input,
+.email-verification input {
+    flex: 1;
+}
+
+.btn-verify {
+    white-space: nowrap;
+} 

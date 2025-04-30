@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ServiGO - Demandes</title>
+    <link rel="stylesheet" href="../style/demandes.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+    <!-- NAVBAR -->
+    <nav>
+        <div class="logo">
+            <h1>ServiGO</h1>
+        </div>
+        <ul>
+            <li><a href="/homeProvider">Accueil</a></li>
+            <li><a id="active">Demandes</a></li>
+            <li><a href="/messagerieProvider">Messagerie</a></li>
+            <li><a href="/notificationProvider">Notifications</a></li>
+            <li><a href="#">Options</a></li>
+            <li><a href="/profileProvider">Profile</a></li>
+        </ul>
+    </nav>
+
+    <main>
+        <!-- Section des boutons d'action -->
+        <div class="action-buttons">
+            <button id="createServiceBtn" class="btn primary">
+                <i class="fas fa-plus"></i> Créer un service
+            </button>
+        </div>
+
+        <!-- Tableau des services -->
+        <section class="services-section">
+            <h2>Mes Services</h2>
+            <div class="table-container">
+                <table id="servicesTable">
+                    <thead>
+                        <tr>
+                            <th>Titre</th>
+                            <th>Catégorie</th>
+                            <th>Prix</th>
+                            <th>Statut</th>
+                            <th>Date de création</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="servicesTableBody">
+                        <!-- Les services seront ajoutés ici dynamiquement -->
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <!-- Modal pour créer/modifier un service -->
+        <div id="serviceModal" class="modal">
+            <div class="modal-content">
+                <span class="close">&times;</span>
+                <h2 id="modalTitle">Créer un nouveau service</h2>
+                <form id="serviceForm">
+                    <input type="hidden" id="serviceId">
+                    <div class="form-group">
+                        <label for="client_id">ID du client <span class="required">*</span></label>
+                        <input type="text" id="client_id" name="client_id" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="titre">Titre</label>
+                        <input type="text" id="titre" name="titre" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="description">Description</label>
+                        <textarea id="description" name="description" rows="4"></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label for="prix">Prix</label>
+                        <input type="number" id="prix" name="prix" step="0.01" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="categorie">Catégorie</label>
+                        <select id="categorie" name="categorie" required>
+                            <option value="Mécanique automobile">Mécanique automobile</option>
+                            <option value="Electricité">Electricité</option>
+                            <option value="Menuiserie">Menuiserie</option>
+                            <!-- Ajoutez d'autres catégories selon vos besoins -->
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="statut_travail">Statut du travail</label>
+                        <select id="statut_travail" name="statut_travail">
+                            <option value="À faire">À faire</option>
+                            <option value="En cours">En cours</option>
+                            <option value="En pause">En pause</option>
+                            <option value="Terminé">Terminé</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="date_prevue">Date prévue</label>
+                        <input type="datetime-local" id="date_prevue" name="date_prevue">
+                    </div>
+                    <div class="form-group">
+                        <label for="date_execution">Date d'exécution</label>
+                        <input type="datetime-local" id="date_execution" name="date_execution">
+                    </div>
+                    <div class="form-group">
+                        <label for="date_fin">Date de fin</label>
+                        <input type="datetime-local" id="date_fin" name="date_fin">
+                    </div>
+                    <div class="form-actions">
+                        <button type="submit" class="btn primary">Enregistrer</button>
+                        <button type="button" class="btn secondary" onclick="closeModal()">Annuler</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        // Variables globales
+        const token = localStorage.getItem('token');
+        const userId = localStorage.getItem('userId');
+        const modal = document.getElementById('serviceModal');
+        const form = document.getElementById('serviceForm');
+        const createServiceBtn = document.getElementById('createServiceBtn');
+        const closeBtn = document.querySelector('.close');
+
+        // Événements
+        document.addEventListener('DOMContentLoaded', loadServices);
+        createServiceBtn.addEventListener('click', () => openModal('create'));
+        closeBtn.addEventListener('click', closeModal);
+        form.addEventListener('submit', handleFormSubmit);
+
+        // Fermer le modal si on clique en dehors
+        window.onclick = (event) => {
+            if (event.target === modal) {
+                closeModal();
+            }
+        };
+
+        // Charger les services
+        async function loadServices() {
+            try {
+                const response = await fetch(`http://localhost:5001/api/services/users/${userId}`, {
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                    }
+                });
+                
+                if (!response.ok) throw new Error('Erreur lors du chargement des services');
+                
+                const services = await response.json();
+                displayServices(services);
+            } catch (error) {
+                console.error('Erreur:', error);
+                alert('Erreur lors du chargement des services');
+            }
+        }
+
+        // Afficher les services dans le tableau
+        function displayServices(services) {
+            const tbody = document.getElementById('servicesTableBody');
+            tbody.innerHTML = '';
+
+            services.forEach(service => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${service.titre}</td>
+                    <td>${service.categorie}</td>
+                    <td>${service.prix} DA</td>
+                    <td>${service.statut_travail}</td>
+                    <td>${new Date(service.date_creation).toLocaleDateString()}</td>
+                    <td>
+                        <button onclick="openModal('edit', ${service.id})" class="btn-icon edit">
+                            <i class="fas fa-edit"></i>
+                        </button>
+                        <button onclick="deleteService(${service.id})" class="btn-icon delete">
+                            <i class="fas fa-trash"></i>
+                        </button>
+                    </td>
+                `;
+                tbody.appendChild(row);
+            });
+        }
+
+        // Gérer la soumission du formulaire
+        async function handleFormSubmit(event) {
+            event.preventDefault();
+            
+            const serviceId = document.getElementById('serviceId').value;
+            const details = {
+                titre: document.getElementById('titre').value,
+                description: document.getElementById('description').value,
+                prix: parseFloat(document.getElementById('prix').value),
+                categorie: document.getElementById('categorie').value,
+                statut_travail: document.getElementById('statut_travail').value,
+                date_prevue: document.getElementById('date_prevue').value || null,
+                date_execution: document.getElementById('date_execution').value || null,
+                date_fin: document.getElementById('date_fin').value || null
+            };
+
+            const formData = {
+                prestataire_id: userId,
+                client_id: document.getElementById('client_id').value,
+                details: JSON.stringify(details)
+            };
+
+            try {
+                const url = serviceId ? 
+                    `http://localhost:5001/api/services/${serviceId}` :
+                    'http://localhost:5001/api/services';
+                
+                const response = await fetch(url, {
+                    method: serviceId ? 'PUT' : 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`
+                    },
+                    body: JSON.stringify(formData)
+                });
+
+                if (!response.ok) {
+                    const error = await response.json();
+                    throw new Error(error.error || 'Erreur lors de l\'enregistrement du service');
+                }
+
+                const result = await response.json();
+                alert(result.message || 'Service enregistré avec succès');
+                closeModal();
+                loadServices();
+            } catch (error) {
+                console.error('Erreur:', error);
+                alert(error.message);
+            }
+        }
+
+        // Ouvrir le modal
+        async function openModal(mode, serviceId = null) {
+            modal.style.display = 'block';
+            document.getElementById('modalTitle').textContent = mode === 'create' ? 
+                'Créer un nouveau service' : 'Modifier le service';
+            
+            if (mode === 'edit' && serviceId) {
+                try {
+                    const response = await fetch(`http://localhost:5001/api/services/${serviceId}`, {
+                        headers: {
+                            'Authorization': `Bearer ${token}`
+                        }
+                    });
+                    
+                    if (!response.ok) throw new Error('Erreur lors du chargement du service');
+                    
+                    const service = await response.json();
+                    fillFormWithService(service);
+                } catch (error) {
+                    console.error('Erreur:', error);
+                    alert('Erreur lors du chargement du service');
+                    closeModal();
+                }
+            } else {
+                form.reset();
+            }
+        }
+
+        // Remplir le formulaire avec les données du service
+        function fillFormWithService(service) {
+            document.getElementById('serviceId').value = service.id;
+            document.getElementById('client_id').value = service.client_id || '';
+            document.getElementById('titre').value = service.titre;
+            document.getElementById('description').value = service.description || '';
+            document.getElementById('prix').value = service.prix || '';
+            document.getElementById('categorie').value = service.categorie;
+            document.getElementById('statut_travail').value = service.statut_travail || 'À faire';
+            document.getElementById('date_prevue').value = service.date_prevue?.slice(0, 16) || '';
+            document.getElementById('date_execution').value = service.date_execution?.slice(0, 16) || '';
+            document.getElementById('date_fin').value = service.date_fin?.slice(0, 16) || '';
+        }
+
+        // Fermer le modal
+        function closeModal() {
+            modal.style.display = 'none';
+            form.reset();
+        }
+
+        // Supprimer un service
+        async function deleteService(serviceId) {
+            if (!confirm('Êtes-vous sûr de vouloir supprimer ce service ?')) return;
+
+            try {
+                const response = await fetch(`http://localhost:5001/api/services/${serviceId}`, {
+                    method: 'DELETE',
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                    }
+                });
+
+                if (!response.ok) throw new Error('Erreur lors de la suppression du service');
+
+                loadServices();
+            } catch (error) {
+                console.error('Erreur:', error);
+                alert('Erreur lors de la suppression du service');
+            }
+        }
+    </script>
+</body>
+</html> 

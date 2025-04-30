@@ -1,0 +1,837 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>ServiGO - Accueil Prestataire</title>
+  <link rel="stylesheet" href="../style/homeProvider.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+  <!-- NAVBAR -->
+  <nav>
+    <div class="logo">
+      <h1>ServiGO</h1>
+    </div>
+    <ul>
+      <li><a id="active">Accueil</a></li>
+      <li><a href="/demandes">Demandes</a></li>
+      <li><a href="/messagerieProvider">Messagerie</a></li>
+      <li><a href="/notificationProvider">Notifications</a></li>
+      <li><a href="#">Options</a></li>
+      <li><a href="/profileProvider">Profile</a></li>
+    </ul>
+  </nav>
+
+  <!-- DASHBOARD -->
+  <main class="dashboard">
+    <!-- Bienvenue et Statistiques -->
+    <section class="welcome-section">
+      <div class="welcome-message">
+        <h2>Bonjour <span id="providerName"></span>, prêt pour de nouvelles missions ?</h2>
+        <!--<div class="provider-level">
+          <span class="level-badge">Niveau 2</span>
+          <div class="progress-bar">
+            <div class="progress" style="width: 60%"></div>
+          </div>
+          <span class="level-text">Encore 2 missions pour le niveau suivant !</span>
+        </div>-->
+      </div>
+      <div class="quick-stats">
+        <div class="stat-card">
+          <i class="fas fa-clock"></i>
+          <h3>5</h3>
+          <p>Demandes en attente</p>
+        </div>
+        <div class="stat-card">
+          <i class="fas fa-envelope"></i>
+          <h3>12</h3>
+          <p>Réponses reçues</p>
+        </div>
+        <div class="stat-card">
+          <i class="fas fa-star"></i>
+          <h3 id="averageRating">0.0</h3>
+          <p>Note moyenne</p>
+        </div>
+        <div class="stat-card">
+          <i class="fas fa-money-bill-wave"></i>
+          <h3 id="estimatedRevenue">0 DA</h3>
+          <p>Revenus estimés</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Checklist du jour -->
+    <section class="daily-checklist">
+      <div class="checklist-header">
+        <h3>Checklist du jour</h3>
+        <button class="btn btn-add-task" onclick="openAddTaskModal()">
+          <i class="fas fa-plus"></i> Ajouter une tâche
+        </button>
+      </div>
+      <div class="checklist-items">
+        <!-- Les tâches seront ajoutées ici dynamiquement -->
+      </div>
+    </section>
+
+    <!-- Modal Ajout Tâche -->
+    <div class="modal" id="addTaskModal">
+      <div class="modal-content">
+        <span class="close" onclick="closeAddTaskModal()">&times;</span>
+        <h3>Ajouter une nouvelle tâche</h3>
+        <form id="addTaskForm" onsubmit="addNewTask(event)">
+          <div class="form-group">
+            <label for="taskTitle">Titre de la tâche</label>
+            <input type="text" id="taskTitle" required placeholder="Ex: Répondre aux messages">
+          </div>
+          <div class="form-group">
+            <label for="taskPriority">Priorité</label>
+            <select id="taskPriority">
+              <option value="Basse">Basse</option>
+              <option value="Moyenne">Moyenne</option>
+              <option value="Haute">Haute</option>
+            </select>
+          </div>
+          <button type="submit" class="btn btn-primary">Ajouter la tâche</button>
+        </form>
+      </div>
+    </div>
+
+    <!-- Recherche avancée -->
+    <section class="advanced-search">
+        <h3>Recherche avancée</h3>
+        <div class="search-filters">
+          <div class="search-group">
+            <input type="text" id="clientSearch" placeholder="Rechercher un client...">
+            <button class="btn btn-search"><i class="fas fa-search"></i></button>
+          </div>
+          <div class="filter-group">
+            
+            <select id="priceFilter">
+              <option value="asc">Prix croissant</option>
+              <option value="nrm">Prix normal</option>
+              <option value="desc">Prix décroissant</option>
+            </select>
+            <select id="dateFilter">
+              <option value="all">Toutes les dates</option>
+              <option value="today">Aujourd'hui</option>
+              <option value="week">Cette semaine</option>
+              <option value="month">Ce mois</option>
+              <option value="year">Cette année</option>
+            </select>
+          </div>
+          
+        </div>
+        <section class="smart-requests">
+            <h3 style="margin-bottom: 10px;">Demandes qui vous correspondent</h3>
+
+              <div class="requests-card" id="requests_list">
+                
+              </div>
+              
+            </div>
+          </section>
+      </section>
+  
+
+    <!-- Carte interactive 
+    <section class="map-section">
+      <h3>Demandes autour de vous</h3>
+      <div id="map" class="interactive-map">
+        
+      </div>
+    </section>-->    
+  </main>
+  <!-- Modale pour postuler -->
+<div id="modalPostuler" class="modal" style="display:none;">
+  <div class="modal-content">
+    <span id="closePostuler" class="close">&times;</span>
+    <h2>Postuler à cette publication</h2>
+    <textarea id="messagePostulation" placeholder="Écrivez votre message ici..." rows="5" style="width: 100%;"></textarea>
+    <button id="sendPostuler" data-publication-id="123" class="btn">Envoyer</button>
+  </div>
+</div>
+  
+  <script>
+    // Fonction pour charger les publications
+    async function loadPublicationsByService() {
+      const requests_list = document.querySelector('.requests-card');
+      if (!requests_list) return;
+      
+      const userId = localStorage.getItem("userId");
+      const token = localStorage.getItem("token");
+      const service = localStorage.getItem("specialisation");
+      
+      try {
+        // Récupérer les paramètres de recherche
+        const searchTerm = document.getElementById('clientSearch')?.value?.trim().toLowerCase() || '';
+        const priceFilter = document.getElementById('priceFilter')?.value || 'nrm';
+        const dateFilter = document.getElementById('dateFilter')?.value || 'all';
+
+        console.log('Paramètres initiaux:', {
+          searchTerm,
+          priceFilter,
+          dateFilter,
+          service
+        });
+
+        // Récupérer toutes les publications du service
+        const res = await fetch(`http://localhost:5001/api/publications/service/${service}`, {
+          method: 'GET',
+          headers: {
+            'Authorization': `Bearer ${token}`
+          }
+        });
+
+        if (!res.ok) {
+          throw new Error(`Erreur HTTP: ${res.status}`);
+        }
+
+        let publications = await res.json();
+        console.log('Publications reçues:', publications);
+        
+        // Appliquer le filtrage par prix
+        if (priceFilter !== 'nrm') {
+          console.log('Application du filtre prix:', priceFilter);
+          publications = publications.sort((a, b) => {
+            const priceA = parseFloat(a.budget) || 0;
+            const priceB = parseFloat(b.budget) || 0;
+            console.log('Comparaison prix:', {
+              pubA: { id: a.id_publication, budget: priceA },
+              pubB: { id: b.id_publication, budget: priceB }
+            });
+            return priceFilter === 'asc' ? priceA - priceB : priceB - priceA;
+          });
+          console.log('Publications après tri par prix:', publications);
+        }
+
+        // Appliquer le filtrage par date
+        if (dateFilter !== 'all') {
+          console.log('Application du filtre date:', dateFilter);
+          const now = new Date();
+          const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+          const weekAgo = new Date(today);
+          weekAgo.setDate(weekAgo.getDate() - 7);
+          const monthAgo = new Date(today);
+          monthAgo.setMonth(monthAgo.getMonth() - 1);
+          const yearAgo = new Date(today);
+          yearAgo.setFullYear(yearAgo.getFullYear() - 1);
+
+          publications = publications.filter(pub => {
+            const pubDate = new Date(pub.date_publication);
+            let keep = false;
+            switch (dateFilter) {
+              case 'today':
+                keep = pubDate >= today;
+                break;
+              case 'week':
+                keep = pubDate >= weekAgo;
+                break;
+              case 'month':
+                keep = pubDate >= monthAgo;
+                break;
+              case 'year':
+                keep = pubDate >= yearAgo;
+                break;
+              default:
+                keep = true;
+            }
+            return keep;
+          });
+        }
+
+        // Appliquer le filtrage par recherche
+        if (searchTerm) {
+          console.log('Application du filtre recherche:', searchTerm);
+          publications = publications.filter(pub => {
+            const clientName = `${pub.nom} ${pub.prenom}`.toLowerCase();
+            const publicationTitle = pub.titre.toLowerCase();
+            const publicationDescription = pub.description.toLowerCase();
+            
+            return clientName.includes(searchTerm) || 
+                   publicationTitle.includes(searchTerm) ||
+                   publicationDescription.includes(searchTerm);
+          });
+          console.log('Publications après filtrage par recherche:', publications);
+        }
+
+        // Vider la liste actuelle
+        requests_list.innerHTML = "";
+
+        if (!publications || publications.length === 0) {
+          console.log('Aucune publication trouvée avec les filtres:', {
+            searchTerm,
+            priceFilter,
+            dateFilter
+          });
+          requests_list.innerHTML = `
+            <div class="no-results">
+              <i class="fas fa-search"></i>
+              <p>Aucune publication trouvée</p>
+              ${searchTerm ? `<p class="search-term">Recherche : "${searchTerm}"</p>` : ''}
+              ${priceFilter !== 'nrm' ? `<p class="filter-term">Filtre prix : ${priceFilter === 'asc' ? 'croissant' : 'décroissant'}</p>` : ''}
+              ${dateFilter !== 'all' ? `<p class="filter-term">Filtre date : ${dateFilter}</p>` : ''}
+            </div>
+          `;
+          return;
+        }
+
+        // Afficher les publications filtrées
+        console.log('Affichage des publications filtrées:', publications.length);
+        publications.forEach(pub => {
+          const card = document.createElement("div");
+          card.className = "request-card";
+
+          // Mettre en évidence les termes de recherche
+          const highlightedTitle = searchTerm ? 
+            pub.titre.replace(new RegExp(searchTerm, 'gi'), match => `<span class="highlight">${match}</span>`) : 
+            pub.titre;
+          
+          const highlightedName = searchTerm ? 
+            `${pub.nom} ${pub.prenom}`.replace(new RegExp(searchTerm, 'gi'), match => `<span class="highlight">${match}</span>`) : 
+            `${pub.nom} ${pub.prenom}`;
+
+          const highlightedDescription = searchTerm ? 
+            pub.description.replace(new RegExp(searchTerm, 'gi'), match => `<span class="highlight">${match}</span>`) : 
+            pub.description;
+
+          card.innerHTML = `
+            <div class="request-header">
+              <span class="category-badge">${pub.service_vise}</span>
+              <span class="publication-date"><i class="fas fa-calendar"></i> ${new Date(pub.date_publication).toLocaleDateString()}</span>
+            </div>
+            <div class="client-info">
+              <img src="data:image/jpeg;base64,${pub.photo_de_profil}" alt="Photo client" class="client-photo">
+              <div class="client-details">
+                <h5>${highlightedName}</h5>
+              </div>
+            </div>
+            <div class="publication-content">
+              <h4 class="publication-title">${highlightedTitle}</h4>
+              <p class="publication-description">${highlightedDescription}</p>
+              <div class="publication-media-container">
+                <img src="data:image/jpeg;base64,${pub.media}" alt="Photo publication" class="publication-media">
+              </div>
+              <div class="publication-details">
+                <span class="budget"><i class="fas fa-money-bill-wave"></i> Budget : ${pub.budget} DA</span>
+                <span class="location"><i class="fas fa-map-marker-alt"></i> ${pub.adresse}</span>
+              </div>
+            </div>
+            <div class="request-actions">
+              <button class="btn btn-apply">Postuler</button>
+              <button class="btn btn-message" data-client-id="${pub.client_id}" data-client-name="${pub.nom} ${pub.prenom}">Message</button>
+              <button class="btn btn-view-profile" data-client-id="${pub.client_id}">Voir profil</button>
+            </div>
+          `;
+
+          requests_list.appendChild(card);
+          
+          // Ajouter les événements aux boutons
+          const postulerBtn = card.querySelector(".btn-apply");
+          postulerBtn.setAttribute("data-publication-id", pub.id_publication);
+          postulerBtn.setAttribute("data-client-id", pub.client_id);
+
+          postulerBtn.addEventListener("click", () => {
+            document.getElementById("modalPostuler").style.display = "flex";
+            document.getElementById("sendPostuler").setAttribute("data-publication-id", pub.id_publication);
+            document.getElementById("sendPostuler").setAttribute("data-client-id", pub.client_id);
+          });
+
+          const viewProfileBtn = card.querySelector(".btn-view-profile");
+          viewProfileBtn.addEventListener("click", () => {
+            window.location.href = `/profileClient?id=${pub.client_id}`;
+          });
+
+          const messageBtn = card.querySelector(".btn-message");
+          messageBtn.addEventListener("click", async () => {
+            try {
+              const clientId = messageBtn.getAttribute("data-client-id");
+              const clientName = messageBtn.getAttribute("data-client-name");
+              const prestataireId = localStorage.getItem("userId");
+              const token = localStorage.getItem("token");
+
+              const response = await fetch(`http://localhost:5001/api/conversation/prestataire/${prestataireId}`, {
+                headers: {
+                  'Authorization': `Bearer ${token}`
+                }
+              });
+              
+              if (!response.ok) {
+                throw new Error(`Erreur HTTP: ${response.status}`);
+              }
+
+              const conversations = await response.json();
+              const existingConversation = conversations.find(conv => conv.client_id === parseInt(clientId));
+              
+              if (existingConversation) {
+                window.location.href = `/messagerieProvider?id=${existingConversation.id}#messages`;
+              } else {
+                const newConversationResponse = await fetch("http://localhost:5001/api/conversation/create", {
+                  method: "POST",
+                  headers: { 
+                    "Content-Type": "application/json",
+                    "Authorization": `Bearer ${token}`
+                  },
+                  body: JSON.stringify({
+                    client_id: clientId,
+                    prestataire_id: prestataireId,
+                    titre: `Conversation avec ${clientName}`,
+                    message: "Bonjour, je suis intéressé par votre publication."
+                  })
+                });
+
+                if (!newConversationResponse.ok) {
+                  throw new Error(`Erreur lors de la création de la conversation: ${newConversationResponse.status}`);
+                }
+
+                const conversationData = await newConversationResponse.json();
+                window.location.href = `/messagerieProvider?id=${conversationData.id}#messages`;
+              }
+            } catch (error) {
+              console.error("Erreur détaillée:", error);
+              alert("Une erreur est survenue. Veuillez réessayer. Détails: " + error.message);
+            }
+          });
+        });
+
+      } catch (error) {
+        console.error("Erreur lors du chargement des publications:", error);
+        requests_list.innerHTML = `
+          <div class="error-message">
+            <i class="fas fa-exclamation-circle"></i>
+            <p>Erreur lors du chargement des publications: ${error.message}</p>
+          </div>
+        `;
+      }
+    }
+
+    // Fonction pour récupérer et afficher la note moyenne
+    async function loadAverageRating() {
+      try {
+        const userId = localStorage.getItem('userId');
+        const token = localStorage.getItem('token');
+        
+        const response = await fetch(`http://localhost:5001/api/avis/prestataire/${userId}`, {
+          headers: {
+            'Authorization': `Bearer ${token}`
+          }
+        });
+
+        if (response.ok) {
+          const avis = await response.json();
+          
+          // Calculer la moyenne des notes
+          let totalRating = 0;
+          let count = 0;
+          
+          avis.forEach(avis => {
+            if (avis.evaluation) {
+              totalRating += avis.evaluation;
+              count++;
+            }
+          });
+
+          const averageRating = count > 0 ? (totalRating / count).toFixed(1) : "0.0";
+          
+          // Mettre à jour l'affichage de la note
+          const ratingElement = document.getElementById('averageRating');
+          if (ratingElement) {
+            ratingElement.textContent = averageRating;
+          }
+        }
+      } catch (error) {
+        console.error('Erreur lors de la récupération des avis:', error);
+      }
+    }
+
+    // Fonction pour récupérer et afficher les revenus estimés
+    async function loadEstimatedRevenue() {
+      try {
+        const userId = localStorage.getItem('userId');
+        const token = localStorage.getItem('token');
+        
+        const response = await fetch(`http://localhost:5001/api/services/revenue/${userId}`, {
+          headers: {
+            'Authorization': `Bearer ${token}`
+          }
+        });
+
+        if (response.ok) {
+          const data = await response.json();
+          
+          // Formater le montant avec des séparateurs de milliers
+          const formattedRevenue = new Intl.NumberFormat('fr-FR').format(data.estimatedRevenue);
+          
+          // Mettre à jour l'affichage des revenus
+          const revenueElement = document.getElementById('estimatedRevenue');
+          if (revenueElement) {
+            revenueElement.textContent = `${formattedRevenue} DA`;
+          }
+        }
+      } catch (error) {
+        console.error('Erreur lors de la récupération des revenus estimés:', error);
+      }
+    }
+
+    // Fonction pour charger les données du prestataire
+    async function loadPrestataireData() {
+      try {
+        const userId = localStorage.getItem('userId');
+        const token = localStorage.getItem('token');
+        
+        const response = await fetch(`http://localhost:5001/api/prestataires/${userId}`, {
+          headers: {
+            'Authorization': `Bearer ${token}`
+          }
+        });
+
+        if (response.ok) {
+          const data = await response.json();
+          localStorage.setItem('specialisation', data.specialisation);
+          document.getElementById('providerName').textContent = `${data.nom} ${data.prenom}`;
+        }
+      } catch (error) {
+        console.error('Erreur chargement des données prestataire:', error);
+      }
+    }
+
+    // Fonction pour charger les conversations
+    async function loadConversations() {
+      try {
+        const userId = localStorage.getItem('userId');
+        const token = localStorage.getItem('token');
+        
+        const response = await fetch(`http://localhost:5001/api/conversation/prestataire/${userId}`, {
+          headers: {
+            'Authorization': `Bearer ${token}`
+          }
+        });
+
+        if (response.ok) {
+          const conversations = await response.json();
+          // Mettre à jour le compteur de messages non lus si nécessaire
+          const unreadCount = conversations.filter(conv => !conv.lu).length;
+          const notificationBadge = document.querySelector('.notification-badge');
+          if (notificationBadge) {
+            notificationBadge.textContent = unreadCount;
+            notificationBadge.style.display = unreadCount > 0 ? 'block' : 'none';
+          }
+        }
+      } catch (error) {
+        console.error('Erreur chargement des conversations:', error);
+      }
+    }
+
+    // Fonction pour mettre à jour les demandes
+    function updateRequests() {
+      const priceFilter = document.getElementById('priceFilter');
+      const dateFilter = document.getElementById('dateFilter');
+      
+      if (priceFilter && dateFilter) {
+        loadPublicationsByService();
+      }
+    }
+
+    // Gestion des filtres
+    function setupFilters() {
+      const priceFilter = document.getElementById('priceFilter');
+      const dateFilter = document.getElementById('dateFilter');
+
+      if (priceFilter) {
+        priceFilter.addEventListener('change', updateRequests);
+      }
+
+      if (dateFilter) {
+        dateFilter.addEventListener('change', updateRequests);
+      }
+    }
+
+    // Gestion de la recherche de clients
+    function setupClientSearch() {
+        const searchInput = document.getElementById('clientSearch');
+        const searchButton = document.querySelector('.btn-search');
+
+        if (searchInput) {
+          // Recherche lors de la frappe (avec délai)
+          let searchTimeout;
+          searchInput.addEventListener('input', function() {
+          clearTimeout(searchTimeout);
+            searchTimeout = setTimeout(() => {
+              loadPublicationsByService();
+            }, 500); // Délai de 500ms
+          });
+
+          // Recherche avec la touche Entrée
+          searchInput.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+              loadPublicationsByService();
+            }
+          });
+        }
+
+        if (searchButton) {
+          searchButton.addEventListener('click', loadPublicationsByService);
+        }
+    }
+
+    function searchClients() {
+        const searchTerm = document.getElementById('clientSearch').value;
+        // Code pour rechercher les clients
+        console.log('Recherche de clients:', searchTerm);
+    }
+
+    // Initialisation de la page
+    document.addEventListener("DOMContentLoaded", async () => {
+      const token = localStorage.getItem('token');
+      const userId = localStorage.getItem('userId');
+
+      if (!token || !userId) {
+        window.location.href = '/login';
+        return;
+      }
+
+      try {
+        // Chargements séparés pour mieux attraper les erreurs
+        try {
+          await loadPrestataireData();
+        } catch (error) {
+          console.error('Erreur chargement des données prestataire:', error);
+        }
+
+        try {
+          await loadPublicationsByService();
+        } catch (error) {
+          console.error('Erreur chargement des publications:', error);
+        }
+
+        try {
+          await loadConversations();
+        } catch (error) {
+          console.error('Erreur chargement des conversations:', error);
+        }
+
+        try {
+          await loadAverageRating();
+        } catch (error) {
+          console.error('Erreur chargement de la note moyenne:', error);
+        }
+
+        try {
+          await loadEstimatedRevenue();
+        } catch (error) {
+          console.error('Erreur chargement du revenu estimé:', error);
+        }
+
+        try {
+          await loadTasks();
+        } catch (error) {
+          console.error('Erreur chargement des tâches:', error);
+        }
+
+        // Initialiser les filtres
+        setupFilters();
+        setupClientSearch();
+
+      } catch (error) {
+        console.error('Erreur générale sur homeProvider:', error);
+      }
+    });
+
+    // Fonction pour charger les tâches depuis l'API
+    async function loadTasks() {
+      try {
+        const token = localStorage.getItem('token');
+        
+        const response = await fetch('http://localhost:5001/api/checklist', {
+          headers: {
+            'Authorization': `Bearer ${token}`
+          }
+        });
+        
+        if (response.ok) {
+          const tasks = await response.json();
+          const checklist = document.querySelector('.checklist-items');
+          
+          // Vider la liste actuelle
+          checklist.innerHTML = '';
+          
+          // Ajouter les tâches
+      tasks.forEach(task => {
+        const taskElement = document.createElement('div');
+        taskElement.className = 'checklist-item';
+        taskElement.innerHTML = `
+              <input type="checkbox" id="task-${task.id}" onchange="handleTaskCompletion(this)" ${task.est_fait ? 'checked' : ''}>
+          <label for="task-${task.id}">
+                ${task.titre}
+                ${task.priorite ? `<span class="task-priority ${task.priorite.toLowerCase()}">${task.priorite}</span>` : ''}
+          </label>
+        `;
+        checklist.appendChild(taskElement);
+      });
+    }
+      } catch (error) {
+        console.error('Erreur lors du chargement des tâches:', error);
+      }
+    }
+
+    // Fonction pour ajouter une nouvelle tâche
+    async function addNewTask(event) {
+        event.preventDefault();
+        
+        const title = document.getElementById('taskTitle').value;
+        const priority = document.getElementById('taskPriority').value;
+        
+        if (!title) {
+            alert('Veuillez entrer un titre pour la tâche');
+            return;
+        }
+
+        try {
+          const token = localStorage.getItem('token');
+          
+          const response = await fetch('http://localhost:5001/api/checklist', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              'Authorization': `Bearer ${token}`            },
+            body: JSON.stringify({
+              titre: title,
+              priorite: priority
+            })
+          });
+          
+          if (response.ok) {
+            // Fermer la modale avant de recharger les tâches
+            closeAddTaskModal();
+            
+            // Recharger les tâches
+            await loadTasks();
+          } else {
+            const error = await response.json();
+            alert(error.error || 'Erreur lors de l\'ajout de la tâche');
+          }
+        } catch (error) {
+          console.error('Erreur lors de l\'ajout de la tâche:', error);
+          alert('Erreur lors de l\'ajout de la tâche');
+        }
+    }
+
+    // Fonction pour gérer la complétion d'une tâche
+    async function handleTaskCompletion(checkbox) {
+        const taskItem = checkbox.closest('.checklist-item');
+        const taskId = parseInt(checkbox.id.split('-')[1]);
+        
+        try {
+          const token = localStorage.getItem('token');
+        
+        if (checkbox.checked) {
+            // Supprimer la tâche de la base de données
+            const response = await fetch(`http://localhost:5001/api/checklist/${taskId}`, {
+              method: 'DELETE',
+              headers: {
+                'Authorization': `Bearer ${token}`
+              }
+            });
+            
+            if (response.ok) {
+            // Ajouter une animation de fondu avant la suppression
+            taskItem.style.transition = 'opacity 0.5s ease';
+            taskItem.style.opacity = '0';
+            
+            // Supprimer l'élément après l'animation
+            setTimeout(() => {
+                taskItem.remove();
+            }, 500);
+            } else {
+              checkbox.checked = false;
+              alert('Erreur lors de la suppression de la tâche');
+            }
+          }
+        } catch (error) {
+          console.error('Erreur lors de la suppression de la tâche:', error);
+          checkbox.checked = false;
+          alert('Erreur lors de la suppression de la tâche');
+        }
+    }
+
+    // Fonction pour envoyer un message et rediriger
+    async function sendMessage() {
+      const message = document.getElementById("messagePostulation").value.trim();
+      const publicationId = document.getElementById("sendPostuler").getAttribute("data-publication-id");
+      const clientId = document.getElementById("sendPostuler").getAttribute("data-client-id");
+      const prestataireId = localStorage.getItem("userId");
+      const token = localStorage.getItem("token");
+
+      if (!message) {
+        alert("Veuillez écrire un message");
+        return;
+      }
+
+      try {
+        // Récupérer les informations de la publication
+        const publicationResponse = await fetch(`http://localhost:5001/api/publications/${publicationId}`, {
+          headers: {
+            'Authorization': `Bearer ${token}`
+          }
+        });
+
+        if (!publicationResponse.ok) {
+          throw new Error("Erreur lors de la récupération des informations de la publication");
+        }
+
+        const publication = await publicationResponse.json();
+
+        // Créer une conversation
+        const conversationResponse = await fetch("http://localhost:5001/api/conversation/create", {
+          method: "POST",
+          headers: { 
+            "Content-Type": "application/json",
+            "Authorization": `Bearer ${token}`
+          },
+          body: JSON.stringify({
+            client_id: clientId,
+            prestataire_id: prestataireId,
+            titre: `${publication.titre} - ${publication.nom} ${publication.prenom}`,
+            message: message // Le message initial
+          })
+        });
+
+        if (!conversationResponse.ok) {
+          const errorData = await conversationResponse.json();
+          throw new Error(errorData.message || "Erreur lors de la création de la conversation");
+        }
+
+        const conversationData = await conversationResponse.json();
+        const conversationId = conversationData.conversationId;
+
+        // Fermer la modale et rediriger vers la messagerie
+        document.getElementById("modalPostuler").style.display = "none";
+        window.location.href = `/messagerieProvider?id=${conversationId}`;
+      } catch (error) {
+        console.error(error);
+        alert(error.message || "Une erreur est survenue lors de l'envoi du message.");
+      }
+    }
+
+    document.getElementById('sendPostuler').addEventListener('click', sendMessage);
+
+    // Fonction pour ouvrir la modale d'ajout de tâche
+    function openAddTaskModal() {
+        const modal = document.getElementById('addTaskModal');
+        modal.style.display = 'block';
+    }
+
+    // Fonction pour fermer la modale d'ajout de tâche
+    function closeAddTaskModal() {
+        const modal = document.getElementById('addTaskModal');
+        modal.style.display = 'none';
+        document.getElementById('addTaskForm').reset();
+    }
+
+  </script>
+  
+
+</body>
+</html> 
+
+

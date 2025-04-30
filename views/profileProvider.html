@@ -1,0 +1,1552 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>ServiGO - Profil Prestataire</title>
+  <link rel="stylesheet" href="../style/profileProvider.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+  <!-- NAVBAR -->
+  <nav>
+    <div class="logo">
+      <h1>ServiGO</h1>
+    </div>
+    <ul>
+      <li><a href="/homeProvider">Accueil</a></li>
+      <li><a href="/demandes">Demandes</a></li>
+      <li><a href="/messagerieProvider">Messagerie</a></li>
+      <li><a href="/notificationProvider">Notifications</a></li>
+      <li><a href="#">Options</a></li>
+      <li><a id="active" href="#">Profile</a></li>
+    </ul>
+  </nav>
+
+  <!-- PAGE PROFIL -->
+  <main class="profile-container">
+    <h1>Mon Profil Prestataire</h1>
+
+    <div class="profile-box" >
+      <!-- Partie 1: Informations personnelles -->
+      <div class="profile-header" id="profil-box">
+        <div class="profile-pic-section">
+          <div class="profile-pic-container">
+            <img id="profileImage" src="../images/default-profile.png" alt="Photo de profil">
+            <div class="profile-pic-overlay">
+              <label for="profilePicInput" class="upload-btn">
+                <i class="fas fa-camera"></i>
+          </label>
+          <input type="file" id="profilePicInput" accept="image/*" style="display: none;">
+            </div>
+          </div>
+        </div>
+        <div class="profile-info">
+          <h2 id="nom_utilisateur1">Mohammed Anis Lakardi</h2>
+          <p class="specialty" id="nom_utilisateur1">Électricien professionnel</p>
+          <p><i class="fas fa-envelope" id="nom_utilisateur1"></i> anis.lakardi@example.com</p>
+          <p><i class="fas fa-phone" id="nom_utilisateur1"></i> +213 5 55 55 55 55</p>
+          <p><i class="fas fa-map-marker-alt"></i> El Karimia, Chlef, Algérie</p>
+          <div class="status-badge available">
+            <i class="fas fa-circle"></i>
+            Disponible
+          </div>
+        </div>
+      </div>
+
+      <!-- Partie 2: Compétences --
+      <div class="skills-section">
+        <h3>Mes Compétences</h3>
+        <div class="skills-list">
+          <div class="skill-item">
+            <span>Installation électrique</span>
+            <span class="skill-level expert">Expert</span>
+            <div class="verification-badge verified">
+              <i class="fas fa-check-circle"></i>
+              <span>Vérifié</span>
+            </div>
+            <button class="btn-delete-skill"><i class="fas fa-times"></i></button>
+          </div>
+          <div class="skill-item">
+            <span>Dépannage électrique</span>
+            <span class="skill-level expert">Expert</span>
+            <div class="verification-badge pending">
+              <i class="fas fa-clock"></i>
+              <span>En attente</span>
+            </div>
+            <button class="btn-delete-skill"><i class="fas fa-times"></i></button>
+          </div>
+          <button class="btn-add-skill" onclick="openSkillModal()">
+            <i class="fas fa-plus"></i> Ajouter une compétence
+            <span class="verification-info">(Nouvelle compétence sera vérifiée)</span>
+          </button>
+        </div>
+      </div>
+    >
+      <!-- Partie 3: Mes services -->
+      <div class="services-section">
+        <div class="services-header">
+          <h3>Mes services</h3>
+          <div class="services-counter">
+      <span class="current-count">0</span>
+            <span class="max-count">/3</span>
+            <span class="services-limit">Services maximum</span>
+          </div>
+        </div>
+        <div class="services-gallery">
+    <!-- Les services seront ajoutés dynamiquement ici -->
+    <div class="add-service-item" onclick="triggerFileInput()">
+            <i class="fas fa-plus"></i>
+            <span>Ajouter un service</span>
+            <p class="service-limit-info">(Maximum 3 services)</p>
+      <input type="file" id="serviceImageInput" accept="image/*" style="display: none;" onchange="handleServiceImage(event)">
+          </div>
+        </div>
+      </div>
+
+      <!-- Partie 4: Avis & Évaluations -->
+      <div class="reviews-section">
+        <h3>Avis & Évaluations</h3>
+        <div class="rating-overview">
+          <div class="average-rating">
+            <span class="rating">4.7</span>
+            <div class="stars">
+              <i class="fas fa-star"></i>
+              <i class="fas fa-star"></i>
+              <i class="fas fa-star"></i>
+              <i class="fas fa-star"></i>
+              <i class="fas fa-star-half-alt"></i>
+            </div>
+            <span class="total-reviews">(24 avis)</span>
+          </div>
+          <button class="btn btn-add-review" onclick="openReviewModal()">
+            <i class="fas fa-plus"></i> Donner un avis
+          </button>
+        </div>
+        <div class="reviews-list">
+          
+        </div>
+      </div>
+
+      <!-- Partie 6: Disponibilité -->
+      <div class="availability-section">
+        <h3>Disponibilité</h3>
+        <div class="availability-status">
+          <div class="status-toggle">
+            <label class="switch">
+              <input type="checkbox" checked>
+              <span class="slider round"></span>
+            </label>
+            <span>Disponible</span>
+          </div>
+          <div class="working-hours">
+            <h4>Horaires de travail</h4>
+            <div class="schedule">
+              <!-- Les horaires seront ajoutés dynamiquement ici -->
+            </div>
+            <div class="working-hours-footer">
+              <button class="btn btn-edit" onclick="openHoursModal()">
+                <i class="fas fa-edit"></i> Modifier les horaires
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Partie 7: Expérience & formation 
+      <div class="experience-section">
+        <h3>Expérience & Formation</h3>
+        <div class="experience-list">
+          <div class="experience-item">
+            <h4>Formation</h4>
+            <p>Diplôme d'électricien professionnel - 2018</p>
+            <p>Centre de formation professionnelle, Chlef</p>
+          </div>
+          <div class="experience-item">
+            <h4>Expérience</h4>
+            <p>Électricien indépendant - 2018 à présent</p>
+            <p>Plus de 100 projets réalisés</p>
+          </div>
+        </div>
+      </div>
+    -->
+      <!-- Partie 8: Boutons d'action -->
+      <div class="action-buttons" id="actionButtons">
+        <button class="btn btn-edit" onclick="openModal()">Modifier Profil</button>
+        <button class="btn btn-logout" onclick="logout()">Déconnexion</button>
+      </div>
+    </div>
+  </main>
+
+  <!-- MODAL d'édition -->
+  <div class="modal" id="editModal">
+    <div class="modal-content">
+      <span class="close" onclick="closeModal()">&times;</span>
+      <h2>Modifier mon profil</h2>
+      <form class="edit-form">
+        <div class="form-scroll">
+          <!-- Informations personnelles -->
+          <div class="form-section">
+            <h3>Informations personnelles</h3>
+            <label>Nom :</label>
+            <input type="text" placeholder="Entrer le nom">
+
+            <label>Prénom :</label>
+            <input type="text" placeholder="Entrer le prénom">
+            
+            <label>Spécialité :</label>
+            <input type="text" placeholder="Entrer votre spécialité">
+
+            <label>Email :</label>
+            <input type="email" placeholder="Entrer l'email">
+
+            <label>Téléphone :</label>
+            <input type="tel" placeholder="Entrer le numéro de téléphone">
+
+            
+          </div>
+
+          <!-- Expérience et Formation 
+          
+            <div class="experience-form">
+              <h4>Expérience professionnelle</h4>
+              <div class="experience-item">
+                <label>Poste :</label>
+                <input type="text" placeholder="Ex: Électricien indépendant">
+                
+                <label>Période :</label>
+                <div class="date-range">
+                  <input type="text" placeholder="Début (Ex: 2018)">
+                  <span>à</span>
+                  <input type="text" placeholder="Fin (Ex: présent)">
+                </div>
+              
+                <label>Description :</label>
+                <textarea placeholder="Décrivez votre expérience"></textarea>
+                
+                <button type="button" class="btn btn-delete">Supprimer</button>
+              </div>
+              <button type="button" class="btn btn-add" onclick="addExperienceItem()">+ Ajouter une expérience</button>
+            </div>-->
+            <button type="submit" class="btn btn-edit">Enregistrer</button>
+          </div>
+        </div>
+        
+      </form>
+    </div>
+  </div>
+
+  <!-- Modal Ajout Compétence -->
+  <div class="modal" id="skillModal">
+    <div class="modal-content">
+      <span class="close" onclick="closeSkillModal()">&times;</span>
+      <h2>Ajouter une compétence</h2>
+      <form class="skill-form">
+        <label>Nom de la compétence :</label>
+        <input type="text" placeholder="Entrer le nom de la compétence">
+        
+        <label>Niveau :</label>
+        <select>
+          <option value="debutant">Débutant</option>
+          <option value="confirme">Confirmé</option>
+          <option value="expert">Expert</option>
+        </select>
+        
+        <button type="submit" class="btn btn-edit">Ajouter</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- Modal Ajout Document -->
+  <div class="modal" id="documentModal">
+    <div class="modal-content">
+      <span class="close" onclick="closeDocumentModal()">&times;</span>
+      <h2>Ajouter un document</h2>
+      <form class="document-form">
+        <label>Type de document :</label>
+        <select>
+          <option value="cv">CV</option>
+          <option value="diplome">Diplôme</option>
+          <option value="certificat">Certificat</option>
+          <option value="autre">Autre</option>
+        </select>
+        
+        <label>Fichier :</label>
+        <input type="file" accept=".pdf,.doc,.docx">
+        
+        <button type="submit" class="btn btn-edit">Ajouter</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- Modal Service -->
+  <div class="modal" id="addServiceModal">
+    <div class="modal-content">
+      <span class="close" onclick="closeAddServiceModal()">&times;</span>
+      <h3>Ajouter un nouveau service</h3>
+      
+      <!-- Barre de progression -->
+      <div class="form-progress">
+        <div class="progress-bar">
+          <div class="progress" id="formProgress"></div>
+        </div>
+        <div class="progress-text" id="progressText">0% complété</div>
+      </div>
+
+      <form id="addServiceForm" onsubmit="addNewService(event)">
+        <!-- Informations générales -->
+        <div class="form-section">
+          <h3>Informations générales</h3>
+          <div class="form-group">
+            <label for="serviceTitle">Titre du service <span class="required">*</span></label>
+            <input type="text" id="serviceTitle" required oninput="updateProgress()">
+          </div>
+          <div class="form-group">
+            <label for="serviceCategory">Catégorie <span class="required">*</span></label>
+            <select id="serviceCategory" required onchange="updateProgress()">
+              <option value="">Sélectionnez une catégorie</option>
+              <option value="plomberie">Plomberie</option>
+              <option value="electricite">Électricité</option>
+              <option value="menuisier">Menuiserie</option>
+              <option value="macon">Maçonnerie</option>
+              <option value="peinture">Peinture</option>
+              <option value="nettoyage">Nettoyage</option>
+              <option value="informatique">Informatique</option>
+              <option value="jardinage">Jardinage</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="serviceDescription">Description détaillée <span class="required">*</span></label>
+            <textarea id="serviceDescription" rows="4" required oninput="updateProgress()"></textarea>
+          </div>
+          <div class="form-group">
+            <label for="serviceZone">Zone d'intervention <span class="required">*</span></label>
+            <input type="text" id="serviceZone" required oninput="updateProgress()" placeholder="Ex: Alger Centre, Hydra, El Biar">
+          </div>
+        </div>
+
+        <!-- Tarification -->
+        <div class="form-section">
+          <h3>Tarification</h3>
+          <div class="form-group">
+            <label for="servicePrice">Tarif (DA) <span class="required">*</span></label>
+            <input type="number" id="servicePrice" required oninput="updateProgress()" placeholder="Ex: 5000">
+          </div>
+        </div>
+
+        <!-- Médias -->
+        <div class="form-section">
+          <h3>Médias</h3>
+          <div class="media-upload">
+            <div class="upload-zone" onclick="document.getElementById('serviceImage').click()">
+              <input type="file" id="serviceImage" accept="image/*" onchange="previewImage(this)">
+              <i class="fas fa-image"></i>
+              <span>Ajouter une image</span>
+            </div>
+            <div class="upload-zone" onclick="document.getElementById('serviceVideo').click()">
+              <input type="file" id="serviceVideo" accept="video/*" onchange="previewVideo(this)">
+              <i class="fas fa-video"></i>
+              <span>Ajouter une vidéo</span>
+            </div>
+          </div>
+          <div class="media-preview" id="mediaPreview"></div>
+        </div>
+        
+        <!-- 4. Informations professionnelles -->
+        <div class="form-section">
+          <h3>4. Informations professionnelles</h3>
+          <div class="form-group">
+            <label>Expérience (en années)</label>
+            <input type="number" placeholder="Ex: 5">
+          </div>
+          
+          <div class="form-group">
+            <label>Diplômes ou certifications</label>
+            <input type="file" accept=".pdf,.doc,.docx">
+          </div>
+          
+          <div class="form-group">
+            <label>Assurance professionnelle</label>
+            <div class="checkbox-group">
+              <input type="checkbox" id="hasInsurance">
+              <label for="hasInsurance">Oui, je suis assuré</label>
+            </div>
+          </div>
+          
+          <div class="form-group">
+            <label>SIRET / N° registre de commerce</label>
+            <input type="text" placeholder="Si auto-entrepreneur ou entreprise">
+          </div>
+        </div>
+
+
+        <!-- Contact -->
+        <div class="form-section">
+          <h3>Contact</h3>
+          <div class="form-group">
+            <label for="servicePhone">Téléphone <span class="required">*</span></label>
+            <input type="tel" id="servicePhone" required oninput="updateProgress()" placeholder="Ex: 0555 123 456">
+          </div>
+          <div class="form-group">
+            <label for="serviceEmail">Email <span class="required">*</span></label>
+            <input type="email" id="serviceEmail" required oninput="updateProgress()" placeholder="Ex: contact@example.com">
+          </div>
+        </div>
+        
+        <!-- 6. Paramètres personnalisés -->
+        <div class="form-section">
+          <h3>6. Paramètres personnalisés</h3>
+          <div class="form-group">
+            <label>Type de prestation</label>
+            <div class="checkbox-group">
+              <input type="checkbox" id="homeService">
+              <label for="homeService">À domicile</label>
+              <input type="checkbox" id="remoteService">
+              <label for="remoteService">À distance</label>
+              <input type="checkbox" id="siteService">
+              <label for="siteService">Sur chantier</label>
+            </div>
+          </div>
+          
+          <div class="form-group">
+            <label>Garantie offerte</label>
+            <div class="checkbox-group">
+              <input type="checkbox" id="hasWarranty">
+              <label for="hasWarranty">Oui</label>
+            </div>
+            <textarea placeholder="Détails de la garantie" id="warrantyDetails"></textarea>
+          </div>
+          
+          <div class="form-group">
+            <label>FAQ personnalisée</label>
+            <div class="faq-items">
+              <div class="faq-item">
+                <input type="text" placeholder="Question fréquente">
+                <textarea placeholder="Réponse"></textarea>
+                <button type="button" class="btn-delete" onclick="removeFaqItem(this)">Supprimer</button>
+              </div>
+            </div>
+            <button type="button" class="btn-add" onclick="addFaqItem()">Ajouter une question</button>
+          </div>
+          
+          <div class="form-group">
+            <label>Services associés</label>
+            <div class="related-services">
+              <input type="text" placeholder="Ajouter un service associé">
+              <button type="button" class="btn-add" onclick="addRelatedService()">+</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="form-actions">
+          <button type="button" class="btn-secondary" onclick="closeAddServiceModal()">Annuler</button>
+          <button type="submit" class="btn-primary">Publier le service</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Modal Réponse -->
+  <div class="modal" id="replyModal">
+    <div class="modal-content">
+      <span class="close" onclick="closeReplyModal()">&times;</span>
+      <h2>Répondre à l'avis</h2>
+      <form class="reply-form">
+        <label>Votre réponse :</label>
+        <textarea placeholder="Écrivez votre réponse ici..."></textarea>
+        <button type="submit" class="btn btn-edit">Envoyer</button>
+      </form>
+    </div>
+  </div>
+
+  <script>
+    // Fonction pour charger les informations du prestataire
+    async function loadProfile() {
+      try {
+        const userId = localStorage.getItem("userId");
+        const token = localStorage.getItem("token");
+        const profileId = new URLSearchParams(window.location.search).get('id');
+
+        if (!userId || !token) {
+          console.error("ID utilisateur ou token manquant");
+          return;
+        }
+
+        // Si on consulte un profil spécifique, utiliser cet ID, sinon utiliser l'ID de l'utilisateur connecté
+        const targetId = profileId || userId;
+
+        const response = await fetch(`http://localhost:5001/api/prestataires/${targetId}`, {
+          method: 'GET',
+          headers: {
+            'Authorization': `Bearer ${token}`,
+            'Content-Type': 'application/json'
+          }
+        });
+
+        if (!response.ok) {
+          throw new Error('Erreur lors de la récupération des données');
+        }
+
+        const prestataire = await response.json();
+
+        // Mise à jour des informations personnelles
+        document.getElementById('nom_utilisateur1').textContent = `${prestataire.nom} ${prestataire.prenom}`;
+        document.querySelector('.specialty').textContent = prestataire.specialisation || 'Spécialité non définie';
+        document.querySelector('.fa-envelope').nextSibling.textContent = prestataire.email;
+        document.querySelector('.fa-phone').nextSibling.textContent = prestataire.telephone || '+213 5 55 55 55 55';
+        document.querySelector('.fa-map-marker-alt').nextSibling.textContent = prestataire.adresse || 'Adresse non définie';
+        
+        // Mise à jour de la photo de profil si elle existe
+        if (prestataire.photo_profil) {
+          document.getElementById('profileImage').src = prestataire.photo_profil;
+        }
+        
+        // Mise à jour de l'expérience
+        if (prestataire.experience) {
+          document.querySelector('.experience-item p').textContent = `${prestataire.experience} années d'expérience`;
+        }
+
+        // Masquer les boutons d'action si l'utilisateur n'est pas le propriétaire du profil
+        const actionButtons = document.getElementById('actionButtons');
+        if (targetId !== userId) {
+          actionButtons.style.display = 'none';
+        } else {
+          actionButtons.style.display = 'flex';
+        }
+
+      } catch (error) {
+        console.error("Erreur lors du chargement du profil:", error);
+      }
+    }
+
+    // Gestion de la photo de profil
+    document.getElementById('profilePicInput').addEventListener('change', async function(e) {
+      const file = e.target.files[0];
+      if (file) {
+        try {
+          const formData = new FormData();
+          formData.append('photo_profil', file);
+
+          const userId = localStorage.getItem("userId");
+          const token = localStorage.getItem("token");
+
+          const response = await fetch(`http://localhost:5001/api/prestataires/${userId}/photo`, {
+            method: 'PUT',
+            headers: {
+              'Authorization': `Bearer ${token}`
+            },
+            body: formData
+          });
+
+          if (!response.ok) {
+            throw new Error('Erreur lors de la mise à jour de la photo');
+          }
+
+          const result = await response.json();
+          
+          // Mise à jour de l'image dans l'interface
+          document.getElementById('profileImage').src = URL.createObjectURL(file);
+          
+          // Stockage de l'URL de la nouvelle photo
+          localStorage.setItem('profilePhoto', result.photo_profil);
+
+        } catch (error) {
+          console.error("Erreur lors de la mise à jour de la photo:", error);
+          alert("Erreur lors de la mise à jour de la photo de profil");
+        }
+      }
+    });
+
+    // Appeler loadProfile au chargement de la page
+    document.addEventListener('DOMContentLoaded', loadProfile);
+  </script>
+  <script>
+    // Scripts pour la gestion des fonctionnalités
+    function openModal() {
+      document.getElementById('editModal').style.display = 'block';
+      // Charger les données actuelles dans le formulaire
+      loadFormData({
+        nom: document.getElementById('nom_utilisateur1').textContent.split(' ')[0],
+        prenom: document.getElementById('nom_utilisateur1').textContent.split(' ')[1],
+        email: document.querySelector('.fa-envelope').nextSibling.textContent,
+        adresse: document.querySelector('.fa-map-marker-alt').nextSibling.textContent,
+        specialisation: document.querySelector('.specialty').textContent
+      });
+    }
+
+    function closeModal() {
+      document.getElementById('editModal').style.display = 'none';
+    }
+
+    window.onclick = function(event) {
+      const modals = document.querySelectorAll('.modal');
+      modals.forEach(modal => {
+        if (event.target == modal) {
+          modal.style.display = "none";
+        }
+      });
+    }
+
+    // Gestion des wilayas et communes
+    let wilayas = [];
+    let communes = [];
+
+    Promise.all([
+      fetch('../fichiers/Wilaya_Of_Algeria.json').then(res => res.json()),
+      fetch('../fichiers/Commune_Of_Algeria.json').then(res => res.json())
+    ]).then(([wilayaData, communeData]) => {
+      wilayas = wilayaData;
+      communes = communeData;
+      populateWilayas();
+    });
+
+    function populateWilayas() {
+      const wilayaSelect = document.getElementById('wilaya');
+      wilayas.forEach(w => {
+        const option = document.createElement('option');
+        option.value = w.id;
+        option.textContent = w.name;
+        wilayaSelect.appendChild(option);
+      });
+
+      wilayaSelect.addEventListener('change', () => {
+        const selectedId = wilayaSelect.value;
+        populateCommunes(selectedId);
+      });
+    }
+
+    function populateCommunes(wilayaId) {
+      const communeSelect = document.getElementById('commune');
+      communeSelect.innerHTML = '<option value="">-- Sélectionnez une commune --</option>';
+      const filtered = communes.filter(c => c.wilaya_id === wilayaId);
+      filtered.forEach(c => {
+        const option = document.createElement('option');
+        option.value = c.name;
+        option.textContent = c.name;
+        communeSelect.appendChild(option);
+      });
+    }
+
+    // Fonctions pour les modals
+    function openSkillModal() {
+      document.getElementById('skillModal').style.display = 'block';
+    }
+
+    function closeSkillModal() {
+      document.getElementById('skillModal').style.display = 'none';
+    }
+
+    function openDocumentModal() {
+      document.getElementById('documentModal').style.display = 'block';
+    }
+
+    function closeDocumentModal() {
+      document.getElementById('documentModal').style.display = 'none';
+    }
+
+    function openAddServiceModal() {
+      const currentCount = document.querySelector('.current-count');
+      if (parseInt(currentCount.textContent) >= 3) {
+        alert('Vous avez atteint la limite maximale de 3 services.');
+        return;
+      }
+      document.getElementById('addServiceModal').style.display = 'block';
+    }
+
+    function closeAddServiceModal() {
+      document.getElementById('addServiceModal').style.display = 'none';
+      document.getElementById('mediaPreview').innerHTML = '';
+    }
+
+    function openReplyModal() {
+      document.getElementById('replyModal').style.display = 'block';
+    }
+
+    function closeReplyModal() {
+      document.getElementById('replyModal').style.display = 'none';
+    }
+
+    // Gestion du toggle de disponibilité
+    const availabilityToggle = document.querySelector('.switch input');
+    const statusText = document.querySelector('.status-toggle span');
+    const statusBadge = document.querySelector('.status-badge');
+
+    // Charger l'état initial depuis le localStorage
+    document.addEventListener('DOMContentLoaded', function() {
+      const savedStatus = localStorage.getItem('providerStatus');
+      if (savedStatus) {
+        availabilityToggle.checked = savedStatus === 'available';
+        updateStatusDisplay(availabilityToggle.checked);
+      }
+    });
+
+    // Fonction pour mettre à jour l'affichage du statut
+    function updateStatusDisplay(isAvailable) {
+      if (isAvailable) {
+        statusText.textContent = 'Disponible';
+        statusText.style.color = '#2ecc71';
+        statusBadge.classList.remove('unavailable');
+        statusBadge.classList.add('available');
+        statusBadge.innerHTML = '<i class="fas fa-circle"></i> Disponible';
+      } else {
+        statusText.textContent = 'Occupé';
+        statusText.style.color = '#e74c3c';
+        statusBadge.classList.remove('available');
+        statusBadge.classList.add('unavailable');
+        statusBadge.innerHTML = '<i class="fas fa-circle"></i> Occupé';
+      }
+    }
+
+    availabilityToggle.addEventListener('change', function() {
+      const isAvailable = this.checked;
+      updateStatusDisplay(isAvailable);
+      // Sauvegarder l'état dans le localStorage
+      localStorage.setItem('providerStatus', isAvailable ? 'available' : 'unavailable');
+    });
+
+    // Modification de la fonction openReviewModal
+    function openReviewModal() {
+      const userId = localStorage.getItem("userId");
+      const profileId = new URLSearchParams(window.location.search).get('id');
+      
+      // Si l'utilisateur est le propriétaire du profil, afficher une alerte
+      if (!profileId || userId === profileId) {
+        alert("Vous ne pouvez pas donner un avis sur votre propre profil.");
+        return;
+      }
+      
+      document.getElementById('reviewModal').style.display = 'block';
+    }
+
+    // Gestion des presets d'horaires
+    document.querySelectorAll('.preset-btn').forEach(btn => {
+      btn.addEventListener('click', function() {
+        const preset = this.dataset.preset;
+        switch(preset) {
+          case 'standard':
+            setStandardHours();
+            break;
+          case 'extended':
+            setExtendedHours();
+            break;
+          case 'weekend':
+            setWeekendHours();
+            break;
+        }
+      });
+    });
+
+    function setStandardHours() {
+      // Lundi-Vendredi: 9h-17h
+      document.querySelector('.day-schedule-form input[type="time"]').value = '09:00';
+      document.querySelector('.day-schedule-form input[type="time"]:nth-child(3)').value = '17:00';
+      // Pause déjeuner
+      document.querySelector('.break-time input[type="time"]').value = '12:00';
+      document.querySelector('.break-time input[type="time"]:nth-child(3)').value = '13:00';
+      // Samedi: fermé
+      document.querySelector('.day-schedule-form:nth-child(2) input[type="time"]').value = '';
+      document.querySelector('.day-schedule-form:nth-child(2) input[type="time"]:nth-child(3)').value = '';
+      // Dimanche: fermé
+      document.getElementById('sundayClosed').checked = true;
+    }
+
+    function setExtendedHours() {
+      // Lundi-Vendredi: 8h-20h
+      document.querySelector('.day-schedule-form input[type="time"]').value = '08:00';
+      document.querySelector('.day-schedule-form input[type="time"]:nth-child(3)').value = '20:00';
+      // Pause déjeuner
+      document.querySelector('.break-time input[type="time"]').value = '12:00';
+      document.querySelector('.break-time input[type="time"]:nth-child(3)').value = '13:00';
+      // Samedi: 9h-13h
+      document.querySelector('.day-schedule-form:nth-child(2) input[type="time"]').value = '09:00';
+      document.querySelector('.day-schedule-form:nth-child(2) input[type="time"]:nth-child(3)').value = '13:00';
+      // Dimanche: fermé
+      document.getElementById('sundayClosed').checked = true;
+    }
+
+    function setWeekendHours() {
+      // Lundi-Vendredi: 9h-17h
+      document.querySelector('.day-schedule-form input[type="time"]').value = '09:00';
+      document.querySelector('.day-schedule-form input[type="time"]:nth-child(3)').value = '17:00';
+      // Pause déjeuner
+      document.querySelector('.break-time input[type="time"]').value = '12:00';
+      document.querySelector('.break-time input[type="time"]:nth-child(3)').value = '13:00';
+      // Samedi: 9h-13h
+      document.querySelector('.day-schedule-form:nth-child(2) input[type="time"]').value = '09:00';
+      document.querySelector('.day-schedule-form:nth-child(2) input[type="time"]:nth-child(3)').value = '13:00';
+      // Dimanche: 9h-13h
+      document.getElementById('sundayClosed').checked = false;
+      document.querySelector('.day-schedule-form:nth-child(3) input[type="time"]').value = '09:00';
+      document.querySelector('.day-schedule-form:nth-child(3) input[type="time"]:nth-child(3)').value = '13:00';
+    }
+
+    // Fonctions pour gérer les éléments d'expérience et de formation
+    function addEducationItem() {
+      const educationForm = document.querySelector('.education-item');
+      const newItem = educationForm.cloneNode(true);
+      educationForm.parentNode.insertBefore(newItem, educationForm.nextSibling);
+    }
+
+    function addExperienceItem() {
+      const experienceForm = document.querySelector('.experience-item');
+      const newItem = experienceForm.cloneNode(true);
+      experienceForm.parentNode.insertBefore(newItem, experienceForm.nextSibling);
+    }
+
+    // Gestion des horaires de travail
+    document.querySelectorAll('.day-schedule-form input[type="time"]').forEach(input => {
+      input.addEventListener('change', function() {
+        const timeInputs = this.parentElement.querySelectorAll('input[type="time"]');
+        const startTime = timeInputs[0].value;
+        const endTime = timeInputs[1].value;
+        
+        if (startTime && endTime && startTime >= endTime) {
+          alert('L\'heure de fin doit être postérieure à l\'heure de début');
+          this.value = '';
+        }
+      });
+    });
+
+    // Gestion des jours fermés
+    document.querySelectorAll('.closed-day input[type="checkbox"]').forEach(checkbox => {
+      checkbox.addEventListener('change', function() {
+        const timeInputs = this.closest('.time-inputs').querySelectorAll('input[type="time"]');
+        timeInputs.forEach(input => {
+          input.disabled = this.checked;
+          if (this.checked) {
+            input.value = '';
+          }
+        });
+      });
+    });
+
+    // Fonction pour mettre à jour la progression
+    function updateProgress() {
+      const requiredFields = document.querySelectorAll('input[required], select[required], textarea[required]');
+      const filledFields = Array.from(requiredFields).filter(field => field.value.trim() !== '');
+      const progress = (filledFields.length / requiredFields.length) * 100;
+      
+      document.getElementById('formProgress').style.width = `${progress}%`;
+      document.getElementById('progressText').textContent = `${Math.round(progress)}% complété`;
+    }
+
+    // Fonction pour prévisualiser l'image
+    function previewImage(input) {
+      const preview = document.getElementById('mediaPreview');
+      preview.innerHTML = '';
+      
+      if (input.files && input.files[0]) {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+          const previewItem = document.createElement('div');
+          previewItem.className = 'preview-item';
+          previewItem.innerHTML = `
+            <img src="${e.target.result}" alt="Prévisualisation">
+            <button onclick="removePreview(this)"><i class="fas fa-times"></i></button>
+          `;
+          preview.appendChild(previewItem);
+        }
+        reader.readAsDataURL(input.files[0]);
+      }
+    }
+
+    // Fonction pour prévisualiser la vidéo
+    function previewVideo(input) {
+      const preview = document.getElementById('mediaPreview');
+      
+      if (input.files && input.files[0]) {
+        const video = document.createElement('video');
+        video.controls = true;
+        video.src = URL.createObjectURL(input.files[0]);
+        
+        const previewItem = document.createElement('div');
+        previewItem.className = 'preview-item';
+        previewItem.innerHTML = `
+          <button onclick="removePreview(this)"><i class="fas fa-times"></i></button>
+        `;
+        previewItem.insertBefore(video, previewItem.firstChild);
+        preview.appendChild(previewItem);
+      }
+    }
+
+    // Fonction pour supprimer une prévisualisation
+    function removePreview(button) {
+      button.closest('.preview-item').remove();
+    }
+
+    // Fonction pour ajouter un nouveau service
+    function addNewService() {
+      const currentCount = document.querySelectorAll('.service-item').length;
+      if (currentCount >= 3) {
+        alert('Vous avez atteint la limite maximale de 3 services.');
+        return;
+      }
+      document.getElementById('serviceImageInput').click();
+    }
+
+
+    function updateServiceCount() {
+      const currentCount = document.querySelector('.current-count');
+      const serviceItems = document.querySelectorAll('.service-item');
+      currentCount.textContent = serviceItems.length;
+      
+      const addServiceItem = document.querySelector('.add-service-item');
+      if (serviceItems.length >= 3) {
+        addServiceItem.style.display = 'none';
+      } else {
+        addServiceItem.style.display = 'flex';
+      }
+    }
+
+    // Fonction de déconnexion
+    function logout() {
+      // Supprimer les données de session
+      localStorage.removeItem('token');
+      localStorage.removeItem('userId');
+      localStorage.removeItem('userRole');
+      localStorage.removeItem('profilePhoto');
+      
+      // Rediriger vers la page d'accueil
+      window.location.href = '/';
+    }
+
+    // Vérification de l'authentification au chargement de la page
+    document.addEventListener('DOMContentLoaded', function() {
+      const token = localStorage.getItem('token');
+      const userId = localStorage.getItem('userId');
+      
+      if (!token || !userId) {
+        // Si l'utilisateur n'est pas connecté, rediriger vers la page de connexion
+        window.location.href = '/login.html';
+        return;
+      }
+
+      // Si l'utilisateur est connecté, charger son profil
+      loadProfile();
+    });
+
+    // Fonction pour charger les données actuelles dans le formulaire
+    function loadFormData(prestataire) {
+      document.querySelector('input[placeholder="Entrer le nom"]').value = prestataire.nom || '';
+      document.querySelector('input[placeholder="Entrer le prénom"]').value = prestataire.prenom || '';
+      document.querySelector('input[placeholder="Entrer votre spécialité"]').value = prestataire.specialisation || '';
+      document.querySelector('input[placeholder="Entrer l\'email"]').value = prestataire.email || '';
+      document.querySelector('input[placeholder="Entrer le numéro de téléphone"]').value = prestataire.telephone || '';
+    }
+
+    // Gestion de la soumission du formulaire
+    document.querySelector('.edit-form').addEventListener('submit', async function(e) {
+      e.preventDefault();
+      
+      try {
+        const userId = localStorage.getItem("userId");
+        const token = localStorage.getItem("token");
+
+        // Récupérer les données du formulaire
+        const formData = {
+          nom: document.querySelector('input[placeholder="Entrer le nom"]').value,
+          prenom: document.querySelector('input[placeholder="Entrer le prénom"]').value,
+          email: document.querySelector('input[placeholder="Entrer l\'email"]').value,
+          adresse: document.querySelector('.fa-map-marker-alt').nextSibling.textContent,
+          specialisation: document.querySelector('input[placeholder="Entrer votre spécialité"]').value,
+          telephone: document.querySelector('input[placeholder="Entrer le numéro de téléphone"]').value
+        };
+
+        // Envoyer les données au serveur
+        const response = await fetch(`http://localhost:5001/api/prestataires/${userId}`, {
+          method: 'PUT',
+          headers: {
+            'Authorization': `Bearer ${token}`,
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify(formData)
+        });
+
+        if (!response.ok) {
+          throw new Error('Erreur lors de la mise à jour du profil');
+        }
+
+        const result = await response.json();
+
+        // Mettre à jour l'interface utilisateur
+        document.getElementById('nom_utilisateur1').textContent = `${result.prestataire.nom} ${result.prestataire.prenom}`;
+        document.querySelector('.specialty').textContent = result.prestataire.specialisation || 'Spécialité non définie';
+        document.querySelector('.fa-envelope').nextSibling.textContent = result.prestataire.email;
+        document.querySelector('.fa-map-marker-alt').nextSibling.textContent = result.prestataire.adresse || 'Adresse non définie';
+        document.querySelector('.fa-phone').nextSibling.textContent = result.prestataire.telephone || '+213 5 55 55 55 55';
+
+        // Fermer le modal
+        closeModal();
+        
+        // Afficher un message de succès
+        alert('Profil mis à jour avec succès!');
+
+      } catch (error) {
+        console.error("Erreur lors de la mise à jour du profil:", error);
+        alert("Erreur lors de la mise à jour du profil");
+      }
+    });
+
+    // Fonction pour charger les horaires de travail
+    async function loadWorkingHours() {
+      try {
+        const userId = localStorage.getItem("userId");
+        const token = localStorage.getItem("token");
+
+        const response = await fetch(`http://localhost:5001/api/horaire/${userId}`, {
+          headers: {
+            'Authorization': `Bearer ${token}`
+          }
+        });
+
+        if (!response.ok) {
+          throw new Error('Erreur lors de la récupération des horaires');
+        }
+
+        const horaires = await response.json();
+        updateScheduleDisplay(horaires);
+      } catch (error) {
+        console.error("Erreur lors du chargement des horaires:", error);
+        // En cas d'erreur, créer des horaires par défaut
+        await createDefaultHoraires();
+      }
+    }
+
+    // Fonction pour créer des horaires par défaut
+    async function createDefaultHoraires() {
+      try {
+        const userId = localStorage.getItem("userId");
+        const token = localStorage.getItem("token");
+
+        const response = await fetch(`http://localhost:5001/api/horaire/${userId}`, {
+          method: 'POST',
+          headers: {
+            'Authorization': `Bearer ${token}`
+          }
+        });
+
+        if (!response.ok) {
+          throw new Error('Erreur lors de la création des horaires par défaut');
+        }
+
+        await loadWorkingHours();
+      } catch (error) {
+        console.error("Erreur lors de la création des horaires par défaut:", error);
+      }
+    }
+
+    // Fonction pour mettre à jour l'affichage des horaires
+    function updateScheduleDisplay(horaires) {
+      const schedule = document.querySelector('.schedule');
+      schedule.innerHTML = '';
+
+      horaires.forEach(horaire => {
+        const daySchedule = document.createElement('div');
+        daySchedule.className = 'day-schedule';
+        
+        let timeText = horaire.ferme ? 'Fermé' : `${horaire.heure_debut} - ${horaire.heure_fin}`;
+        
+        daySchedule.innerHTML = `
+          <span>${horaire.jour_semaine}</span>
+          <span class="${horaire.ferme ? 'closed-day' : 'open-day'}">${timeText}</span>
+        `;
+        
+        schedule.appendChild(daySchedule);
+      });
+    }
+
+    // Fonction pour sauvegarder les horaires
+    async function saveWorkingHours() {
+      try {
+        const userId = localStorage.getItem("userId");
+        const token = localStorage.getItem("token");
+        const joursSemaine = ['Lundi', 'Mardi', 'Mercredi', 'Jeudi', 'Vendredi', 'Samedi', 'Dimanche'];
+        const horaires = joursSemaine.map(jour => {
+          const dayKey = jour.toLowerCase();
+          const closed = document.getElementById(`${dayKey}_closed`).checked;
+          return {
+            jour_semaine: jour,
+            heure_debut: closed ? null : document.getElementById(`${dayKey}_start`).value,
+            heure_fin: closed ? null : document.getElementById(`${dayKey}_end`).value,
+            ferme: closed
+          };
+        });
+
+        const response = await fetch(`http://localhost:5001/api/horaire/${userId}`, {
+          method: 'PUT',
+          headers: {
+            'Authorization': `Bearer ${token}`,
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({ horaires })
+        });
+
+        if (!response.ok) {
+          throw new Error('Erreur lors de la sauvegarde des horaires');
+        }
+
+        await loadWorkingHours();
+        closeModal();
+        alert('Horaires mis à jour avec succès!');
+      } catch (error) {
+        console.error("Erreur lors de la sauvegarde des horaires:", error);
+        alert("Erreur lors de la sauvegarde des horaires");
+      }
+    }
+
+    // Fonction pour ouvrir le modal d'édition des horaires
+    async function openHoursModal() {
+      try {
+        const userId = localStorage.getItem("userId");
+        const token = localStorage.getItem("token");
+
+        const response = await fetch(`http://localhost:5001/api/horaire/${userId}`, {
+          headers: {
+            'Authorization': `Bearer ${token}`
+          }
+        });
+
+        if (!response.ok) {
+          throw new Error('Erreur lors de la récupération des horaires');
+        }
+
+        const horaires = await response.json();
+        
+        const modal = document.getElementById('editModal');
+        const modalContent = document.querySelector('.modal-content');
+        modalContent.innerHTML = `
+          <span class="close" onclick="closeModal()">&times;</span>
+          <h2>Modifier les horaires de travail</h2>
+          <div class="working-hours-container">
+            ${horaires.map(horaire => `
+              <div class="day-row ${horaire.ferme ? 'closed' : 'open'}">
+                <label>${horaire.jour_semaine}</label>
+                <div class="time-inputs">
+                  <input type="time" 
+                         id="${horaire.jour_semaine.toLowerCase()}_start" 
+                         value="${horaire.heure_debut || ''}" 
+                         ${horaire.ferme ? 'disabled' : ''}
+                         onchange="validateHours('${horaire.jour_semaine.toLowerCase()}')"
+                         min="00:00" 
+                         max="23:59">
+                  <span>à</span>
+                  <input type="time" 
+                         id="${horaire.jour_semaine.toLowerCase()}_end" 
+                         value="${horaire.heure_fin || ''}" 
+                         ${horaire.ferme ? 'disabled' : ''}
+                         onchange="validateHours('${horaire.jour_semaine.toLowerCase()}')"
+                         min="00:00" 
+                         max="23:59">
+                </div>
+                <label class="checkbox-label">
+                  <input type="checkbox" 
+                         id="${horaire.jour_semaine.toLowerCase()}_closed" 
+                         onchange="toggleDayStatus('${horaire.jour_semaine.toLowerCase()}')"
+                         ${horaire.ferme ? 'checked' : ''}>
+                  Fermé
+                </label>
+                <span class="error-message" id="${horaire.jour_semaine.toLowerCase()}_error"></span>
+              </div>
+            `).join('')}
+          </div>
+          <div class="modal-actions">
+            <button onclick="saveWorkingHours()" class="btn btn-edit">Enregistrer</button>
+            <button onclick="resetHours()" class="btn btn-secondary">Réinitialiser</button>
+          </div>
+        `;
+        
+        modal.style.display = "block";
+      } catch (error) {
+        console.error("Erreur lors de l'ouverture du modal:", error);
+        alert("Erreur lors du chargement des horaires");
+      }
+    }
+
+    // Fonction pour réinitialiser les horaires
+    async function resetHours() {
+      if (confirm('Voulez-vous réinitialiser tous les horaires ?')) {
+        try {
+          const userId = localStorage.getItem("userId");
+          const token = localStorage.getItem("token");
+
+          const horaires = [
+            { jour_semaine: 'Lundi', heure_debut: null, heure_fin: null, ferme: true },
+            { jour_semaine: 'Mardi', heure_debut: null, heure_fin: null, ferme: true },
+            { jour_semaine: 'Mercredi', heure_debut: null, heure_fin: null, ferme: true },
+            { jour_semaine: 'Jeudi', heure_debut: null, heure_fin: null, ferme: true },
+            { jour_semaine: 'Vendredi', heure_debut: '09:00', heure_fin: '17:00', ferme: false },
+            { jour_semaine: 'Samedi', heure_debut: null, heure_fin: null, ferme: true },
+            { jour_semaine: 'Dimanche', heure_debut: null, heure_fin: null, ferme: true }
+          ];
+
+          const response = await fetch(`http://localhost:5001/api/horaire/${userId}`, {
+            method: 'PUT',
+            headers: {
+              'Authorization': `Bearer ${token}`,
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ horaires })
+          });
+
+          if (!response.ok) {
+            throw new Error('Erreur lors de la réinitialisation des horaires');
+          }
+
+          await loadWorkingHours();
+          closeModal();
+          alert('Horaires réinitialisés avec succès!');
+        } catch (error) {
+          console.error("Erreur lors de la réinitialisation des horaires:", error);
+          alert("Erreur lors de la réinitialisation des horaires");
+        }
+      }
+    }
+
+    // Fonction pour valider les heures
+    function validateHours(day) {
+      const startInput = document.getElementById(`${day}_start`);
+      const endInput = document.getElementById(`${day}_end`);
+      const errorElement = document.getElementById(`${day}_error`);
+      
+      if (startInput.value && endInput.value) {
+        const start = new Date(`2000-01-01T${startInput.value}`);
+        const end = new Date(`2000-01-01T${endInput.value}`);
+        
+        if (end <= start) {
+          errorElement.textContent = "L'heure de fin doit être après l'heure de début";
+          errorElement.style.display = 'block';
+          endInput.value = '';
+          return false;
+        }
+      }
+      
+      errorElement.style.display = 'none';
+      return true;
+    }
+
+    // Fonction pour basculer le statut d'un jour
+    function toggleDayStatus(day) {
+      const checkbox = document.getElementById(`${day}_closed`);
+      const startInput = document.getElementById(`${day}_start`);
+      const endInput = document.getElementById(`${day}_end`);
+      const dayRow = startInput.closest('.day-row');
+      
+      if (checkbox.checked) {
+        startInput.disabled = true;
+        endInput.disabled = true;
+        startInput.value = '';
+        endInput.value = '';
+        dayRow.classList.remove('open');
+        dayRow.classList.add('closed');
+      } else {
+        startInput.disabled = false;
+        endInput.disabled = false;
+        // Restaurer les valeurs par défaut
+        startInput.value = '00:00';
+        endInput.value = '00:00';
+        dayRow.classList.remove('closed');
+        dayRow.classList.add('open');
+      }
+    }
+
+    // Initialisation au chargement de la page
+    document.addEventListener('DOMContentLoaded', function() {
+      loadWorkingHours();
+      loadProfile();
+      loadServicePhotos();
+      loadReviews();
+    });
+
+    // Fonction pour charger les photos de services
+    async function loadServicePhotos() {
+    try {
+      const userId = localStorage.getItem("userId");
+      const token = localStorage.getItem("token");
+
+      const response = await fetch(`http://localhost:5001/api/prestataires/${userId}/service-photos`, {
+        headers: { 'Authorization': `Bearer ${token}` }
+      });
+
+      if (!response.ok) throw new Error('Erreur lors de la récupération des photos');
+
+      const data = await response.json();
+      const gallery = document.querySelector('.services-gallery');
+      const addBtn = document.querySelector('.add-service-item');
+
+      // Supprimer anciens services (sauf bouton ajouter)
+      document.querySelectorAll('.service-item').forEach(el => el.remove());
+
+      let count = 0;
+      Object.entries(data.servicePhotos).forEach(([key, item]) => {
+        if (item.photo) {
+          const serviceDiv = document.createElement('div');
+          serviceDiv.className = 'service-item';
+          serviceDiv.innerHTML = `
+            <img src="${item.photo}" alt="Service" class="service-image">
+            <button class="btn-delete-service" onclick="deleteService(this, '${key.slice(-1)}')">
+              <i class="fas fa-times"></i>
+            </button>
+          `;
+          gallery.insertBefore(serviceDiv, addBtn);
+          count++;
+        }
+      });
+
+      document.querySelector('.current-count').textContent = count;
+
+      // Cacher le bouton Ajouter si déjà 3 services
+      addBtn.style.display = count >= 3 ? 'none' : 'flex';
+
+    } catch (err) {
+      console.error("Erreur chargement services:", err);
+    }
+  }
+
+  function triggerFileInput() {
+    const fileInput = document.getElementById("serviceImageInput");
+    fileInput.value = ''; // reset for consecutive uploads
+    fileInput.click();
+  }
+
+  async function handleServiceImage(event) {
+    const file = event.target.files[0];
+    if (!file) return;
+
+    try {
+        console.log("Début de l'ajout de service...");
+        const userId = localStorage.getItem("userId");
+        const token = localStorage.getItem("token");
+        console.log("UserID:", userId);
+        console.log("Token présent:", !!token);
+
+        // Vérifier la taille du fichier (limite à 2MB)
+        const MAX_FILE_SIZE = 2 * 1024 * 1024; // 2MB
+        if (file.size > MAX_FILE_SIZE) {
+            alert("L'image est trop grande. Veuillez choisir une image de moins de 2MB.");
+            return;
+        }
+
+        // Compresser l'image si nécessaire
+        const compressedImage = await compressImage(file);
+        const base64 = await convertToBase64(compressedImage);
+        console.log("Conversion en base64 réussie, taille:", base64.length);
+
+        // Compter les services affichés
+        const count = document.querySelectorAll('.service-item').length;
+        console.log("Nombre de services actuels:", count);
+        if (count >= 3) {
+            alert("Vous avez atteint la limite de 3 services.");
+            return;
+        }
+
+        const serviceNumber = count + 1;
+        console.log("Numéro de service à ajouter:", serviceNumber);
+
+        const requestBody = {
+            serviceNumber: serviceNumber,
+            photo: base64,
+            mediaType: file.type
+        };
+        console.log("Données à envoyer:", {
+            serviceNumber: serviceNumber,
+            hasPhoto: !!base64,
+            mediaType: file.type
+        });
+
+        const response = await fetch(`http://localhost:5001/api/prestataires/${userId}/service-photo`, {
+            method: 'PUT',
+            headers: {
+                'Authorization': `Bearer ${token}`,
+                'Content-Type': 'application/json',
+                'Accept': 'application/json'
+            },
+            body: JSON.stringify(requestBody)
+        });
+
+        console.log("Réponse du serveur - Status:", response.status);
+        console.log("Réponse du serveur - Headers:", Object.fromEntries(response.headers.entries()));
+
+        const responseText = await response.text();
+        console.log("Réponse brute du serveur:", responseText);
+
+        if (!response.ok) {
+            let errorMessage = "Erreur lors de l'ajout";
+            try {
+                const errorData = JSON.parse(responseText);
+                errorMessage = errorData.message || errorMessage;
+            } catch (e) {
+                console.error("Erreur lors du parsing de la réponse:", e);
+                errorMessage = responseText || errorMessage;
+            }
+            throw new Error(errorMessage);
+        }
+
+        await loadServicePhotos();
+        console.log("Service ajouté avec succès");
+
+    } catch (err) {
+        console.error("Erreur détaillée ajout photo:", err);
+        alert("Échec de l'ajout de la photo: " + err.message);
+    }
+  }
+
+  // Fonction pour compresser l'image
+  function compressImage(file) {
+    return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            const img = new Image();
+            img.onload = function() {
+                const canvas = document.createElement('canvas');
+                const ctx = canvas.getContext('2d');
+                
+                // Définir la taille maximale
+                const MAX_WIDTH = 800;
+                const MAX_HEIGHT = 800;
+                
+                let width = img.width;
+                let height = img.height;
+                
+                // Redimensionner si nécessaire
+                if (width > height) {
+                    if (width > MAX_WIDTH) {
+                        height *= MAX_WIDTH / width;
+                        width = MAX_WIDTH;
+                    }
+                } else {
+                    if (height > MAX_HEIGHT) {
+                        width *= MAX_HEIGHT / height;
+                        height = MAX_HEIGHT;
+                    }
+                }
+                
+                canvas.width = width;
+                canvas.height = height;
+                ctx.drawImage(img, 0, 0, width, height);
+                
+                // Convertir en blob avec une qualité de 0.7
+                canvas.toBlob(blob => {
+                    resolve(blob);
+                }, file.type, 0.7);
+            };
+            img.src = e.target.result;
+        };
+        reader.onerror = reject;
+        reader.readAsDataURL(file);
+    });
+  }
+
+  async function deleteService(button, serviceNumber) {
+    if (!confirm("Supprimer ce service ?")) return;
+
+    try {
+      const userId = localStorage.getItem("userId");
+      const token = localStorage.getItem("token");
+
+      const response = await fetch(`http://localhost:5001/api/prestataires/${userId}/service-photo/${serviceNumber}`, {
+        method: 'DELETE',
+        headers: {
+          'Authorization': `Bearer ${token}`
+        }
+      });
+
+      if (!response.ok) throw new Error("Erreur lors de la suppression");
+
+      await loadServicePhotos();
+
+    } catch (err) {
+      console.error("Erreur suppression service:", err);
+      alert("Échec de la suppression");
+    }
+  }
+
+  function convertToBase64(file) {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onload = () => resolve(reader.result);
+      reader.onerror = reject;
+      reader.readAsDataURL(file);
+    });
+  }
+
+  // Fonction pour charger les avis
+  async function loadReviews() {
+    try {
+      const prestataireId = localStorage.getItem("userId");
+      const token = localStorage.getItem("token");
+
+      const response = await fetch(`http://localhost:5001/api/avis/prestataire/${prestataireId}`, {
+        headers: {
+          'Authorization': `Bearer ${token}`
+        }
+      });
+
+      if (!response.ok) {
+        throw new Error('Erreur lors de la récupération des avis');
+      }
+
+      const avis = await response.json();
+      
+      // Calcul de la moyenne des évaluations
+      const totalEvaluations = avis.reduce((sum, avis) => sum + parseInt(avis.evaluation), 0);
+      const moyenne = avis.length > 0 ? (totalEvaluations / avis.length).toFixed(1) : "0.0";
+      
+      // Mise à jour de la note moyenne et du nombre total d'avis
+      document.querySelector('.rating').textContent = moyenne;
+      document.querySelector('.total-reviews').textContent = `(${avis.length} avis)`;
+
+      // Mise à jour des étoiles de la note moyenne
+      const starsContainer = document.querySelector('.stars');
+      starsContainer.innerHTML = '';
+      const fullStars = Math.floor(moyenne);
+      const hasHalfStar = moyenne % 1 >= 0.5;
+
+      for (let i = 0; i < 5; i++) {
+        const star = document.createElement('i');
+        if (i < fullStars) {
+          star.className = 'fas fa-star';
+        } else if (i === fullStars && hasHalfStar) {
+          star.className = 'fas fa-star-half-alt';
+        } else {
+          star.className = 'far fa-star';
+        }
+        starsContainer.appendChild(star);
+      }
+
+      // Mise à jour de la liste des avis
+      const reviewsList = document.querySelector('.reviews-list');
+      reviewsList.innerHTML = '';
+
+      avis.forEach(avis => {
+        const reviewItem = document.createElement('div');
+        reviewItem.className = 'review-item';
+        reviewItem.innerHTML = `
+          <div class="reviewer-info">
+            <span>${avis.client_nom}</span>
+          </div>
+          <div class="review-content">
+            <div class="review-rating">
+              ${Array(5).fill().map((_, i) => `
+                <i class="fas fa-star${i < avis.evaluation ? '' : '-o'}"></i>
+              `).join('')}
+            </div>
+            <p>${avis.commentaire}</p>
+            <span class="review-date">${new Date(avis.date_creation).toLocaleDateString()}</span>
+          </div>
+        `;
+        reviewsList.appendChild(reviewItem);
+      });
+
+    } catch (error) {
+      console.error("Erreur lors du chargement des avis:", error);
+      // En cas d'erreur, afficher des valeurs par défaut
+      document.querySelector('.rating').textContent = "0.0";
+      document.querySelector('.total-reviews').textContent = "(0 avis)";
+      document.querySelector('.stars').innerHTML = '<i class="far fa-star"></i>'.repeat(5);
+    }
+  }
+
+  </script>
+
+</body>
+</html> 

@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>ServiGO - Détails du Service</title>
+  <link rel="stylesheet" href="../style/serviceTemplate.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+  <!-- NAVBAR -->
+  <nav>
+    <div class="logo">
+      <h1>ServiGO</h1>
+    </div>
+    <ul>
+      <li><a href="homeProvider.html">Accueil</a></li>
+      <li><a href="demandes.html">Demandes</a></li>
+      <li><a href="messagerieProvider.html">Messagerie</a></li>
+      <li><a href="notificationProvider.html">Notifications</a></li>
+      <li><a href="#">Options</a></li>
+      <li><a href="profileProvider.html">Profile</a></li>
+    </ul>
+  </nav>
+
+  <!-- CONTENU PRINCIPAL -->
+  <main class="service-container">
+    <!-- En-tête du service -->
+    <header class="service-header">
+      <div class="service-title">
+        <h1 id="serviceName">Nom du Service</h1>
+        <div class="service-meta">
+          <span class="category" id="serviceCategory">Catégorie</span>
+          <span class="price" id="servicePrice">Prix</span>
+        </div>
+      </div>
+      <div class="service-actions">
+        <button class="btn btn-edit" onclick="editService()">
+          <i class="fas fa-edit"></i> Modifier
+        </button>
+        <button class="btn btn-delete" onclick="deleteService()">
+          <i class="fas fa-trash"></i> Supprimer
+        </button>
+      </div>
+    </header>
+
+    <!-- Galerie d'images -->
+    <section class="service-gallery">
+      <div class="main-image">
+        <img id="mainImage" src="../style/images/service-placeholder.jpg" alt="Image principale">
+      </div>
+      <div class="thumbnail-list">
+        <!-- Les miniatures seront ajoutées dynamiquement -->
+      </div>
+    </section>
+
+    <!-- Description et détails -->
+    <section class="service-details">
+      <div class="description">
+        <h2>Description</h2>
+        <p id="serviceDescription">Description détaillée du service...</p>
+      </div>
+
+      <div class="details-grid">
+        <div class="detail-item">
+          <i class="fas fa-clock"></i>
+          <div class="detail-content">
+            <h3>Durée estimée</h3>
+            <p id="serviceDuration">2-3 heures</p>
+          </div>
+        </div>
+        <div class="detail-item">
+          <i class="fas fa-map-marker-alt"></i>
+          <div class="detail-content">
+            <h3>Zone de service</h3>
+            <p id="serviceArea">Alger et environs</p>
+          </div>
+        </div>
+        <div class="detail-item">
+          <i class="fas fa-calendar-check"></i>
+          <div class="detail-content">
+            <h3>Disponibilité</h3>
+            <p id="serviceAvailability">Lundi - Vendredi, 9h - 18h</p>
+          </div>
+        </div>
+        <div class="detail-item">
+          <i class="fas fa-star"></i>
+          <div class="detail-content">
+            <h3>Note moyenne</h3>
+            <p id="serviceRating">4.8/5 (12 avis)</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- FAQ -->
+    <section class="service-faq">
+      <h2>Questions fréquentes</h2>
+      <div class="faq-list" id="faqList">
+        <!-- Les questions/réponses seront ajoutées dynamiquement -->
+      </div>
+    </section>
+
+    <!-- Avis des clients -->
+    <section class="service-reviews">
+      <h2>Avis des clients</h2>
+      <div class="reviews-summary">
+        <div class="average-rating">
+          <span class="rating-number" id="averageRating">4.8</span>
+          <div class="stars">
+            <i class="fas fa-star"></i>
+            <i class="fas fa-star"></i>
+            <i class="fas fa-star"></i>
+            <i class="fas fa-star"></i>
+            <i class="fas fa-star-half-alt"></i>
+          </div>
+          <span class="total-reviews" id="totalReviews">12 avis</span>
+        </div>
+        <div class="rating-distribution">
+          <!-- La distribution des notes sera ajoutée dynamiquement -->
+        </div>
+      </div>
+      <div class="reviews-list" id="reviewsList">
+        <!-- Les avis seront ajoutés dynamiquement -->
+      </div>
+    </section>
+
+    <!-- Statistiques -->
+    <section class="service-stats">
+      <h2>Statistiques</h2>
+      <div class="stats-grid">
+        <div class="stat-item">
+          <i class="fas fa-eye"></i>
+          <div class="stat-content">
+            <h3>Vues</h3>
+            <p id="viewCount">1,234</p>
+          </div>
+        </div>
+        <div class="stat-item">
+          <i class="fas fa-handshake"></i>
+          <div class="stat-content">
+            <h3>Réservations</h3>
+            <p id="bookingCount">45</p>
+          </div>
+        </div>
+        <div class="stat-item">
+          <i class="fas fa-comment"></i>
+          <div class="stat-content">
+            <h3>Messages</h3>
+            <p id="messageCount">67</p>
+          </div>
+        </div>
+        <div class="stat-item">
+          <i class="fas fa-heart"></i>
+          <div class="stat-content">
+            <h3>Favoris</h3>
+            <p id="favoriteCount">89</p>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <script>
+    // Fonction pour charger les données du service
+    function loadServiceData(serviceId) {
+      // Ici, vous ferez l'appel à votre API backend
+      fetch(`/api/services/${serviceId}`)
+        .then(response => response.json())
+        .then(data => {
+          // Mise à jour des éléments avec les données reçues
+          document.getElementById('serviceName').textContent = data.name;
+          document.getElementById('serviceCategory').textContent = data.category;
+          document.getElementById('servicePrice').textContent = `${data.price} DA`;
+          document.getElementById('serviceDescription').textContent = data.description;
+          document.getElementById('serviceDuration').textContent = data.duration;
+          document.getElementById('serviceArea').textContent = data.area;
+          document.getElementById('serviceAvailability').textContent = data.availability;
+          document.getElementById('serviceRating').textContent = `${data.rating}/5 (${data.reviewCount} avis)`;
+          
+          // Mise à jour des images
+          document.getElementById('mainImage').src = data.mainImage;
+          updateThumbnails(data.images);
+          
+          // Mise à jour de la FAQ
+          updateFAQ(data.faq);
+          
+          // Mise à jour des avis
+          updateReviews(data.reviews);
+          
+          // Mise à jour des statistiques
+          document.getElementById('viewCount').textContent = data.views;
+          document.getElementById('bookingCount').textContent = data.bookings;
+          document.getElementById('messageCount').textContent = data.messages;
+          document.getElementById('favoriteCount').textContent = data.favorites;
+        })
+        .catch(error => console.error('Erreur lors du chargement des données:', error));
+    }
+
+    // Fonction pour mettre à jour les miniatures
+    function updateThumbnails(images) {
+      const thumbnailList = document.querySelector('.thumbnail-list');
+      thumbnailList.innerHTML = '';
+      
+      images.forEach(image => {
+        const thumbnail = document.createElement('div');
+        thumbnail.className = 'thumbnail';
+        thumbnail.innerHTML = `<img src="${image}" alt="Miniature">`;
+        thumbnail.addEventListener('click', () => {
+          document.getElementById('mainImage').src = image;
+        });
+        thumbnailList.appendChild(thumbnail);
+      });
+    }
+
+    // Fonction pour mettre à jour la FAQ
+    function updateFAQ(faqItems) {
+      const faqList = document.getElementById('faqList');
+      faqList.innerHTML = '';
+      
+      faqItems.forEach(item => {
+        const faqItem = document.createElement('div');
+        faqItem.className = 'faq-item';
+        faqItem.innerHTML = `
+          <div class="faq-question">
+            <h3>${item.question}</h3>
+            <button class="btn-toggle" onclick="toggleFAQ(this)">
+              <i class="fas fa-chevron-down"></i>
+            </button>
+          </div>
+          <div class="faq-answer">
+            <p>${item.answer}</p>
+          </div>
+        `;
+        faqList.appendChild(faqItem);
+      });
+    }
+
+    // Fonction pour mettre à jour les avis
+    function updateReviews(reviews) {
+      const reviewsList = document.getElementById('reviewsList');
+      reviewsList.innerHTML = '';
+      
+      reviews.forEach(review => {
+        const reviewItem = document.createElement('div');
+        reviewItem.className = 'review-item';
+        reviewItem.innerHTML = `
+          <div class="reviewer-info">
+            <img src="${review.userImage}" alt="Photo de profil">
+            <div class="reviewer-details">
+              <h4>${review.userName}</h4>
+              <div class="review-rating">
+                ${generateStars(review.rating)}
+                <span class="review-date">${review.date}</span>
+              </div>
+            </div>
+          </div>
+          <p class="review-text">${review.text}</p>
+        `;
+        reviewsList.appendChild(reviewItem);
+      });
+    }
+
+    // Fonction pour générer les étoiles
+    function generateStars(rating) {
+      let stars = '';
+      for (let i = 1; i <= 5; i++) {
+        if (i <= Math.floor(rating)) {
+          stars += '<i class="fas fa-star"></i>';
+        } else if (i - 0.5 <= rating) {
+          stars += '<i class="fas fa-star-half-alt"></i>';
+        } else {
+          stars += '<i class="far fa-star"></i>';
+        }
+      }
+      return stars;
+    }
+
+    // Fonction pour basculer l'affichage des réponses FAQ
+    function toggleFAQ(button) {
+      const answer = button.parentElement.nextElementSibling;
+      const icon = button.querySelector('i');
+      
+      answer.classList.toggle('show');
+      icon.classList.toggle('fa-chevron-down');
+      icon.classList.toggle('fa-chevron-up');
+    }
+
+    // Fonction pour éditer le service
+    function editService() {
+      // Redirection vers la page d'édition
+      window.location.href = `editService.html?id=${getServiceId()}`;
+    }
+
+    // Fonction pour supprimer le service
+    function deleteService() {
+      if (confirm('Êtes-vous sûr de vouloir supprimer ce service ?')) {
+        // Appel à l'API pour supprimer le service
+        fetch(`/api/services/${getServiceId()}`, {
+          method: 'DELETE'
+        })
+        .then(response => {
+          if (response.ok) {
+            window.location.href = 'homeProvider.html';
+          }
+        })
+        .catch(error => console.error('Erreur lors de la suppression:', error));
+      }
+    }
+
+    // Fonction pour obtenir l'ID du service depuis l'URL
+    function getServiceId() {
+      const urlParams = new URLSearchParams(window.location.search);
+      return urlParams.get('id');
+    }
+
+    // Charger les données du service au chargement de la page
+    document.addEventListener('DOMContentLoaded', () => {
+      const serviceId = getServiceId();
+      if (serviceId) {
+        loadServiceData(serviceId);
+      }
+    });
+  </script>
+</body>
+</html> 

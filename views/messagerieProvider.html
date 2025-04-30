@@ -1,0 +1,645 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>ServiGO - Messagerie</title>
+  <link rel="stylesheet" href="../style/messagerie.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"/>
+</head>
+<body>
+
+  <!-- Navbar -->
+  <nav>
+    <div class="logo">
+      <h1>ServiGO</h1>
+    </div>
+    <ul>
+      <li><a href="/homeProvider">Accueil</a></li>
+      <li><a href="/demandes">Demandes</a></li>
+      <li><a id="active">Messagerie</a></li>
+      <li><a href="/notificationProvider">Notifications</a></li>
+      <li><a href="#">Options</a></li>
+      <li><a href="/profileProvider">Profile</a></li>
+    </ul>
+  </nav>
+
+  <!-- Zone de messagerie -->
+  <main class="messagerie-container">
+    <!-- Liste des conversations -->
+    <div class="conversations-list">
+      <div class="conversations">
+        <!-- Les conversations seront chargées dynamiquement ici -->
+      </div>
+    </div>
+
+    <!-- Zone de chat -->
+    <div class="chat-area">
+      <div class="chat-header">
+        <h4 id="contact-name"></h4>
+        <button id="edit-title-btn" class="edit-title-btn">
+          <i class="fas fa-edit"></i>
+        </button>
+      </div>
+
+      <div class="messages" id="messages-container">
+        <!-- Les messages seront chargés dynamiquement ici -->
+      </div>
+
+      <div class="message-input">
+        <label for="file-upload" class="file-label">
+          <i class="fas fa-paperclip"></i>
+        </label>
+        <input type="file" id="file-upload" accept="image/*" style="display: none" />
+        <input type="text" id="message-input" placeholder="Votre message..." />
+        <button id="send-button"><i class="fas fa-paper-plane"></i></button>
+      </div>      
+    </div>
+  </main>
+
+  <!-- Modal pour le zoom d'image -->
+  <div id="image-modal" class="image-modal">
+    <span class="close-modal">&times;</span>
+    <img id="modal-image" class="modal-content">
+    <div id="modal-caption"></div>
+  </div>
+
+  <script>
+    const prestataireId = localStorage.getItem("userId");
+    const token = localStorage.getItem("token");
+    
+    async function loadConversations() {
+      try {
+        if (!prestataireId || !token) {
+          throw new Error('Vous devez être connecté pour accéder à la messagerie');
+        }
+
+        const response = await fetch(`http://localhost:5001/api/conversation/prestataire/${prestataireId}`, {
+          method: 'GET',
+          headers: {
+            'Authorization': `Bearer ${token}`
+          }
+        });
+
+        if (!response.ok) {
+          throw new Error(`Erreur HTTP: ${response.status}`);
+        }
+
+        const conversations = await response.json();
+        console.log("Conversations :", conversations);
+
+        // Récupérer les informations des clients pour chaque conversation
+        const conversationsWithClientInfo = await Promise.all(conversations.map(async (conv) => {
+          try {
+            const clientResponse = await fetch(`http://localhost:5001/api/clients/${conv.client_id}`, {
+              headers: {
+                'Authorization': `Bearer ${token}`
+              }
+            });
+            
+            if (clientResponse.ok) {
+              const clientInfo = await clientResponse.json();
+              return {
+                ...conv,
+                client_nom: clientInfo.nom,
+                client_prenom: clientInfo.prenom
+              };
+            }
+            return conv;
+          } catch (error) {
+            console.error('Erreur lors de la récupération des informations du client:', error);
+            return conv;
+          }
+        }));
+
+        await updateConversationsList(conversationsWithClientInfo);
+      } catch (error) {
+        console.error("Erreur lors du chargement des conversations :", error);
+        const conversationsContainer = document.querySelector('.conversations');
+        conversationsContainer.innerHTML = `
+          <div class="error-message">
+            <p>Impossible de charger les conversations. Veuillez réessayer plus tard.</p>
+            <p>Erreur: ${error.message}</p>
+          </div>
+        `;
+      }
+    }
+
+    // Récupérer l'ID du client connecté depuis le localStorage
+    const clientId = localStorage.getItem('userId');
+    const userName = localStorage.getItem('userName') || '';
+    const userFirstName = localStorage.getItem('userFirstName') || '';
+    
+    // Fonction pour charger les conversations avec leurs publications
+    async function loadConversationsWithPublications() {
+      try {
+        const response = await fetch(`/api/conversation/client/${clientId}/publications`);
+        
+        if (!response.ok) {
+          throw new Error(`Erreur HTTP: ${response.status}`);
+        }
+        
+        const result = await response.json();
+        
+        if (!result.success) {
+          throw new Error(result.message || 'Erreur lors de la récupération des conversations');
+        }
+        
+        const conversations = result.data;
+        
+        
+        // Mettre à jour l'interface avec les conversations
+        updateConversationsList(conversations);
+      } catch (error) {
+        
+        // Afficher un message d'erreur à l'utilisateur
+        const conversationsContainer = document.querySelector('.conversations');
+        conversationsContainer.innerHTML = `
+          <div class="error-message">
+            <p>Impossible de charger les conversations. Veuillez réessayer plus tard.</p>
+            <p>Erreur: ${error.message}</p>
+          </div>
+        `;
+      }
+    }
+    // Ajouter la fonction pour charger la conversation après redirection
+  document.addEventListener('DOMContentLoaded', async () => {
+    const urlParams = new URLSearchParams(window.location.search);
+    const conversationId = urlParams.get('id');
+
+    
+
+    // Charger les messages de la conversation
+    await loadMessages(conversationId);
+  });
+
+    // Fonction pour mettre à jour la liste des conversations
+    async function updateConversationsList(conversations) {
+      const conversationsContainer = document.querySelector('.conversations');
+      conversationsContainer.innerHTML = '';
+
+      if (!conversations || conversations.length === 0) {
+        conversationsContainer.innerHTML = `
+          <div class="no-conversations">
+            <p>Aucune conversation trouvée.</p>
+          </div>
+        `;
+        return;
+      }
+
+      // Charger le dernier message pour chaque conversation
+      const conversationsWithLastMessage = await Promise.all(conversations.map(async (conv) => {
+        try {
+          const response = await fetch(`http://localhost:5001/api/messages/${conv.id}`, {
+            headers: {
+              'Authorization': `Bearer ${token}`
+            }
+          });
+          
+          let lastMessage = 'Aucun message';
+          if (response.ok) {
+            const messages = await response.json();
+            if (messages && messages.length > 0) {
+              lastMessage = messages[messages.length - 1].description;
+            }
+          }
+          
+          return {
+            ...conv,
+            lastMessage
+          };
+        } catch (error) {
+          console.error('Erreur lors du chargement du dernier message:', error);
+          return {
+            ...conv,
+            lastMessage: 'Erreur de chargement'
+          };
+        }
+      }));
+
+      // Afficher les conversations avec leur dernier message
+      conversationsWithLastMessage.forEach(conv => {
+        const conversationDiv = document.createElement('div');
+        conversationDiv.className = 'conversation';
+        conversationDiv.setAttribute('data-conversation-id', conv.id);
+        
+        const title = conv.client_nom && conv.client_prenom ? 
+          `${conv.client_nom} ${conv.client_prenom}` : 
+          'Client';
+        
+        conversationDiv.innerHTML = `
+          <div class="conversation-info">
+            <h4>${title}</h4>
+            <p class="last-message">${conv.lastMessage}</p>
+          </div>
+          <span class="message-time">${conv.date_execution ? new Date(conv.date_execution).toLocaleDateString() : 'Récent'}</span>
+        `;
+
+        conversationDiv.addEventListener('click', () => {
+          handleConversationClick(conv);
+        });
+
+        conversationsContainer.appendChild(conversationDiv);
+      });
+    }
+
+    // Fonction pour gérer le clic sur une conversation
+    async function handleConversationClick(conversation) {
+      try {
+        console.log('Clic sur la conversation:', conversation);
+        
+        // Mettre à jour le nom du contact
+        const contactName = conversation.client_nom && conversation.client_prenom ? 
+          `${conversation.client_nom} ${conversation.client_prenom}` : 
+          'Client';
+        document.getElementById('contact-name').textContent = contactName;
+        
+        // Marquer la conversation comme active
+        document.querySelectorAll('.conversation').forEach(conv => {
+          conv.classList.remove('active');
+        });
+        document.querySelector(`[data-conversation-id="${conversation.id}"]`).classList.add('active');
+        
+        // Charger les messages de la conversation
+        await loadMessages(conversation.id);
+        
+        // Ajouter l'ID de la conversation au bouton d'édition du titre
+        document.getElementById('edit-title-btn').setAttribute('data-conversation-id', conversation.id);
+      } catch (error) {
+        console.error('Erreur lors de la gestion du clic sur la conversation:', error);
+        alert('Une erreur est survenue lors de la sélection de la conversation');
+      }
+    }
+
+    // Fonction pour charger les messages d'une conversation
+    async function loadMessages(conversationId) {
+      try {
+        console.log('Début du chargement des messages pour la conversation:', conversationId);
+        const response = await fetch(`http://localhost:5001/api/messages/${conversationId}`, {
+          headers: {
+            'Authorization': `Bearer ${token}`
+          }
+        });
+        if (!response.ok) {
+          throw new Error(`Erreur HTTP: ${response.status}`);
+        }
+        
+        const messages = await response.json();
+        const messagesContainer = document.getElementById('messages-container');
+        messagesContainer.innerHTML = '';
+
+        if (!messages || messages.length === 0) {
+          messagesContainer.innerHTML = `
+            <div class="no-messages">
+              <p>Aucun message dans cette conversation.</p>
+            </div>
+          `;
+          return;
+        }
+
+        messages.forEach(message => {
+  const messageDiv = document.createElement('div');
+  messageDiv.className = `message ${message.sender_client_id ? 'sent' : 'received'}`;
+
+  let messageContent = `<p>${message.description || ''}</p>`;
+
+  // Ajouter l'image si elle existe
+  if (message.photos) {
+    messageContent += `<img src="data:image/jpeg;base64,${message.photos}" alt="${message.description || ''}" />`;
+  }
+
+  messageDiv.innerHTML = `
+    <div class="message-content">
+      ${messageContent}
+      <span class="message-time">${new Date(message.date_message).toLocaleTimeString()}</span>
+      ${!message.sender_client_id ? `
+        <div class="message-actions">
+          <button class="message-menu-btn">
+            <i class="fas fa-ellipsis-v"></i>
+          </button>
+          <div class="message-menu">
+            <button class="menu-item signal">
+              <i class="fas fa-flag"></i>
+              Signaler
+            </button>
+            <button class="menu-item copy">
+              <i class="fas fa-copy"></i>
+              Copier
+            </button>
+          </div>
+        </div>
+      ` : ''}
+    </div>
+  `;
+
+  messagesContainer.appendChild(messageDiv);
+});
+
+
+        // Faire défiler jusqu'au dernier message
+        messagesContainer.scrollTop = messagesContainer.scrollHeight;
+      } catch (error) {
+        console.error('Erreur lors du chargement des messages:', error);
+        const messagesContainer = document.getElementById('messages-container');
+        messagesContainer.innerHTML = `
+          <div class="error-message">
+            <p>Impossible de charger les messages. Veuillez réessayer plus tard.</p>
+            <p>Erreur: ${error.message}</p>
+          </div>
+        `;
+      }
+    }
+
+    // Charger les conversations au chargement de la page
+    document.addEventListener('DOMContentLoaded', async () => {
+      console.log('Page chargée, chargement des conversations...');
+      if (!prestataireId) {
+        console.error('Aucun ID prestataire trouvé dans le localStorage');
+        const conversationsContainer = document.querySelector('.conversations');
+        conversationsContainer.innerHTML = `
+          <div class="error-message">
+            <p>Vous devez être connecté pour accéder à la messagerie.</p>
+            <p><a href="login.html">Se connecter</a></p>
+          </div>
+        `;
+        return;
+      }
+
+      // Charger d'abord toutes les conversations
+      await loadConversations();
+      
+      // Vérifier si une conversation spécifique est demandée dans l'URL
+      const urlParams = new URLSearchParams(window.location.search);
+      const conversationId = urlParams.get('id');
+      
+      if (conversationId) {
+        // Trouver la conversation dans la liste
+        const conversationElement = document.querySelector(`[data-conversation-id="${conversationId}"]`);
+        if (conversationElement) {
+          // Simuler un clic sur la conversation pour la sélectionner
+          conversationElement.click();
+          // Faire défiler jusqu'aux messages si #messages est présent dans l'URL
+          if (window.location.hash === '#messages') {
+            document.getElementById('messages-container').scrollIntoView({ behavior: 'smooth' });
+          }
+        }
+      }
+    });
+
+    // Fonction pour compresser l'image
+    function compressImage(file, maxWidth, maxHeight, callback) {
+    const reader = new FileReader();
+
+    reader.onload = function (event) {
+        const img = new Image();
+        img.onload = function () {
+            const canvas = document.createElement("canvas");
+            let width = img.width;
+            let height = img.height;
+
+            if (width > height) {
+                if (width > maxWidth) {
+                    height *= maxWidth / width;
+                    width = maxWidth;
+                }
+            } else {
+                if (height > maxHeight) {
+                    width *= maxHeight / height;
+                    height = maxHeight;
+                }
+            }
+
+            canvas.width = width;
+            canvas.height = height;
+            const ctx = canvas.getContext("2d");
+            ctx.drawImage(img, 0, 0, width, height);
+
+            const compressedBase64 = canvas.toDataURL("image/jpeg", 0.7); // compression
+            const base64Data = compressedBase64.split(',')[1]; // 🔥 remove "data:image/jpeg;base64,"
+            callback(base64Data);
+        };
+        img.src = event.target.result;
+    };
+
+    reader.readAsDataURL(file);
+}
+
+    // Gestion de l'envoi des messages
+    const messageInput = document.getElementById('message-input');
+    const sendButton = document.getElementById('send-button');
+    const fileInput = document.getElementById('file-upload');
+    let selectedFile = null;
+
+    // Gestionnaire pour la sélection de fichier
+    fileInput.addEventListener('change', function(event) {
+        const file = event.target.files[0];
+        if (file) {
+            selectedFile = file;
+            
+            // Afficher un indicateur que le fichier est sélectionné
+            const fileLabel = document.querySelector('.file-label');
+            fileLabel.title = `Fichier sélectionné: ${file.name}`;
+            fileLabel.style.color = 'var(--Bright-Sun)';
+        }
+    });
+
+    // Fonction pour envoyer un message
+    async function sendMessage() {
+        const message = messageInput.value.trim();
+        const prestataireId = localStorage.getItem('userId');
+        const activeConversation = document.querySelector('.conversation.active');
+        
+        if (!activeConversation) {
+            alert('Veuillez sélectionner une conversation');
+            return;
+        }
+
+        const conversationId = activeConversation.getAttribute('data-conversation-id');
+        
+        if (!message && !selectedFile) return;
+
+        try {
+            let messageData = {
+                conversation_id: conversationId,
+                sender_prestataire_id: prestataireId,
+                description: message,
+                photos: null
+            };
+
+            if (selectedFile) {
+                // Compresser l'image avant l'envoi
+                compressImage(selectedFile, 800, 800, function(compressedBase64Data) {
+                    messageData.photos = compressedBase64Data;
+                    sendMessageToServer(messageData);
+                });
+    } else {
+                sendMessageToServer(messageData);
+            }
+        } catch (error) {
+            console.error('Erreur lors de l\'envoi du message:', error);
+            alert('Erreur lors de l\'envoi du message. Veuillez réessayer.');
+        }
+    }
+
+    // Fonction pour envoyer le message au serveur
+    async function sendMessageToServer(messageData) {
+        try {
+            const token = localStorage.getItem('token');
+            if (!token) {
+                throw new Error('Vous devez être connecté pour envoyer un message');
+            }
+
+            const response = await fetch('http://localhost:5001/api/messages', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`
+                },
+                body: JSON.stringify(messageData)
+            });
+
+            if (!response.ok) {
+                const errorData = await response.json();
+                throw new Error(errorData.message || 'Erreur lors de l\'envoi du message');
+            }
+
+            // Réinitialiser le formulaire
+            messageInput.value = '';
+            fileInput.value = '';
+            selectedFile = null;
+            
+            // Réinitialiser l'indicateur de fichier
+            const fileLabel = document.querySelector('.file-label');
+            fileLabel.title = '';
+            fileLabel.style.color = '';
+            
+            // Recharger les messages
+            await loadMessages(messageData.conversation_id);
+        } catch (error) {
+            console.error('Erreur:', error);
+            alert(error.message || 'Erreur lors de l\'envoi du message. Veuillez réessayer.');
+        }
+    }
+
+    sendButton.addEventListener('click', sendMessage);
+    messageInput.addEventListener('keypress', (e) => {
+        if (e.key === 'Enter') {
+            sendMessage();
+        }
+    });
+
+    // Gestion des menus de message
+    document.addEventListener('click', (e) => {
+        if (e.target.closest('.message-menu-btn')) {
+            const menu = e.target.closest('.message-actions').querySelector('.message-menu');
+            const allMenus = document.querySelectorAll('.message-menu');
+            allMenus.forEach(m => {
+                if (m !== menu) m.classList.remove('show');
+            });
+            menu.classList.toggle('show');
+        } else if (!e.target.closest('.message-menu')) {
+            document.querySelectorAll('.message-menu').forEach(menu => {
+                menu.classList.remove('show');
+            });
+        }
+    });
+
+    // Gestion des actions du menu
+    document.addEventListener('click', (e) => {
+        if (e.target.closest('.menu-item.signal')) {
+            const message = e.target.closest('.message').querySelector('p').textContent;
+            alert('Message signalé : ' + message);
+        } else if (e.target.closest('.menu-item.copy')) {
+            const message = e.target.closest('.message').querySelector('p').textContent;
+            navigator.clipboard.writeText(message);
+            alert('Message copié !');
+        }
+    });
+
+    // Gestion de l'édition du titre de la conversation
+    document.getElementById('edit-title-btn').addEventListener('click', async function() {
+        const conversationId = this.getAttribute('data-conversation-id');
+        if (!conversationId) {
+            alert('Veuillez sélectionner une conversation');
+            return;
+        }
+        
+        const newTitle = prompt('Entrez le nouveau titre de la conversation:');
+        if (!newTitle) return;
+        
+        try {
+            const response = await fetch(`/api/conversation/titre/${conversationId}`, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${localStorage.getItem('token')}`
+                },
+                body: JSON.stringify({ titre: newTitle })
+            });
+            
+            if (response.ok) {
+                // Mettre à jour le titre dans l'interface
+                document.getElementById('contact-name').textContent = newTitle;
+                
+                // Mettre à jour le titre dans la liste des conversations
+                const conversationElement = document.querySelector(`[data-conversation-id="${conversationId}"]`);
+                if (conversationElement) {
+                    const titleElement = conversationElement.querySelector('h4');
+                    if (titleElement) {
+                        titleElement.textContent = newTitle;
+                    }
+                }
+                
+                alert('Titre modifié avec succès');
+    } else {
+                throw new Error('Erreur lors de la modification du titre');
+            }
+        } catch (error) {
+            console.error('Erreur:', error);
+            alert('Erreur lors de la modification du titre');
+        }
+    });
+
+    // Fonction pour gérer le zoom des images
+    function setupImageZoom() {
+      const modal = document.getElementById('image-modal');
+      const modalImg = document.getElementById('modal-image');
+      const captionText = document.getElementById('modal-caption');
+      const closeBtn = document.querySelector('.close-modal');
+
+      // Ajouter l'événement de clic sur toutes les images des messages
+      document.addEventListener('click', function(e) {
+        if (e.target.tagName === 'IMG' && e.target.closest('.message')) {
+          modal.classList.add('show');
+          modalImg.src = e.target.src;
+          captionText.innerHTML = e.target.alt;
+        }
+      });
+
+      // Fermer la modal en cliquant sur le bouton de fermeture
+      closeBtn.onclick = function() {
+        modal.classList.remove('show');
+      }
+
+      // Fermer la modal en cliquant en dehors de l'image
+      modal.onclick = function(e) {
+        if (e.target === modal) {
+          modal.classList.remove('show');
+        }
+      }
+
+      // Réinitialiser le zoom lors de la fermeture
+      closeBtn.addEventListener('click', function() {
+        modalImg.style.transform = 'scale(1)';
+      });
+    }
+
+    // Appeler la fonction de configuration du zoom après le chargement des messages
+    const originalLoadMessages = loadMessages;
+    loadMessages = async function(conversationId) {
+      await originalLoadMessages(conversationId);
+      setupImageZoom();
+    };
+  </script>  
+</body>
+</html>

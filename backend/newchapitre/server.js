@@ -17,6 +17,7 @@ const serviceRoutes = require('./routes/serviceRoutes');
 const contactRoutes = require('./routes/contactRoutes');
 const signalementRoutes = require('./routes/signalementRoutes');
 const recommandationRoutes = require("./routes/recommandationRoutes");
+const verificationRoutes = require('./routes/verificationRoutes');
 
 const app = express();
 
@@ -44,6 +45,7 @@ app.use('/api', serviceRoutes);
 app.use('/api', contactRoutes);
 app.use('/api', signalementRoutes);
 app.use("/api", recommandationRoutes);
+app.use('/api', verificationRoutes); 
 app.use('/api/auth', authRoutes);
 
 // Routes pour les pages HTML
@@ -85,6 +87,33 @@ app.get('/homePrestataire', (req, res) => {
 
 app.get('/offreurs', (req, res) => {
     res.sendFile(path.join(__dirname, '../../views/offreurs.html'));
+});
+
+app.get('/homeProvider', (req, res) => {
+    res.sendFile(path.join(__dirname, '../../views/homeProvider.html'));
+});
+
+app.get('/demandes', (req, res) => {
+    res.sendFile(path.join(__dirname, '../../views/demandes.html'));
+});
+
+app.get('/messagerieProvider', (req, res) => {
+    res.sendFile(path.join(__dirname, '../../views/messagerieProvider.html'));
+});
+
+app.get('/notificationProvider', (req, res) => {
+    res.sendFile(path.join(__dirname, '../../views/notificationProvider.html'));
+});
+
+app.get('/profileProviderView', (req, res) => {
+    res.sendFile(path.join(__dirname, '../../views/profileProviderView.html'));
+});
+
+app.get('/profileProvider', (req, res) => {
+    res.sendFile(path.join(__dirname, '../../views/profileProvider.html'));
+});
+app.get('/verification', (req, res) => {
+    res.sendFile(path.join(__dirname, '../../views/verification.html'));
 });
 
 // Vérification de la connexion à la base de données

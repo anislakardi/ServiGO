@@ -1,0 +1,511 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ServiGO - Vérification Prestataire</title>
+    <link rel="stylesheet" href="../style/verification.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+    <div class="verification-container">
+        <!-- En-tête -->
+        <header class="verification-header">
+            <h1>Vérification de votre compte prestataire</h1>
+            <p class="subtitle">Complétez les étapes suivantes pour accéder à votre espace personnel</p>
+            
+            <!-- Barre de progression -->
+            <div class="progress-container">
+                <div class="progress-bar">
+                    <div class="progress" id="progress-bar"></div>
+                </div>
+                <span class="progress-text">0% complété</span>
+            </div>
+        </header>
+
+        <!-- Grille des étapes -->
+        <div class="steps-grid">
+            <!-- Pièce d'identité -->
+            <div class="step-card" id="id-card">
+                <div class="step-header">
+                    <i class="fas fa-id-card"></i>
+                    <h3>Pièce d'identité</h3>
+                    <span class="status-badge pending">En attente</span>
+                </div>
+                <div class="step-content">
+                    <div class="upload-section">
+                        <div class="upload-zone" id="id-front">
+                            <i class="fas fa-camera"></i>
+                            <span>Face avant</span>
+                            <input type="file" accept="image/*" hidden>
+                            <button class="btn-delete" style="display: none;">
+                                <i class="fas fa-times"></i>
+                            </button>
+                        </div>
+                        <div class="upload-zone" id="id-back">
+                            <i class="fas fa-camera"></i>
+                            <span>Face arrière</span>
+                            <input type="file" accept="image/*" hidden>
+                            <button class="btn-delete" style="display: none;">
+                                <i class="fas fa-times"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="security-info">
+                        <i class="fas fa-lock"></i>
+                        <span>Vos données sont sécurisées</span>
+                    </div>
+                </div>
+                <div class="step-actions">
+                    <button class="btn-validate" disabled>Valider</button>
+                </div>
+            </div>
+
+            <!-- CV et Diplômes -->
+            <div class="step-card" id="documents">
+                <div class="step-header">
+                    <i class="fas fa-file-alt"></i>
+                    <h3>CV et Diplômes</h3>
+                    <span class="status-badge missing">Manquant</span>
+                </div>
+                <div class="step-content">
+                    <div class="upload-section">
+                        <div class="upload-zone" id="cv-upload">
+                            <i class="fas fa-file-pdf"></i>
+                            <span>CV (PDF)</span>
+                            <input type="file" accept=".pdf,.doc,.docx" hidden>
+                            <button class="btn-delete" style="display: none;">
+                                <i class="fas fa-times"></i>
+                            </button>
+                        </div>
+                        <div class="upload-zone" id="diploma-upload">
+                            <i class="fas fa-graduation-cap"></i>
+                            <span>Diplômes</span>
+                            <input type="file" accept=".pdf,.jpg,.png" multiple hidden>
+                            <button class="btn-delete" style="display: none;">
+                                <i class="fas fa-times"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                <div class="step-actions">
+                    <button class="btn-validate" disabled>Valider</button>
+                </div>
+            </div>
+
+            <!-- Expérience -->
+            <div class="step-card" id="experience">
+                <div class="step-header">
+                    <i class="fas fa-briefcase"></i>
+                    <h3>Expérience Professionnelle</h3>
+                    <span class="status-badge missing">Manquant</span>
+                </div>
+                <div class="step-content">
+                    <form class="experience-form">
+                        <div class="form-group">
+                            <label>Années d'expérience</label>
+                            <input type="number" min="2" required id="experience-years">
+                        </div>
+                        <div class="form-group">
+                            <label>Description détaillée</label>
+                            <textarea required placeholder="Décrivez votre expérience professionnelle..." id="experience-description"></textarea>
+                        </div>
+                        <div class="form-group">
+                            <label>Preuves d'expérience</label>
+                            <div class="upload-section">
+                                <div class="upload-zone" id="experience-proofs">
+                                    <i class="fas fa-file-alt"></i>
+                                    <span>Ajouter des preuves (contrats, attestations, etc.)</span>
+                                    <input type="file" accept=".pdf,.doc,.docx,.jpg,.png" multiple hidden>
+                                    <button class="btn-delete" style="display: none;">
+                                        <i class="fas fa-times"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="step-actions">
+                    <button class="btn-validate">Valider</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Actions globales -->
+        <div class="global-actions">
+            <button class="btn-save" id="save-progress">Sauvegarder la progression</button>
+            <button class="btn-submit" id="submit-verification" disabled>Soumettre pour validation</button>
+        </div>
+    </div>
+
+    <!-- Modales -->
+    <div class="modal" id="verification-modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <div class="modal-body">
+                <i class="fas fa-check-circle"></i>
+                <h3>Étape validée !</h3>
+                <p>Votre document a été validé avec succès.</p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Variables globales
+let completedSteps = 0;
+const totalSteps = 3;
+const progressBar = document.getElementById('progress-bar');
+const progressText = document.querySelector('.progress-text');
+const submitButton = document.getElementById('submit-verification');
+
+// Fonction utilitaire pour afficher la preview d'un fichier
+function showFilePreview(zoneSelector, fileUrl, fileType = 'image') {
+    const zone = document.querySelector(zoneSelector);
+    const fileInput = zone.querySelector('input[type="file"]');
+    
+    // Crée la preview
+    let preview;
+    if (fileType === 'image') {
+        preview = document.createElement('img');
+        preview.src = fileUrl;
+        preview.className = 'file-preview';
+        preview.style.maxWidth = '100%';
+        preview.style.maxHeight = '150px';
+    } else if (fileType === 'pdf') {
+        preview = document.createElement('span');
+        preview.className = 'file-preview';
+        preview.innerHTML = `<i class="fas fa-file-pdf"></i> Fichier PDF`;
+    } else {
+        preview = document.createElement('span');
+        preview.className = 'file-preview';
+        preview.innerHTML = `<i class="fas fa-file"></i> Fichier uploadé`;
+    }
+
+    // Crée le bouton supprimer
+    const delBtn = document.createElement('button');
+    delBtn.className = 'btn-delete';
+    delBtn.innerHTML = '<i class="fas fa-times"></i>';
+    delBtn.onclick = (e) => {
+        e.stopPropagation();
+        preview.remove();
+        delBtn.remove();
+        fileInput.value = '';
+        checkStepCompletion(zone.closest('.step-card').id);
+    };
+
+    // Nettoie les anciennes previews
+    zone.querySelectorAll('.file-preview, .btn-delete').forEach(el => el.remove());
+    
+    // Ajoute la nouvelle preview et le bouton
+    zone.insertBefore(preview, fileInput);
+    zone.insertBefore(delBtn, fileInput);
+}
+
+// Charger les données depuis la base
+async function loadVerificationFromDB() {
+    const userId = localStorage.getItem('userId');
+    const token = localStorage.getItem('token');
+    console.log('Debug - userId:', userId);
+    console.log('Debug - token:', token);
+    console.log('Debug - localStorage:', localStorage);
+    
+    if (!userId || !token) return;
+
+    try {
+        const response = await fetch(`http://localhost:5001/api/verification/${userId}`, {
+            headers: { 'Authorization': `Bearer ${token}` }
+        });
+
+        if (response.ok) {
+            const data = await response.json();
+            
+            // Afficher les données existantes
+            if (data.identite_face_avant) showFilePreview('#id-front', data.identite_face_avant, 'image');
+            if (data.identite_face_arriere) showFilePreview('#id-back', data.identite_face_arriere, 'image');
+            if (data.cv_pdf) showFilePreview('#cv-upload', data.cv_pdf, 'pdf');
+            if (data.diplomes) showFilePreview('#diploma-upload', data.diplomes, 'pdf');
+            if (data.annees_experience) document.getElementById('experience-years').value = data.annees_experience;
+            if (data.description_experience) document.getElementById('experience-description').value = data.description_experience;
+            if (data.preuves_experience) showFilePreview('#experience-proofs', data.preuves_experience, 'pdf');
+
+            // Vérifier la complétion de chaque étape
+            checkStepCompletion('id-card');
+            checkStepCompletion('documents');
+            checkStepCompletion('experience');
+        }
+    } catch (error) {
+        console.error('Erreur chargement vérification:', error);
+    }
+}
+
+// Vérifier si une étape est complète
+function checkStepCompletion(stepId) {
+    const stepCard = document.getElementById(stepId);
+    const validateButton = stepCard.querySelector('.btn-validate');
+    let isComplete = false;
+
+    switch(stepId) {
+        case 'id-card':
+            const frontFile = document.querySelector('#id-front input[type="file"]').files[0];
+            const backFile = document.querySelector('#id-back input[type="file"]').files[0];
+            const frontPreview = document.querySelector('#id-front .file-preview');
+            const backPreview = document.querySelector('#id-back .file-preview');
+            isComplete = (frontFile || frontPreview) || (backFile || backPreview);
+            break;
+
+        case 'documents':
+            const cvFile = document.querySelector('#cv-upload input[type="file"]').files[0];
+            const diplomaFile = document.querySelector('#diploma-upload input[type="file"]').files[0];
+            const cvPreview = document.querySelector('#cv-upload .file-preview');
+            const diplomaPreview = document.querySelector('#diploma-upload .file-preview');
+            isComplete = (cvFile || cvPreview) || (diplomaFile || diplomaPreview);
+            break;
+
+        case 'experience':
+            const years = document.getElementById('experience-years').value;
+            const description = document.getElementById('experience-description').value;
+            const proofFile = document.querySelector('#experience-proofs input[type="file"]').files[0];
+            const proofPreview = document.querySelector('#experience-proofs .file-preview');
+            isComplete = description;
+            break;
+    }
+
+    validateButton.disabled = !isComplete;
+    return isComplete;
+}
+
+// Sauvegarder dans la base de données
+async function saveSingleFile(fieldName, file, userId, token) {
+    const formData = new FormData();
+    formData.append('prestataire_id', userId);
+    formData.append(fieldName, file);
+
+    const response = await fetch(`http://localhost:5001/api/verification/file-upload`, {
+        method: 'POST',
+        headers: { 'Authorization': `Bearer ${token}` },
+        body: formData
+    });
+
+    if (!response.ok) {
+        throw new Error(`Erreur envoi fichier: ${fieldName}`);
+    }
+}
+
+async function saveVerificationMetadata(userId, token) {
+    const body = {
+        annees_experience: document.getElementById('experience-years').value,
+        description_experience: document.getElementById('experience-description').value,
+    };
+
+    const response = await fetch(`http://localhost:5001/api/verification/metadata/${userId}`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
+        },
+        body: JSON.stringify(body)
+    });
+
+    if (!response.ok) {
+        throw new Error('Erreur sauvegarde métadonnées');
+    }
+}
+
+async function saveVerificationToDB() {
+    const userId = localStorage.getItem('userId');
+    const token = localStorage.getItem('token');
+    console.log('Debug - userId:', userId);
+    console.log('Debug - token:', token);
+    console.log('Debug - localStorage:', localStorage);
+    
+    if (!userId || !token) {
+        alert('Vous devez être connecté pour sauvegarder');
+        return false;
+    }
+
+    try {
+        // Récupérer tous les fichiers
+    const idFrontFile = document.querySelector('#id-front input[type="file"]').files[0];
+    const idBackFile = document.querySelector('#id-back input[type="file"]').files[0];
+    const cvFile = document.querySelector('#cv-upload input[type="file"]').files[0];
+    const diplomaFile = document.querySelector('#diploma-upload input[type="file"]').files[0];
+    const proofFile = document.querySelector('#experience-proofs input[type="file"]').files[0];
+
+        // Créer un FormData pour envoyer tous les fichiers
+        const formData = new FormData();
+        formData.append('prestataire_id', userId);
+        
+        if (idFrontFile) formData.append('identite_face_avant', idFrontFile);
+        if (idBackFile) formData.append('identite_face_arriere', idBackFile);
+        if (cvFile) formData.append('cv_pdf', cvFile);
+        if (diplomaFile) formData.append('diplomes', diplomaFile);
+        if (proofFile) formData.append('preuves_experience', proofFile);
+
+        // Ajouter les métadonnées
+        formData.append('annees_experience', document.getElementById('experience-years').value);
+        formData.append('description_experience', document.getElementById('experience-description').value);
+
+        // Envoyer toutes les données en une seule requête
+        const response = await fetch('http://localhost:5001/api/verification', {
+            method: 'POST',
+            headers: {
+                'Authorization': `Bearer ${token}`
+            },
+            body: formData
+        });
+
+        if (!response.ok) {
+            throw new Error('Erreur lors de la sauvegarde des données');
+        }
+
+        return true;
+    } catch (error) {
+        console.error('Erreur sauvegarde:', error);
+        alert('Erreur lors de la sauvegarde: ' + error.message);
+        return false;
+    }
+}
+
+// Mettre à jour la barre de progression
+function updateProgress() {
+    const percentage = Math.round((completedSteps / totalSteps) * 100);
+    progressBar.style.width = `${percentage}%`;
+    progressText.textContent = `${percentage}% complété`;
+    submitButton.disabled = completedSteps < 1;
+}
+
+// Valider une étape
+function validateStep(stepId) {
+    const stepCard = document.getElementById(stepId);
+    if (!checkStepCompletion(stepId)) {
+        alert('Veuillez remplir tous les champs requis pour cette étape');
+        return;
+    }
+
+    const statusBadge = stepCard.querySelector('.status-badge');
+    const validateButton = stepCard.querySelector('.btn-validate');
+
+    if (!statusBadge.classList.contains('validated')) {
+        statusBadge.className = 'status-badge validated';
+        statusBadge.textContent = 'Validé';
+        validateButton.disabled = true;
+        completedSteps++;
+        updateProgress();
+        showVerificationModal();
+    }
+}
+
+// Afficher le modal de confirmation
+function showVerificationModal() {
+    const modal = document.getElementById('verification-modal');
+    modal.style.display = 'flex';
+    setTimeout(() => {
+        modal.style.display = 'none';
+    }, 2000);
+}
+
+// Initialisation
+document.addEventListener('DOMContentLoaded', () => {
+    // Ajouter des logs au chargement de la page
+    console.log('Page verification chargée');
+    console.log('Debug - userId au chargement:', localStorage.getItem('userId'));
+    console.log('Debug - token au chargement:', localStorage.getItem('token'));
+    
+    // Charger les données existantes
+    loadVerificationFromDB();
+
+    // Configuration des zones d'upload
+    ['id-front', 'id-back', 'cv-upload', 'diploma-upload', 'experience-proofs'].forEach(zoneId => {
+        const zone = document.getElementById(zoneId);
+        const input = zone.querySelector('input[type="file"]');
+
+        zone.addEventListener('click', () => input.click());
+        input.addEventListener('change', (e) => {
+            if (e.target.files[0]) {
+                const reader = new FileReader();
+                reader.onload = (event) => {
+                    showFilePreview(`#${zoneId}`, event.target.result, 
+                        e.target.files[0].type.startsWith('image/') ? 'image' : 'pdf');
+                };
+                reader.readAsDataURL(e.target.files[0]);
+                checkStepCompletion(zone.closest('.step-card').id);
+            }
+        });
+    });
+
+    // Écouteurs d'événements pour les champs d'expérience
+    document.getElementById('experience-years').addEventListener('input', () => 
+        checkStepCompletion('experience'));
+    document.getElementById('experience-description').addEventListener('input', () => 
+        checkStepCompletion('experience'));
+
+    // Écouteurs pour les boutons de validation
+    document.querySelectorAll('.btn-validate').forEach(button => {
+        button.addEventListener('click', () => {
+            validateStep(button.closest('.step-card').id);
+        });
+    });
+
+    // Écouteur pour le bouton de sauvegarde
+    document.getElementById('save-progress').addEventListener('click', saveVerificationToDB);
+
+    // Écouteur pour le bouton de soumission finale
+    document.getElementById('submit-verification').addEventListener('click', async () => {
+        if (completedSteps < 1) {
+            alert('Veuillez compléter au moins une étape avant de soumettre');
+            return;
+        }
+
+        const atLeastOneStepValidated = ['id-card', 'documents', 'experience'].some(stepId => {
+            const stepCard = document.getElementById(stepId);
+            const statusBadge = stepCard.querySelector('.status-badge');
+            return statusBadge.classList.contains('validated');
+        });
+
+        if (!atLeastOneStepValidated) {
+            alert('Veuillez valider au moins une étape avant de soumettre');
+            return;
+        }
+
+        const confirmed = confirm('Êtes-vous sûr de vouloir soumettre votre dossier de vérification ? Cette action est irréversible.');
+        if (!confirmed) return;
+
+        try {
+            const success = await saveVerificationToDB();
+            if (success) {
+                // Vérifier le statut après la soumission
+                const userId = localStorage.getItem('userId');
+                const token = localStorage.getItem('token');
+                
+                const statusResponse = await fetch(`http://localhost:5001/api/verification/status/${userId}`, {
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+
+                if (statusResponse.ok) {
+                    const statusData = await statusResponse.json();
+                    
+                    if (statusData.status === 'vérifié') {
+                        alert('Votre dossier a été validé avec succès !');
+                window.location.href = '/homeProvider';
+        } else {
+                        alert('Votre dossier a été soumis avec succès ! Notre équipe va l\'examiner dans les plus brefs délais.');
+                        window.location.href = '/login';
+                    }
+                } else {
+                    throw new Error('Erreur lors de la vérification du statut');
+                }
+            }
+        } catch (error) {
+            console.error('Erreur lors de la soumission:', error);
+            alert('Une erreur est survenue lors de la soumission: ' + error.message);
+        }
+    });
+
+    // Fermeture du modal
+    document.querySelector('.close').addEventListener('click', () => {
+        document.getElementById('verification-modal').style.display = 'none';
+    });
+});
+    </script>
+</body>
+</html> 
