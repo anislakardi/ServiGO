@@ -5,6 +5,8 @@
   /*colors*/
   --Bright-Sun: #fcdb32;
   --Big-Stone: #141D38;
+  --Light-Grey: #f0f0f0;
+  --Dark-Grey: #333;
   /*fonts*/
   --font-family-1: "Montserrat", sans-serif;
   --font-family-2: "Josefin Sans", sans-serif;
@@ -260,86 +262,155 @@
   }
 
 .what-our-users-are-saying {
-  background-color: white; /* Arrière-plan doux */
-  padding: 60px 30px;
-  font-family: var(--font-family-3);
-  text-align: center;
+    padding: 4rem 2rem;
+    background-color: var(--Light-Grey);
+    text-align: center;
 }
 
 .what-our-users-are-saying h2 {
-  font-size: 32px;
-  color: var(--Big-Stone);
-  margin-bottom: 40px;
-  font-style: italic; /* Pour ajouter un effet élégant */
+    color: var(--Big-Stone);
+    font-size: 2rem;
+    margin-bottom: 3rem;
+    font-family: var(--font-family-3);
 }
 
 .testimonials {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-  gap: 30px;
-  justify-items: center;
+    display: flex;
+    justify-content: center;
+    gap: 2rem;
+    flex-wrap: wrap;
+    max-width: 1200px;
+    margin: 0 auto;
 }
 
 .testimonial-card {
-  background-color: rgb(242, 242, 242);;
-  border-radius: 20px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-  padding: 30px;
-  max-width: 350px;
-  text-align: center;
-  transition: transform 0.3s ease;
+    background: white;
+    border-radius: 16px;
+    padding: 2.5rem;
+    width: 320px;
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.08);
+    transition: all 0.3s ease;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
 }
 
 .testimonial-card:hover {
-  transform: translateY(-5px);
+    transform: translateY(-1px);
+    box-shadow: 0 15px 30px rgba(0, 0, 0, 0.12);
 }
 
-.testimonial-card p {
-  font-size: 16px;
-  color: rgb(110, 110, 110);
-  line-height: 22px;
-  font-style: italic;
-  margin-bottom: 20px;
+.user-image {
+    width: 90px;
+    height: 90px;
+    border-radius: 50%;
+    overflow: hidden;
+    margin-bottom: 1.5rem;
+    border: 3px solid var(--Bright-Sun);
+    box-shadow: 0 4px 8px rgba(252, 219, 50, 0.3);
+    transition: transform 0.3s ease;
 }
 
-.testimonial-card .user-name {
-  font-size: 18px;
-  color: var(--Big-Stone);
-  font-weight: bold;
-  margin-bottom: 10px;
+.user-image:hover {
+    transform: scale(1.05);
 }
 
-.testimonial-card .user-position {
-  font-size: 14px;
-  color: rgb(110, 110, 110);
-  font-style: normal;
+.user-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.3s ease;
 }
 
-.testimonial-card .user-image {
-  width: 80px;
-  height: 80px;
-  border-radius: 50%;
-  object-fit: cover;
-  margin: 0 auto 20px;
+.testimonial-content {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 1.2rem;
+    width: 100%;
 }
 
-.testimonial-card .user-image img {
-  width: 100%;
-  height: 100%;
-  border-radius: 50%;
+.simple-rating {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    margin-bottom: 1.2rem;
+    background: rgba(252, 219, 50, 0.1);
+    padding: 0.5rem 1rem;
+    border-radius: 20px;
 }
 
-.testimonial-card .quote-icon {
-  font-size: 40px;
-  color: var(--Bright-Sun);
-  margin-top: -20px;
-  margin-bottom: 10px;
+.simple-rating i {
+    color: var(--Bright-Sun);
+    font-size: 1.3rem;
 }
 
-/* Si tu veux ajouter un effet hover sur l'image de l'utilisateur */
-.testimonial-card .user-image:hover {
-  border: 3px solid var(--Bright-Sun);
+.simple-rating span {
+    font-size: 1.3rem;
+    font-weight: 600;
+    color: var(--Big-Stone);
 }
+
+.testimonial-text {
+    color: var(--Dark-Grey);
+    font-size: 1rem;
+    line-height: 1.6;
+    margin-bottom: 1.5rem;
+    font-style: italic;
+    position: relative;
+    padding: 0 1rem;
+}
+
+.testimonial-text::before,
+.testimonial-text::after {
+    content: '"';
+    font-size: 2rem;
+    color: var(--Bright-Sun);
+    opacity: 0.3;
+    position: absolute;
+}
+
+.testimonial-text::before {
+    top: -1rem;
+    left: 0;
+}
+
+.testimonial-text::after {
+    bottom: -1rem;
+    right: 0;
+}
+
+.user-info {
+    margin-top: auto;
+    padding-top: 1rem;
+    border-top: 1px solid rgba(0, 0, 0, 0.1);
+    width: 100%;
+}
+
+.user-name {
+    color: var(--Big-Stone);
+    font-weight: 600;
+    font-size: 1.1rem;
+    text-transform: capitalize;
+}
+
+@media (max-width: 768px) {
+    .testimonials {
+        flex-direction: column;
+        align-items: center;
+        padding: 0 1rem;
+    }
+
+    .testimonial-card {
+        width: 100%;
+        max-width: 320px;
+    }
+}
+
 .view-all-reviews {
   margin-top: 40px;
 }
@@ -510,6 +581,58 @@
   filter: brightness(0) invert(1); /* pour garder icônes blanches */
 }
 
+.rating-container {
+    width: 100%;
+    margin-bottom: 1rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.5rem;
+}
 
+.rating-bar {
+    width: 100%;
+    height: 8px;
+    background-color: #eee;
+    border-radius: 4px;
+    overflow: hidden;
+    position: relative;
+}
+
+.rating-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--Bright-Sun) 0%, #f2c94d 100%);
+    border-radius: 4px;
+    transition: width 0.5s ease;
+}
+
+.rating-value {
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: var(--Big-Stone);
+    background: rgba(252, 219, 50, 0.1);
+    padding: 0.3rem 0.8rem;
+    border-radius: 20px;
+    margin-top: 0.5rem;
+}
+
+.simple-rating {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    margin-bottom: 1rem;
+}
+
+.simple-rating i {
+    color: var(--Bright-Sun);
+    font-size: 1.2rem;
+}
+
+.simple-rating span {
+    font-size: 1.2rem;
+    font-weight: 600;
+    color: var(--Big-Stone);
+}
 
   

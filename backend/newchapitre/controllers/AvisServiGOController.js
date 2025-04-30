@@ -107,6 +107,17 @@ class AvisServiGOController {
             res.status(500).json({ message: "Erreur lors de la suppression de l'avis" });
         }
     }
+
+    // Obtenir les 3 meilleurs avis
+    static async getTopReviews(req, res) {
+        try {
+            const topReviews = await AvisServiGOModel.getTopReviews();
+            res.json(topReviews);
+        } catch (error) {
+            console.error("Erreur lors de la récupération des meilleurs avis:", error);
+            res.status(500).json({ message: "Erreur lors de la récupération des meilleurs avis" });
+        }
+    }
 }
 
 module.exports = AvisServiGOController; 

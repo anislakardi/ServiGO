@@ -81,6 +81,22 @@ class AvisServiGOModel {
         );
         return rows.length > 0 ? rows[0] : null;
     }
+
+    // Obtenir les 3 meilleurs avis
+    static async getTopReviews() {
+        const [rows] = await pool.query(`
+            SELECT 
+                a.*, 
+                CONCAT(c.prenom, ' ', c.nom) AS user_name, 
+                c.photo_de_profil AS user_avatar,
+                (a.rating + a.service_rating + a.communication_rating + a.price_rating) / 4 as note_moyenne
+            FROM avis_ServiGO a 
+            JOIN clients c ON a.client_id = c.id 
+            ORDER BY note_moyenne DESC
+            LIMIT 3
+        `);
+        return rows;
+    }
 }
 
 module.exports = AvisServiGOModel; 
