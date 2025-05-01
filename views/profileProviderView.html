@@ -558,8 +558,8 @@
         document.querySelector('.fa-map-marker-alt').nextSibling.textContent = prestataire.adresse || 'Adresse non définie';
         
         // Mise à jour de la photo de profil si elle existe
-        if (prestataire.photo_profil) {
-          document.getElementById('profileImage').src = prestataire.photo_profil;
+        if (prestataire.photo_de_profil) {
+          document.getElementById('profileImage').src = prestataire.photo_de_profil;
         }
         
         // Mise à jour de l'expérience
@@ -1272,8 +1272,10 @@
           serviceDiv.className = 'service-item';
           serviceDiv.innerHTML = `
             <img src="${item.photo}" alt="Service" class="service-image">
-            
-        `;
+            <button class="btn-delete-service" onclick="deleteService(this, '${key.slice(-1)}')">
+              <i class="fas fa-times"></i>
+            </button>
+          `;
           gallery.insertBefore(serviceDiv, addBtn);
           count++;
         }

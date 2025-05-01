@@ -170,7 +170,6 @@ exports.login = async (req, res) => {
             user = admins[0];
             userRole = 'admin';
         }
-
         if (!user) {
             return res.status(401).json({ message: 'Email ou mot de passe incorrect' });
         }
