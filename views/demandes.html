@@ -432,7 +432,7 @@ const result = await response.json();
             if (!confirm('Êtes-vous sûr de vouloir supprimer ce service ?')) return;
 
             try {
-                const response = await fetch(`http://localhost:5001/api/demande/services/${serviceId}`, {
+                const response = await fetch(`http://localhost:5001/api/demande/servicesExist/${serviceId}`, {
                     method: 'DELETE',
                     headers: {
                         'Authorization': `Bearer ${token}`

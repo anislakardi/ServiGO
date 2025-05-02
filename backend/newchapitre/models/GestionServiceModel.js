@@ -93,23 +93,35 @@ class GestionServiceModel {
     `, [id_user]);
   
     return rows.map(r => {
-      const details = JSON.parse(r.details_json || '{}');
+      // 1er parse : extrait la chaîne JSON
+      let details = JSON.parse(r.details_json || '{}');
+    
+      // si le résultat est encore une string (double‑encodage), on re‑parse
+      if (typeof details === 'string') {
+        try {
+          details = JSON.parse(details);
+        } catch (e) {
+          console.warn('Impossible de re‑parser details JSON :', e);
+          details = {};
+        }
+      }
+    
       return {
         request_id:     r.request_id,
         prestataire:    `${r.prest_nom} ${r.prest_prenom}`,
         type_demande:   r.type_demande,
         request_statut: r.request_statut,
         date_demande:   r.date_demande,
-  
-        // on priorise les valeurs dans details (modif) puis celles du service
+    
+        // maintenant details est bien un objet
         titre:          details.titre         ?? r.titre,
         description:    details.description   ?? r.description,
-        prix:           details.prix         ?? r.prix,
+        prix:           details.prix          ?? r.prix,
         categorie:      details.categorie     ?? r.categorie,
         statut_travail: details.statut_travail ?? r.statut_travail,
-  
+    
         date_creation:  r.service_creation,
-        date_prevue:    details.date_prevue  ?? r.date_prevue,
+        date_prevue:    details.date_prevue   ?? r.date_prevue,
         date_execution: r.date_execution,
         date_fin:       r.date_fin
       };

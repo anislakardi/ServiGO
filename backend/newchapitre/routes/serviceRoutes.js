@@ -24,5 +24,6 @@ router.post("/demande/services/modification", ServiceController.createModificati
 
 // supprimer un request
 router.delete("/demande/services/:id", ServiceController.deletePendingRequest);
+router.delete("/demande/servicesExist/:id", ServiceController.deleteService);
 
 module.exports = router;

@@ -15,49 +15,90 @@ class ServiceController {
 
     static async approveOrRejectRequest(req, res) {
         const { id } = req.params;
-        const { decision } = req.body; // "accepté" ou "refusé"
+        const { decision } = req.body;
     
-        const request = await GestionServiceModel.getRequestById(id);
-        if (!request) return res.status(404).json({ error: "Demande introuvable" });
+        try {
+          const request = await GestionServiceModel.getRequestById(id);
+          if (!request) return res.status(404).json({ error: "Demande introuvable" });
     
-        if (decision === "Accepté") {
-            // Récupérer l'ancien service
-            const existingService = await ServiceModel.getServicesById(request.service_id);
-            if (!existingService) return res.status(404).json({ error: "Service introuvable" });
+          const decisionValue = decision.toLowerCase();
+          if (decisionValue !== "accepté" && decisionValue !== "refusé") {
+            return res.status(400).json({ error: "Décision invalide" });
+          }
     
-            const details = JSON.parse(request.details);
+          if (decisionValue === "refusé") {
+            await GestionServiceModel.deletePendingRequest(id);
+            return res.json({ message: "Demande refusée." });
+          }
     
-            // Construire l'objet de mise à jour
-            const updateData = {};
-            if (details.statut_travail) {
-                updateData.statut_travail = details.statut_travail;
-                if (details.statut_travail === "En cours") {
-                    updateData.date_execution = new Date(); // Date actuelle
-                } else if (details.statut_travail === "Terminé") {
-                    updateData.date_fin = new Date();
-                    console.log(updateData.date_fin);
-                }
+          // Accepté : on crée ou modifie suivant type_demande
+          let details;
+          try {
+            details = JSON.parse(request.details);
+            if (typeof details === 'string') {
+              details = JSON.parse(details);
             }
+          } catch (parseErr) {
+            console.error("Erreur parsing details :", parseErr);
+            return res.status(400).json({ error: "Détails invalides" });
+          }
     
-            // Mettre à jour le service
-            await ServiceModel.updateService(request.service_id, updateData);
+          if (request.type_demande === "création") {
+            // Création
+            const newService = {
+              prestataire_id: request.prestataire_id,
+              client_id:      request.client_id,
+              titre:          details.titre,
+              description:    details.description || null,
+              prix:           details.prix || null,
+              categorie:      details.categorie,
+              statut_travail: details.statut_travail || 'À faire',
+              date_creation:  details.date_creation   ? new Date(details.date_creation)   : new Date(),
+              date_prevue:    details.date_prevue     ? new Date(details.date_prevue)     : null,
+              date_execution: details.date_execution  ? new Date(details.date_execution)  : null,
+              date_fin:       details.date_fin        ? new Date(details.date_fin)        : null
+            };
+            console.log("Création - newService :", newService);
+            await ServiceModel.insertService(newService);
+          } else {
+            // Modification
+            const updatedFields = {
+              titre:          details.titre,
+              description:    details.description,
+              prix:           details.prix,
+              categorie:      details.categorie,
+              statut_travail: details.statut_travail
+            };
+            if (details.date_prevue)    updatedFields.date_prevue    = new Date(details.date_prevue);
+            if (details.statut_travail === "En cours") updatedFields.date_execution = new Date();
+            if (details.statut_travail === "Terminé") updatedFields.date_fin       = new Date();
     
-            // Mettre à jour le statut de la demande
-            await GestionServiceModel.deletePendingRequest(id);
+            console.log("Modification - updatedFields :", updatedFields);
+            const result = await ServiceModel.updateService(request.service_id, updatedFields);
+            console.log("Résultat SQL :", result);
+          }
     
-            return res.json({ message: "Demande approuvée et mise à jour du service effectuée" });
-        } else if (decision === "refusé") {
-            await GestionServiceModel.deletePendingRequest(id);
-            return res.json({ message: "Demande refusée" });
+          await GestionServiceModel.deletePendingRequest(id);
+          return res.json({ message: "Demande approuvée et traitée avec succès." });
+    
+        } catch (err) {
+          console.error("Erreur dans approveOrRejectRequest :", err);
+          return res.status(500).json({ error: "Erreur serveur" });
         }
-    
-        res.status(400).json({ error: "Décision invalide" });
-    
-    }    
+      }
+        // ... autres méthodes du controller restent inchangées ...
+
+      
+          
 
     static async deletePendingRequest(req, res) {
         const { id } = req.params;
         await GestionServiceModel.deletePendingRequest(id);
+        res.json({ message: "Demande supprimée" });
+    }
+    static async deleteService(req, res) {
+        const { id } = req.params;
+        await ServiceModel.deleteService(id);
         res.json({ message: "Demande supprimée" });
     }
 
