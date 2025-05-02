@@ -54,6 +54,25 @@ class ServiceModel {
     static async deleteService(id) {
           return pool.query("DELETE FROM services WHERE id = ? AND statut_travail = 'Terminé'", [id]);
       }
+
+      static async calculateEstimatedRevenue(prestataireId) {
+        try {
+            // Récupérer tous les services terminés du prestataire
+            const [rows] = await pool.query(
+                `SELECT prix FROM services 
+                WHERE prestataire_id = ? AND statut_travail = 'Terminé'`,
+                [prestataireId]
+            );
+            
+            // Calculer la somme des prix
+            const totalRevenue = rows.reduce((sum, service) => sum + (service.prix || 0), 0);
+            
+            return totalRevenue;
+        } catch (error) {
+            console.error("Erreur lors du calcul des revenus estimés:", error);
+            throw error;
+        }
+    }
       
     
     

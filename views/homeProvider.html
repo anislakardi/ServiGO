@@ -301,7 +301,7 @@
               <span class="publication-date"><i class="fas fa-calendar"></i> ${new Date(pub.date_publication).toLocaleDateString()}</span>
             </div>
             <div class="client-info">
-              <img src="data:image/jpeg;base64,${pub.photo_de_profil}" alt="Photo client" class="client-photo">
+              <img src="${pub.photo_de_profil ? 'data:image/jpeg;base64,' + pub.photo_de_profil : '../style/images/defaults.jpg'}" alt="Photo client" class="client-photo">
               <div class="client-details">
                 <h5>${highlightedName}</h5>
               </div>
@@ -310,7 +310,11 @@
               <h4 class="publication-title">${highlightedTitle}</h4>
               <p class="publication-description">${highlightedDescription}</p>
               <div class="publication-media-container">
-                <img src="data:image/jpeg;base64,${pub.media}" alt="Photo publication" class="publication-media">
+                <img src="data:image/jpeg;base64,${pub.media}" 
+                     alt="Image de la publication" 
+                     class="publication-media" 
+                     onload="this.style.display='block'; this.parentElement.style.display='flex';"
+                     onerror="this.style.display='none'; this.parentElement.style.display='none';" />
               </div>
               <div class="publication-details">
                 <span class="budget"><i class="fas fa-money-bill-wave"></i> Budget : ${pub.budget} DA</span>
@@ -320,7 +324,7 @@
             <div class="request-actions">
               <button class="btn btn-apply">Postuler</button>
               <button class="btn btn-message" data-client-id="${pub.client_id}" data-client-name="${pub.nom} ${pub.prenom}">Message</button>
-              <button class="btn btn-view-profile" data-client-id="${pub.client_id}">Voir profil</button>
+              <button class="btn btn-view-profile" onclick="window.location.href='profileClientVisitor.html?id=${pub.client_id}'">Voir profile</button>
             </div>
           `;
 
@@ -641,8 +645,9 @@
     async function loadTasks() {
       try {
         const token = localStorage.getItem('token');
+        const userId = localStorage.getItem('userId');
         
-        const response = await fetch('http://localhost:5001/api/checklist', {
+        const response = await fetch(`http://localhost:5001/api/checklist/prestataire/${userId}`, {
           headers: {
             'Authorization': `Bearer ${token}`
           }
@@ -660,12 +665,17 @@
         const taskElement = document.createElement('div');
         taskElement.className = 'checklist-item';
         taskElement.innerHTML = `
-              <input type="checkbox" id="task-${task.id}" onchange="handleTaskCompletion(this)" ${task.est_fait ? 'checked' : ''}>
-          <label for="task-${task.id}">
-                ${task.titre}
-                ${task.priorite ? `<span class="task-priority ${task.priorite.toLowerCase()}">${task.priorite}</span>` : ''}
-          </label>
-        `;
+  <input
+    type="checkbox"
+    id="task-${task.id}"
+    onchange="handleTaskCompletion(this)"
+  >
+  <label for="task-${task.id}">
+    ${task.titre}
+    ${task.priorite ? `<span class="task-priority ${task.priorite.toLowerCase()}">${task.priorite}</span>` : ''}
+  </label>
+`;
+
         checklist.appendChild(taskElement);
       });
     }
@@ -680,7 +690,7 @@
         
         const title = document.getElementById('taskTitle').value;
         const priority = document.getElementById('taskPriority').value;
-        
+        const userId = localStorage.getItem('userId');
         if (!title) {
             alert('Veuillez entrer un titre pour la tâche');
             return;
@@ -696,7 +706,8 @@
               'Authorization': `Bearer ${token}`            },
             body: JSON.stringify({
               titre: title,
-              priorite: priority
+              priorite: priority,
+              prestataire_id: userId
             })
           });
           
@@ -723,9 +734,10 @@
         
         try {
           const token = localStorage.getItem('token');
-        
+        console.log('Suppression de la tâche:', taskId);
         if (checkbox.checked) {
             // Supprimer la tâche de la base de données
+            
             const response = await fetch(`http://localhost:5001/api/checklist/${taskId}`, {
               method: 'DELETE',
               headers: {

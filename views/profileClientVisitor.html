@@ -36,7 +36,7 @@
 
     <div class="profile-box">
       <div class="profile-header">
-        <img src="../images/avatar-default.png" alt="Photo de profil" class="profile-img" id="profileImagePreview">
+        <img src="../style/images/defaults.jpg" alt="Photo de profil" class="profile-img" id="profileImagePreview">
         <div class="profile-info">
           <h2 id="userFullName">Nom Complet</h2>
           <p id="userEmail">Email : example@example.com</p>
@@ -91,7 +91,7 @@
     async function loadUserData(userId, token) {
       try {
         const response = await fetch(
-          `http://localhost:5001/api/clients/${userId}`,
+          `http://localhost:5001/api/clients/id/${userId}`,
           {
             headers: { 'Authorization': `Bearer ${token}` }
           }

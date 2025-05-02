@@ -126,7 +126,7 @@
       const userId = localStorage.getItem('userId');
       
       try {
-        const response = await fetch(`http://localhost:5001/api/clients/${userId}`, {
+        const response = await fetch(`http://localhost:5001/api/clients/id/${userId}`, {
           headers: {
             'Authorization': `Bearer ${token}`
           }

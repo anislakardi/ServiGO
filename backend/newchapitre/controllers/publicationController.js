@@ -68,9 +68,26 @@ exports.getPublicationsByService = async (req, res) => {
     try {
         const { service } = req.params;
         const publications = await Publication.findByService(service);
-        res.json(publications);
+
+        if (!publications || publications.length === 0) {
+            return res.status(200).json([]);
+        }
+
+        // Convertir les données binaires des médias et photos de profil en base64
+        const publicationsWithMedia = publications.map(pub => ({
+            ...pub,
+            media: pub.media ? Buffer.from(pub.media).toString('base64') : null,
+            photo_de_profil: pub.photo_de_profil ? Buffer.from(pub.photo_de_profil).toString('base64') : null
+        }));
+
+        res.status(200).json(publicationsWithMedia);
     } catch (error) {
-        res.status(500).json({ message: "Erreur serveur", error: error.message });
+        console.error('Erreur lors de la récupération des publications par service:', error);
+        res.status(500).json({ 
+            message: 'Erreur serveur', 
+            error: error.message,
+            details: error
+        });
     }
 };
 
@@ -202,5 +219,93 @@ exports.getPublicationById = async (req, res) => {
     } catch (error) {
         console.error('Erreur lors de la récupération de la publication:', error);
         res.status(500).json({ message: "Erreur serveur", error: error.message });
+    }
+};
+
+exports.searchPublications = async (req, res) => {
+    try {
+        const { query, service, date, price } = req.query;
+        
+        let sql = `
+            SELECT p.*, c.nom_utilisateur, c.nom, c.prenom, c.photo_de_profil, p.adresse
+            FROM client_publication p 
+            JOIN clients c ON p.client_id = c.id 
+            WHERE 1=1
+        `;
+        
+        const params = [];
+
+        // Recherche par texte (titre, description, nom client)
+        if (query) {
+            sql += ` AND (
+                p.titre LIKE ? OR 
+                p.description LIKE ? OR 
+                c.nom LIKE ? OR 
+                c.prenom LIKE ?
+            )`;
+            const searchTerm = `%${query}%`;
+            params.push(searchTerm, searchTerm, searchTerm, searchTerm);
+        }
+
+        // Filtre par service
+        if (service) {
+            sql += ` AND p.service_vise = ?`;
+            params.push(service);
+        }
+
+        // Filtre par date
+        if (date) {
+            const now = new Date();
+            switch(date) {
+                case 'today':
+                    sql += ` AND DATE(p.date_publication) = CURDATE()`;
+                    break;
+                case 'week':
+                    sql += ` AND p.date_publication >= DATE_SUB(CURDATE(), INTERVAL 7 DAY)`;
+                    break;
+                case 'month':
+                    sql += ` AND p.date_publication >= DATE_SUB(CURDATE(), INTERVAL 1 MONTH)`;
+                    break;
+                case 'year':
+                    sql += ` AND p.date_publication >= DATE_SUB(CURDATE(), INTERVAL 1 YEAR)`;
+                    break;
+            }
+        }
+
+        // Filtre par prix
+        if (price) {
+            switch(price) {
+                case 'asc':
+                    sql += ` ORDER BY p.budget ASC`;
+                    break;
+                case 'desc':
+                    sql += ` ORDER BY p.budget DESC`;
+                    break;
+            }
+        } else {
+            sql += ` ORDER BY p.date_publication DESC`;
+        }
+
+        const [publications] = await pool.query(sql, params);
+
+        if (!publications || publications.length === 0) {
+            return res.status(200).json([]);
+        }
+
+        // Convertir les données binaires des médias et photos de profil en base64
+        const publicationsWithMedia = publications.map(pub => ({
+            ...pub,
+            media: pub.media ? Buffer.from(pub.media).toString('base64') : null,
+            photo_de_profil: pub.photo_de_profil ? Buffer.from(pub.photo_de_profil).toString('base64') : null
+        }));
+
+        res.status(200).json(publicationsWithMedia);
+    } catch (error) {
+        console.error('Erreur lors de la recherche des publications:', error);
+        res.status(500).json({ 
+            message: 'Erreur serveur', 
+            error: error.message,
+            details: error
+        });
     }
 };

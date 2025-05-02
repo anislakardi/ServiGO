@@ -89,7 +89,16 @@ class ServiceController {
         // ... autres méthodes du controller restent inchangées ...
 
       
-          
+        static async getEstimatedRevenue(req, res) {
+          try {
+              const { prestataireId } = req.params;
+              const revenue = await ServiceModel.calculateEstimatedRevenue(prestataireId);
+              res.json({ estimatedRevenue: revenue });
+          } catch (error) {
+              console.error(error);
+              res.status(500).json({ error: "Erreur lors de la récupération des revenus estimés" });
+          }
+      }      
 
     static async deletePendingRequest(req, res) {
         const { id } = req.params;

@@ -9,7 +9,7 @@ router.get('/clients', clientController.getAllClients);
 router.get('/clients/:username', clientController.getClientByUsername);
 
 // ensuite id
-router.get('/clients/:id', clientController.getClientById);
+router.get('/clients/id/:id', clientController.getClientById);
 
 router.put('/clients/:id', clientController.updateClient);
 router.put('/clients/:id/profile-picture', clientController.updateProfilePicture);

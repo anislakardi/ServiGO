@@ -1,35 +1,12 @@
 const pool = require("../config/database");
 
 class ChecklistModel {
-    // Récupérer toutes les tâches
-    static async getAllTasks() {
-        try {
-            const [rows] = await pool.query("SELECT * FROM checklist ORDER BY date_creation DESC");
-            return rows;
-        } catch (error) {
-            console.error("Erreur lors de la récupération des tâches:", error);
-            throw error;
-        }
-    }
-
-    // Récupérer une tâche par son ID
-    static async getTaskById(id) {
-        try {
-            const [rows] = await pool.query("SELECT * FROM checklist WHERE id = ?", [id]);
-            return rows[0];
-        } catch (error) {
-            console.error("Erreur lors de la récupération de la tâche:", error);
-            throw error;
-        }
-    }
-
     // Créer une nouvelle tâche
-    static async createTask(taskData) {
+    static async createTask({ titre, priorite, prestataire_id }) {
         try {
-            const { titre, priorite } = taskData;
             const [result] = await pool.query(
-                "INSERT INTO checklist (titre, priorite) VALUES (?, ?)",
-                [titre, priorite]
+                "INSERT INTO checklist (titre, priorite, prestataire_id) VALUES (?, ?, ?)",
+                [titre, priorite, prestataire_id]
             );
             return result.insertId;
         } catch (error) {
@@ -38,25 +15,13 @@ class ChecklistModel {
         }
     }
 
-    // Mettre à jour une tâche
-    static async updateTask(id, taskData) {
-        try {
-            const { titre, priorite, est_fait } = taskData;
-            const [result] = await pool.query(
-                "UPDATE checklist SET titre = ?, priorite = ?, est_fait = ? WHERE id = ?",
-                [titre, priorite, est_fait, id]
-            );
-            return result.affectedRows > 0;
-        } catch (error) {
-            console.error("Erreur lors de la mise à jour de la tâche:", error);
-            throw error;
-        }
-    }
-
     // Supprimer une tâche
     static async deleteTask(id) {
         try {
-            const [result] = await pool.query("DELETE FROM checklist WHERE id = ?", [id]);
+            const [result] = await pool.query(
+                "DELETE FROM checklist WHERE id = ?",
+                [id]
+            );
             return result.affectedRows > 0;
         } catch (error) {
             console.error("Erreur lors de la suppression de la tâche:", error);
@@ -64,19 +29,22 @@ class ChecklistModel {
         }
     }
 
-    // Marquer une tâche comme terminée
-    static async markTaskAsDone(id) {
+    // Récupérer les tâches par prestataire_id
+    static async getTasksByPrestataire(prestataire_id) {
         try {
-            const [result] = await pool.query(
-                "UPDATE checklist SET est_fait = TRUE WHERE id = ?",
-                [id]
+            const [rows] = await pool.query(
+                `SELECT id, titre, priorite, prestataire_id, date_creation
+                 FROM checklist
+                 WHERE prestataire_id = ?
+                 ORDER BY date_creation DESC`,
+                [prestataire_id]
             );
-            return result.affectedRows > 0;
+            return rows;
         } catch (error) {
-            console.error("Erreur lors du marquage de la tâche comme terminée:", error);
+            console.error("Erreur lors de la récupération des tâches par prestataire:", error);
             throw error;
         }
     }
 }
 
-module.exports = ChecklistModel; 
+module.exports = ChecklistModel;

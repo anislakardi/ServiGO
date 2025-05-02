@@ -1047,7 +1047,7 @@ document.addEventListener('click', async function(e) {
           div.dataset.id = publication.id;
           div.innerHTML = `
             <div class="publication-header">
-              <img src="${publication.photo_de_profil ? 'data:image/jpeg;base64,' + publication.photo_de_profil : '../style/images/plus-solid.svg'}" alt="Photo de profil" class="profile-pic">
+              <img src="${publication.photo_de_profil ? 'data:image/jpeg;base64,' + publication.photo_de_profil : '../style/images/defaults.jpg'}" alt="Photo de profil" class="profile-pic">
               <div class="user-info">
                 <h4 style="cursor:pointer;" onclick="window.location.href=(${publication.client_id} === ${localStorage.getItem('userId')} ? '../../views/profileClient.html' : 'views/profileClientVisitor.html?id=${publication.client_id}')">${publication.nom || 'Utilisateur'} ${publication.prenom || ''}</h4>
                 <span class="meta">Publié le : ${publishDate} | Service : ${publication.service_vise}</span>

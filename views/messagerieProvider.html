@@ -91,7 +91,7 @@
         // Récupérer les informations des clients pour chaque conversation
         const conversationsWithClientInfo = await Promise.all(conversations.map(async (conv) => {
           try {
-            const clientResponse = await fetch(`http://localhost:5001/api/clients/${conv.client_id}`, {
+            const clientResponse = await fetch(`http://localhost:5001/api/clients/id/${conv.client_id}`, {
               headers: {
                 'Authorization': `Bearer ${token}`
               }

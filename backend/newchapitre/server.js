@@ -106,6 +106,9 @@ app.get('/demandes', (req, res) => {
 app.get('/messagerieProvider', (req, res) => {
     res.sendFile(path.join(__dirname, '../../views/messagerieProvider.html'));
 });
+app.get('/profileClient', (req, res) => {
+    res.sendFile(path.join(__dirname, '../../views/profileClientVisitor.html'));
+});
 
 app.get('/notificationProvider', (req, res) => {
     res.sendFile(path.join(__dirname, '../../views/notificationProvider.html'));

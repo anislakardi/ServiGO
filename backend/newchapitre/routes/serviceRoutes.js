@@ -8,6 +8,9 @@ router.get("/demande/services/:id", ServiceController.getServicesById);
 router.get("/demande/services/users/:id", ServiceController.getServicesByIdUsers);
 router.get("/demande/prestataires/client/:id", ServiceController.getPrestatairesByClient);
 
+// Route pour les revenus estimés
+router.get("/services/revenue/:prestataireId", ServiceController.getEstimatedRevenue);
+
 //get request
 router.get("/demande/requests", ServiceController.getAllRequests);
 router.get("/demande/requests/:id", ServiceController.getRequestsById);

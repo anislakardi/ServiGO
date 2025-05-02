@@ -20,9 +20,15 @@ class Publication {
     }
 
     static async findByService(service_vise) {
-        const [rows] = await pool.query("SELECT * FROM client_publication WHERE service_vise = ?", [service_vise]);
-        return rows;
-    }
+      const [rows] = await pool.query(`
+          SELECT p.*, c.nom_utilisateur, c.nom, c.prenom, c.photo_de_profil, p.adresse
+          FROM client_publication p 
+          JOIN clients c ON p.client_id = c.id 
+          WHERE p.service_vise = ?
+          ORDER BY p.date_publication DESC
+      `, [service_vise]);
+      return rows;
+  }
     static async findByStatus(status) {
       const [rows] = await pool.query(`SELECT * FROM client_publication WHERE statut = ?`, [status]);
       return rows;
