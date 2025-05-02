@@ -78,6 +78,18 @@ exports.getClientById = async (req, res) => {
     }
 };
 
+exports.getClientByUsername = async (req, res) => {
+    try {
+      const client = await Client.findByUsername(req.params.username);
+      if (!client) {
+        return res.status(404).json({ message: 'Client non trouvé' });
+      }
+      res.status(200).json(client);
+    } catch (err) {
+      res.status(500).json({ message: 'Erreur serveur', error: err.message });
+    }
+  };
+
 exports.updateClient = async (req, res) => {
     try {
         const { id } = req.params;

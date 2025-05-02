@@ -13,7 +13,7 @@ class ServiceModel {
             }
     
             const existingService = rows[0]; // Données actuelles du service
-    
+    console.log(updatedService);
             // Mise à jour en conservant les anciennes valeurs si elles ne sont pas fournies
             const updatedService = {
                 titre: details.titre ?? existingService.titre,
@@ -56,12 +56,10 @@ class ServiceModel {
         return rows;
     }
     static async getServicesByIdUsers(id_user,typeOfUser) {
-    let column = '';
-    if (typeOfUser === "client") {
-        column = 'client_id';
-    } else if (typeOfUser === "prestataire") {
-        column = 'prestataire_id';
-    }
+        const column = typeOfUser === 'prestataire'
+        ? 'client_id'
+        : 'prestataire_id';
+        
         const [rows] = await pool.query(`SELECT * FROM services WHERE ${column} = ?`, [id_user]);
         return rows;
     }

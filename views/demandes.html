@@ -53,64 +53,120 @@
             </div>
         </section>
 
-        <!-- Modal pour créer/modifier un service -->
-        <div id="serviceModal" class="modal">
+        <!-- Modal pour créer un service -->
+        <div id="createServiceModal" class="modal">
             <div class="modal-content">
-                <span class="close">&times;</span>
-                <h2 id="modalTitle">Créer un nouveau service</h2>
-                <form id="serviceForm">
-                    <input type="hidden" id="serviceId">
-                    <div class="form-group">
-                        <label for="client_id">ID du client <span class="required">*</span></label>
-                        <input type="text" id="client_id" name="client_id" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="titre">Titre</label>
-                        <input type="text" id="titre" name="titre" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="description">Description</label>
-                        <textarea id="description" name="description" rows="4"></textarea>
-                    </div>
-                    <div class="form-group">
-                        <label for="prix">Prix</label>
-                        <input type="number" id="prix" name="prix" step="0.01" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="categorie">Catégorie</label>
-                        <select id="categorie" name="categorie" required>
-                            <option value="Mécanique automobile">Mécanique automobile</option>
-                            <option value="Electricité">Electricité</option>
-                            <option value="Menuiserie">Menuiserie</option>
-                            <!-- Ajoutez d'autres catégories selon vos besoins -->
-                        </select>
-                    </div>
-                    <div class="form-group">
-                        <label for="statut_travail">Statut du travail</label>
-                        <select id="statut_travail" name="statut_travail">
-                            <option value="À faire">À faire</option>
-                            <option value="En cours">En cours</option>
-                            <option value="En pause">En pause</option>
-                            <option value="Terminé">Terminé</option>
-                        </select>
-                    </div>
-                    <div class="form-group">
-                        <label for="date_prevue">Date prévue</label>
-                        <input type="datetime-local" id="date_prevue" name="date_prevue">
-                    </div>
-                    <div class="form-group">
-                        <label for="date_execution">Date d'exécution</label>
-                        <input type="datetime-local" id="date_execution" name="date_execution">
-                    </div>
-                    <div class="form-group">
-                        <label for="date_fin">Date de fin</label>
-                        <input type="datetime-local" id="date_fin" name="date_fin">
-                    </div>
-                    <div class="form-actions">
-                        <button type="submit" class="btn primary">Enregistrer</button>
-                        <button type="button" class="btn secondary" onclick="closeModal()">Annuler</button>
-                    </div>
-                </form>
+              <span class="close">&times;</span>
+              <h2>Créer un nouveau service</h2>
+              <form id="createServiceForm">
+                <div class="form-group">
+                  <label for="create_titre">Titre</label>
+                  <input type="text" id="create_titre" name="titre" required>
+                </div>
+                <div class="form-group">
+                  <label for="client_username">Nom d'utilisateur du client</label>
+                  <input type="text" id="client_username" name="client_username" required>
+                </div>
+                <div class="form-group">
+                  <label for="create_description">Description</label>
+                  <textarea id="create_description" name="description" rows="4"></textarea>
+                </div>
+                <div class="form-group">
+                  <label for="create_prix">Prix</label>
+                  <input type="number" id="create_prix" name="prix" step="0.01" required>
+                </div>
+                <div class="form-group">
+                  <label for="create_categorie">Catégorie</label>
+                  <select id="create_categorie" name="categorie" required>
+                    <option value="Mécanique automobile">Mécanique automobile</option>
+                    <option value="Electricité">Electricité</option>
+                    <option value="Menuiserie">Menuiserie</option>
+                  </select>
+                </div>
+                <div class="form-group">
+                  <label for="create_statut_travail">Statut du travail</label>
+                  <select id="create_statut_travail" name="statut_travail">
+                    <option value="À faire">À faire</option>
+                    <option value="En cours">En cours</option>
+                    <option value="En pause">En pause</option>
+                    <option value="Terminé">Terminé</option>
+                  </select>
+                </div>
+                <div class="form-group">
+                  <label for="create_date_prevue">Date prévue</label>
+                  <input type="datetime-local" id="create_date_prevue" name="date_prevue">
+                </div>
+                <div class="form-group">
+                  <label for="create_date_execution">Date d'exécution</label>
+                  <input type="datetime-local" id="create_date_execution" name="date_execution">
+                </div>
+                <div class="form-group">
+                  <label for="create_date_fin">Date de fin</label>
+                  <input type="datetime-local" id="create_date_fin" name="date_fin">
+                </div>
+      
+                <div class="form-actions">
+                  <button type="submit" class="btn primary">Créer</button>
+                  <button type="button" class="btn secondary" onclick="closeCreateModal()">Annuler</button>
+                </div>
+              </form>
+            </div>
+        </div>
+
+        <!-- Modal pour modifier un service -->
+        <div id="editServiceModal" class="modal">
+            <div class="modal-content">
+              <span class="close">&times;</span>
+              <h2>Modifier le service</h2>
+              <form id="editServiceForm">
+                <input type="hidden" id="edit_serviceId" name="serviceId">
+                <div class="form-group">
+                  <label for="edit_titre">Titre</label>
+                  <input type="text" id="edit_titre" name="titre" required>
+                </div>
+                <div class="form-group">
+                  <label for="edit_description">Description</label>
+                  <textarea id="edit_description" name="description" rows="4"></textarea>
+                </div>
+                <div class="form-group">
+                  <label for="edit_prix">Prix</label>
+                  <input type="number" id="edit_prix" name="prix" step="0.01" required>
+                </div>
+                <div class="form-group">
+                  <label for="edit_categorie">Catégorie</label>
+                  <select id="edit_categorie" name="categorie" required>
+                    <option value="Mécanique automobile">Mécanique automobile</option>
+                    <option value="Electricité">Electricité</option>
+                    <option value="Menuiserie">Menuiserie</option>
+                  </select>
+                </div>
+                <div class="form-group">
+                  <label for="edit_statut_travail">Statut du travail</label>
+                  <select id="edit_statut_travail" name="statut_travail">
+                    <option value="À faire">À faire</option>
+                    <option value="En cours">En cours</option>
+                    <option value="En pause">En pause</option>
+                    <option value="Terminé">Terminé</option>
+                  </select>
+                </div>
+                <div class="form-group">
+                  <label for="edit_date_prevue">Date prévue</label>
+                  <input type="datetime-local" id="edit_date_prevue" name="date_prevue">
+                </div>
+                <div class="form-group">
+                  <label for="edit_date_execution">Date d'exécution</label>
+                  <input type="datetime-local" id="edit_date_execution" name="date_execution">
+                </div>
+                <div class="form-group">
+                  <label for="edit_date_fin">Date de fin</label>
+                  <input type="datetime-local" id="edit_date_fin" name="date_fin">
+                </div>
+      
+                <div class="form-actions">
+                  <button type="submit" class="btn primary">Enregistrer</button>
+                  <button type="button" class="btn secondary" onclick="closeEditModal()">Annuler</button>
+                </div>
+              </form>
             </div>
         </div>
     </main>
@@ -119,28 +175,217 @@
         // Variables globales
         const token = localStorage.getItem('token');
         const userId = localStorage.getItem('userId');
-        const modal = document.getElementById('serviceModal');
-        const form = document.getElementById('serviceForm');
+        const userType = localStorage.getItem('userType') || 'prestataire';
+        const createModal = document.getElementById('createServiceModal');
+        const editModal = document.getElementById('editServiceModal');
+        const createForm = document.getElementById('createServiceForm');
+        const editForm = document.getElementById('editServiceForm');
         const createServiceBtn = document.getElementById('createServiceBtn');
-        const closeBtn = document.querySelector('.close');
+        const closeBtns = document.querySelectorAll('.close');
 
         // Événements
         document.addEventListener('DOMContentLoaded', loadServices);
-        createServiceBtn.addEventListener('click', () => openModal('create'));
-        closeBtn.addEventListener('click', closeModal);
-        form.addEventListener('submit', handleFormSubmit);
+        createServiceBtn.addEventListener('click', openCreateModal);
+        closeBtns.forEach(btn => {
+            btn.addEventListener('click', () => {
+                closeCreateModal();
+                closeEditModal();
+            });
+        });
+        createForm.addEventListener('submit', handleCreateSubmit);
+        editForm.addEventListener('submit', handleEditSubmit);
 
-        // Fermer le modal si on clique en dehors
+        // Fermer les modals si on clique en dehors
         window.onclick = (event) => {
-            if (event.target === modal) {
-                closeModal();
+            if (event.target === createModal) {
+                closeCreateModal();
+            }
+            if (event.target === editModal) {
+                closeEditModal();
             }
         };
+
+        // Ouvrir le modal de création
+        function openCreateModal() {
+            createModal.style.display = 'block';
+            createForm.reset();
+        }
+
+        // Ouvrir le modal de modification
+        async function openEditModal(serviceId) {
+            try {
+                const response = await fetch(`http://localhost:5001/api/demande/services/${serviceId}`, {
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                    }
+                });
+
+                if (!response.ok) throw new Error('Erreur lors du chargement du service');
+                
+                const data = await response.json();
+                const service = Array.isArray(data) ? data[0] : data;
+                
+                // Remplir le formulaire
+                document.getElementById('edit_serviceId').value = service.id;
+                document.getElementById('edit_titre').value = service.titre;
+                document.getElementById('edit_description').value = service.description;
+                document.getElementById('edit_prix').value = service.prix;
+                document.getElementById('edit_categorie').value = service.categorie;
+                document.getElementById('edit_statut_travail').value = service.statut_travail;
+                document.getElementById('edit_date_prevue').value = service.date_prevue?.slice(0, 16) || '';
+                document.getElementById('edit_date_execution').value = service.date_execution?.slice(0, 16) || '';
+                document.getElementById('edit_date_fin').value = service.date_fin?.slice(0, 16) || '';
+                
+                editModal.style.display = 'block';
+            } catch (error) {
+                console.error('Erreur:', error);
+                alert('Erreur lors du chargement du service');
+            }
+        }
+
+        // Fermer le modal de création
+        function closeCreateModal() {
+            createModal.style.display = 'none';
+            createForm.reset();
+        }
+
+        // Fermer le modal de modification
+        function closeEditModal() {
+            editModal.style.display = 'none';
+            editForm.reset();
+        }
+
+        // Gérer la soumission du formulaire de création
+        async function handleCreateSubmit(event) {
+            event.preventDefault();
+            
+            const clientUsername = document.getElementById('client_username').value;
+            let clientId;
+
+            try {
+                const clientResponse = await fetch(`http://localhost:5001/api/clients/${clientUsername}`, {
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                    }
+                });
+                
+                if (!clientResponse.ok) {
+                    throw new Error('Client non trouvé');
+                }
+                
+                const clientData = await clientResponse.json();
+                clientId = clientData.id;
+            } catch (error) {
+                console.error('Erreur:', error);
+                alert('Erreur lors de la récupération du client: ' + error.message);
+                return;
+            }
+
+            const details = {
+                titre: document.getElementById('create_titre').value,
+                description: document.getElementById('create_description').value,
+                prix: parseFloat(document.getElementById('create_prix').value),
+                categorie: document.getElementById('create_categorie').value,
+                statut_travail: document.getElementById('create_statut_travail').value,
+                date_prevue: document.getElementById('create_date_prevue').value || null,
+                date_execution: document.getElementById('create_date_execution').value || null,
+                date_fin: document.getElementById('create_date_fin').value || null
+            };
+
+            const formData = {
+                prestataire_id: userId,
+                type_demande: "création",
+                client_id: clientId,
+                details: JSON.stringify(details)
+            };
+
+            try {
+                const response = await fetch('http://localhost:5001/api/demande/services', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`
+                    },
+                    body: JSON.stringify(formData)
+                });
+
+                if (!response.ok) {
+                    const error = await response.json();
+                    throw new Error(error.error || 'Erreur lors de la création du service');
+                }
+
+                if (!response.ok) {
+  // récupère le texte brut (HTML ou message d’erreur)
+  const errorText = await response.text();
+  throw new Error(`Erreur ${response.status}: ${errorText}`);
+}
+const result = await response.json();
+                alert(result.message || 'Service créé avec succès');
+                closeCreateModal();
+                loadServices();
+            } catch (error) {
+                console.error('Erreur:', error);
+                alert(error.message);
+            }
+        }
+
+        // Gérer la soumission du formulaire de modification
+        async function handleEditSubmit(event) {
+            event.preventDefault();
+            
+            const serviceId = document.getElementById('edit_serviceId').value;
+            const details = {
+                titre: document.getElementById('edit_titre').value,
+                description: document.getElementById('edit_description').value,
+                prix: parseFloat(document.getElementById('edit_prix').value),
+                categorie: document.getElementById('edit_categorie').value,
+                statut_travail: document.getElementById('edit_statut_travail').value,
+                date_prevue: document.getElementById('edit_date_prevue').value || null,
+                date_execution: document.getElementById('edit_date_execution').value || null,
+                date_fin: document.getElementById('edit_date_fin').value || null
+            };
+
+            const formData = {
+                prestataire_id: userId,
+                service_id:serviceId,
+                type_demande: "modification",
+                details: JSON.stringify(details)
+            };
+
+            try {
+                const response = await fetch(`http://localhost:5001/api/demande/services/modification`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`
+                    },
+                    body: JSON.stringify(formData)
+                });
+
+                if (!response.ok) {
+                    const error = await response.json();
+                    throw new Error(error.error || 'Erreur lors de la modification du service');
+                }
+
+                if (!response.ok) {
+  // récupère le texte brut (HTML ou message d’erreur)
+  const errorText = await response.text();
+  throw new Error(`Erreur ${response.status}: ${errorText}`);
+}
+const result = await response.json();
+                alert(result.message || 'Service modifié avec succès');
+                closeEditModal();
+                loadServices();
+            } catch (error) {
+                console.error('Erreur:', error);
+                alert(error.message);
+            }
+        }
 
         // Charger les services
         async function loadServices() {
             try {
-                const response = await fetch(`http://localhost:5001/api/services/users/${userId}`, {
+                const response = await fetch(`http://localhost:5001/api/demande/services/users/${userId}?typeOfUser=${userType}`, {
                     headers: {
                         'Authorization': `Bearer ${token}`
                     }
@@ -170,7 +415,7 @@
                     <td>${service.statut_travail}</td>
                     <td>${new Date(service.date_creation).toLocaleDateString()}</td>
                     <td>
-                        <button onclick="openModal('edit', ${service.id})" class="btn-icon edit">
+                        <button onclick="openEditModal(${service.id})" class="btn-icon edit">
                             <i class="fas fa-edit"></i>
                         </button>
                         <button onclick="deleteService(${service.id})" class="btn-icon delete">
@@ -182,111 +427,12 @@
             });
         }
 
-        // Gérer la soumission du formulaire
-        async function handleFormSubmit(event) {
-            event.preventDefault();
-            
-            const serviceId = document.getElementById('serviceId').value;
-            const details = {
-                titre: document.getElementById('titre').value,
-                description: document.getElementById('description').value,
-                prix: parseFloat(document.getElementById('prix').value),
-                categorie: document.getElementById('categorie').value,
-                statut_travail: document.getElementById('statut_travail').value,
-                date_prevue: document.getElementById('date_prevue').value || null,
-                date_execution: document.getElementById('date_execution').value || null,
-                date_fin: document.getElementById('date_fin').value || null
-            };
-
-            const formData = {
-                prestataire_id: userId,
-                client_id: document.getElementById('client_id').value,
-                details: JSON.stringify(details)
-            };
-
-            try {
-                const url = serviceId ? 
-                    `http://localhost:5001/api/services/${serviceId}` :
-                    'http://localhost:5001/api/services';
-                
-                const response = await fetch(url, {
-                    method: serviceId ? 'PUT' : 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'Authorization': `Bearer ${token}`
-                    },
-                    body: JSON.stringify(formData)
-                });
-
-                if (!response.ok) {
-                    const error = await response.json();
-                    throw new Error(error.error || 'Erreur lors de l\'enregistrement du service');
-                }
-
-                const result = await response.json();
-                alert(result.message || 'Service enregistré avec succès');
-                closeModal();
-                loadServices();
-            } catch (error) {
-                console.error('Erreur:', error);
-                alert(error.message);
-            }
-        }
-
-        // Ouvrir le modal
-        async function openModal(mode, serviceId = null) {
-            modal.style.display = 'block';
-            document.getElementById('modalTitle').textContent = mode === 'create' ? 
-                'Créer un nouveau service' : 'Modifier le service';
-            
-            if (mode === 'edit' && serviceId) {
-                try {
-                    const response = await fetch(`http://localhost:5001/api/services/${serviceId}`, {
-                        headers: {
-                            'Authorization': `Bearer ${token}`
-                        }
-                    });
-                    
-                    if (!response.ok) throw new Error('Erreur lors du chargement du service');
-                    
-                    const service = await response.json();
-                    fillFormWithService(service);
-                } catch (error) {
-                    console.error('Erreur:', error);
-                    alert('Erreur lors du chargement du service');
-                    closeModal();
-                }
-            } else {
-                form.reset();
-            }
-        }
-
-        // Remplir le formulaire avec les données du service
-        function fillFormWithService(service) {
-            document.getElementById('serviceId').value = service.id;
-            document.getElementById('client_id').value = service.client_id || '';
-            document.getElementById('titre').value = service.titre;
-            document.getElementById('description').value = service.description || '';
-            document.getElementById('prix').value = service.prix || '';
-            document.getElementById('categorie').value = service.categorie;
-            document.getElementById('statut_travail').value = service.statut_travail || 'À faire';
-            document.getElementById('date_prevue').value = service.date_prevue?.slice(0, 16) || '';
-            document.getElementById('date_execution').value = service.date_execution?.slice(0, 16) || '';
-            document.getElementById('date_fin').value = service.date_fin?.slice(0, 16) || '';
-        }
-
-        // Fermer le modal
-        function closeModal() {
-            modal.style.display = 'none';
-            form.reset();
-        }
-
         // Supprimer un service
         async function deleteService(serviceId) {
             if (!confirm('Êtes-vous sûr de vouloir supprimer ce service ?')) return;
 
             try {
-                const response = await fetch(`http://localhost:5001/api/services/${serviceId}`, {
+                const response = await fetch(`http://localhost:5001/api/demande/services/${serviceId}`, {
                     method: 'DELETE',
                     headers: {
                         'Authorization': `Bearer ${token}`

@@ -20,7 +20,7 @@ class ServiceController {
         const request = await GestionServiceModel.getRequestById(id);
         if (!request) return res.status(404).json({ error: "Demande introuvable" });
     
-        if (decision === "accepté") {
+        if (decision === "Accepté") {
             // Récupérer l'ancien service
             const existingService = await ServiceModel.getServicesById(request.service_id);
             if (!existingService) return res.status(404).json({ error: "Service introuvable" });

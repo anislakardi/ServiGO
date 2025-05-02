@@ -18,6 +18,13 @@ class Client {
         const [rows] = await pool.query(`SELECT * FROM clients WHERE id = ?`, [id]);
         return rows[0];
     }
+    static async findByUsername(username) {
+        const [rows] = await pool.query(
+          `SELECT id FROM clients WHERE nom_utilisateur = ?`,
+          [username]
+        );
+        return rows[0] || null;
+      }
 
     static async update(id, data) {
         const { nom_utilisateur, nom, prenom, date_nee, adresse, email, mot_de_passe, bio} = data;
