@@ -49,7 +49,87 @@ class Prestataire {
             [status, id]
         );
         return result.affectedRows;
-    }    
+    }
+    
+    static async updateStatus(id, status) {
+        const [result] = await pool.query(
+            "UPDATE prestataires SET disponibilite = ? WHERE id = ?",
+            [status, id]
+        );
+        return result.affectedRows;
+    }
+
+    static async getStatus(id) {
+        const [rows] = await pool.query(
+            "SELECT disponibilite FROM prestataires WHERE id = ?",
+            [id]
+        );
+        return rows[0]?.disponibilite || 'Disponible';
+    }
+
+    static async postServicePhoto(id, serviceNumber, photo, mediaType) {
+        const query = `
+            UPDATE prestataires 
+            SET service${serviceNumber}_photo = ?,
+                media_type${serviceNumber} = ?
+            WHERE id = ?
+        `;
+        
+        const [result] = await pool.query(query, [photo, mediaType, id]);
+        return result;
+    }
+
+    // Nouvelles méthodes pour la gestion des photos de services
+    static async updateServicePhoto(id, serviceNumber, photo, mediaType) {
+        try {
+            const [result] = await pool.query(
+                `UPDATE prestataires 
+                 SET service${serviceNumber}_photo = ?,
+                     media_type${serviceNumber} = ?
+                 WHERE id = ?`,
+                [photo, mediaType, id]
+            );
+            return result.affectedRows;
+        } catch (error) {
+            console.error("Erreur dans updateServicePhoto:", error);
+            throw error;
+        }
+    }
+    
+
+    static async getServicePhotos(id) {
+        const [rows] = await pool.query(
+            `SELECT 
+                service1_photo, media_type1,
+                service2_photo, media_type2,
+                service3_photo, media_type3
+             FROM prestataires 
+             WHERE id = ?`,
+            [id]
+        );
+        
+        if (rows.length === 0) return null;
+
+        const row = rows[0];
+        return {
+            service1: { photo: row.service1_photo, mediaType: row.media_type1 },
+            service2: { photo: row.service2_photo, mediaType: row.media_type2 },
+            service3: { photo: row.service3_photo, mediaType: row.media_type3 },
+        };
+    }
+
+    static async deleteServicePhoto(id, serviceNumber) {
+        const query = `
+            UPDATE prestataires 
+            SET service${serviceNumber}_photo = NULL,
+                media_type${serviceNumber} = NULL
+            WHERE id = ?
+        `;
+        
+        const [result] = await pool.query(query, [id]);
+        return result;
+    }
+
 }
 
 module.exports = Prestataire;

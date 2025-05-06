@@ -137,7 +137,7 @@
               <input type="checkbox" checked>
               <span class="slider round"></span>
             </label>
-            <span>Disponible</span>
+            
           </div>
           <div class="working-hours">
             <h4>Horaires de travail</h4>
@@ -202,6 +202,9 @@
 
             <label>Téléphone :</label>
             <input type="tel" placeholder="Entrer le numéro de téléphone">
+
+            <label for="adresse">Adresse :</label>
+            <input type="text" placeholder="Entrer l'adresse">
 
             
           </div>
@@ -570,7 +573,8 @@
         prenom: document.getElementById('nom_utilisateur1').textContent.split(' ')[1],
         email: document.querySelector('.fa-envelope').nextSibling.textContent,
         adresse: document.querySelector('.fa-map-marker-alt').nextSibling.textContent,
-        specialisation: document.querySelector('.specialty').textContent
+        specialisation: document.querySelector('.specialty').textContent,
+        telephone:document.querySelector('.fa-phone').nextSibling.textContent
       });
     }
 
@@ -683,13 +687,11 @@
     // Fonction pour mettre à jour l'affichage du statut
     function updateStatusDisplay(isAvailable) {
       if (isAvailable) {
-        statusText.textContent = 'Disponible';
         statusText.style.color = '#2ecc71';
         statusBadge.classList.remove('unavailable');
         statusBadge.classList.add('available');
         statusBadge.innerHTML = '<i class="fas fa-circle"></i> Disponible';
       } else {
-        statusText.textContent = 'Occupé';
         statusText.style.color = '#e74c3c';
         statusBadge.classList.remove('available');
         statusBadge.classList.add('unavailable');
@@ -697,8 +699,49 @@
       }
     }
 
+    // Fonction pour mettre à jour le statut dans la base de données
+    async function updateProviderStatus(status) {
+      try {
+        const userId = localStorage.getItem("userId");
+        const token = localStorage.getItem("token");
+
+        const response = await fetch(`http://localhost:5001/api/prestataires/${userId}/status`, {
+          method: 'PUT',
+          headers: {
+            'Authorization': `Bearer ${token}`,
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({ status: status })
+        });
+
+        if (!response.ok) {
+          throw new Error('Erreur lors de la mise à jour du statut');
+        }
+
+        // Mettre à jour l'affichage du statut
+        const statusBadge = document.querySelector('.status-badge');
+        const statusText = document.querySelector('.status-toggle span');
+        
+        if (status === 'disponible') {
+          statusBadge.classList.remove('unavailable');
+          statusBadge.classList.add('available');
+          statusText.textContent = 'Disponible';
+        } else {
+          statusBadge.classList.remove('available');
+          statusBadge.classList.add('unavailable');
+          statusText.textContent = 'Occupé';
+        }
+
+      } catch (error) {
+        console.error("Erreur lors de la mise à jour du statut:", error);
+        alert("Une erreur est survenue lors de la mise à jour du statut");
+      }
+    }
+
     availabilityToggle.addEventListener('change', function() {
       const isAvailable = this.checked;
+      const status = isAvailable ? 'disponible' : 'occupé';
+      updateProviderStatus(status);
       updateStatusDisplay(isAvailable);
       // Sauvegarder l'état dans le localStorage
       localStorage.setItem('providerStatus', isAvailable ? 'available' : 'unavailable');
@@ -932,6 +975,7 @@
       document.querySelector('input[placeholder="Entrer votre spécialité"]').value = prestataire.specialisation || '';
       document.querySelector('input[placeholder="Entrer l\'email"]').value = prestataire.email || '';
       document.querySelector('input[placeholder="Entrer le numéro de téléphone"]').value = prestataire.telephone || '';
+      document.querySelector('input[placeholder="Entrer l\'adresse"]').value = prestataire.adresse || '';
     }
 
     // Gestion de la soumission du formulaire
@@ -942,15 +986,28 @@
         const userId = localStorage.getItem("userId");
         const token = localStorage.getItem("token");
 
+        if (!userId || !token) {
+          alert("Vous devez être connecté pour modifier votre profil");
+          return;
+        }
+
         // Récupérer les données du formulaire
         const formData = {
           nom: document.querySelector('input[placeholder="Entrer le nom"]').value,
           prenom: document.querySelector('input[placeholder="Entrer le prénom"]').value,
           email: document.querySelector('input[placeholder="Entrer l\'email"]').value,
-          adresse: document.querySelector('.fa-map-marker-alt').nextSibling.textContent,
+          adresse: document.querySelector('input[placeholder="Entrer l\'adresse"]').value,
           specialisation: document.querySelector('input[placeholder="Entrer votre spécialité"]').value,
           telephone: document.querySelector('input[placeholder="Entrer le numéro de téléphone"]').value
         };
+
+        // Vérifier que tous les champs requis sont remplis
+        if (!formData.nom || !formData.prenom || !formData.email || !formData.adresse || !formData.specialisation) {
+          alert("Veuillez remplir tous les champs obligatoires");
+          return;
+        }
+
+        console.log("Envoi des données:", formData); // Pour le débogage
 
         // Envoyer les données au serveur
         const response = await fetch(`http://localhost:5001/api/prestataires/${userId}`, {
@@ -962,18 +1019,37 @@
           body: JSON.stringify(formData)
         });
 
+        console.log("Réponse du serveur:", response.status); // Pour le débogage
+
         if (!response.ok) {
-          throw new Error('Erreur lors de la mise à jour du profil');
+          const errorData = await response.json();
+          console.error("Erreur détaillée:", errorData); // Pour le débogage
+          throw new Error(errorData.message || 'Erreur lors de la mise à jour du profil');
         }
 
         const result = await response.json();
+        console.log("Résultat de la mise à jour:", result); // Pour le débogage
 
         // Mettre à jour l'interface utilisateur
-        document.getElementById('nom_utilisateur1').textContent = `${result.prestataire.nom} ${result.prestataire.prenom}`;
-        document.querySelector('.specialty').textContent = result.prestataire.specialisation || 'Spécialité non définie';
-        document.querySelector('.fa-envelope').nextSibling.textContent = result.prestataire.email;
-        document.querySelector('.fa-map-marker-alt').nextSibling.textContent = result.prestataire.adresse || 'Adresse non définie';
-        document.querySelector('.fa-phone').nextSibling.textContent = result.prestataire.telephone || '+213 5 55 55 55 55';
+        // Vérifier la structure de la réponse
+        if (result && result.prestataire) {
+            // Si les données sont dans result.prestataire
+            document.getElementById('nom_utilisateur1').textContent = `${result.prestataire.nom} ${result.prestataire.prenom}`;
+            document.querySelector('.specialty').textContent = result.prestataire.specialisation || 'Spécialité non définie';
+            document.querySelector('.fa-envelope').nextSibling.textContent = result.prestataire.email;
+            document.querySelector('.fa-map-marker-alt').nextSibling.textContent = result.prestataire.adresse || 'Adresse non définie';
+            document.querySelector('.fa-phone').nextSibling.textContent = result.prestataire.telephone || '+213 5 55 55 55 55';
+        } else if (result) {
+            // Si les données sont directement dans result
+            document.getElementById('nom_utilisateur1').textContent = `${result.nom} ${result.prenom}`;
+            document.querySelector('.specialty').textContent = result.specialisation || 'Spécialité non définie';
+            document.querySelector('.fa-envelope').nextSibling.textContent = result.email;
+            document.querySelector('.fa-map-marker-alt').nextSibling.textContent = result.adresse || 'Adresse non définie';
+            document.querySelector('.fa-phone').nextSibling.textContent = result.telephone || '+213 5 55 55 55 55';
+        } else {
+            console.error("Structure de réponse inattendue:", result);
+            throw new Error("Format de réponse inattendu du serveur");
+        }
 
         // Fermer le modal
         closeModal();
@@ -981,9 +1057,12 @@
         // Afficher un message de succès
         alert('Profil mis à jour avec succès!');
 
+        // Recharger les données du profil pour s'assurer que tout est à jour
+        await loadProfile();
+
       } catch (error) {
         console.error("Erreur lors de la mise à jour du profil:", error);
-        alert("Erreur lors de la mise à jour du profil");
+        alert("Erreur lors de la mise à jour du profil: " + error.message);
       }
     });
 
@@ -1517,7 +1596,19 @@
       const reviewsList = document.querySelector('.reviews-list');
       reviewsList.innerHTML = '';
 
-      avis.forEach(avis => {
+      // Afficher seulement les 3 premiers avis
+      const initialReviews = avis.slice(0, 3);
+      const remainingReviews = avis.slice(3);
+
+      // Créer un conteneur pour les avis
+      const reviewsContainer = document.createElement('div');
+      reviewsContainer.className = 'reviews-container';
+
+      // Créer un conteneur pour les avis initiaux
+      const initialReviewsContainer = document.createElement('div');
+      initialReviewsContainer.className = 'initial-reviews';
+
+      initialReviews.forEach(avis => {
         const reviewItem = document.createElement('div');
         reviewItem.className = 'review-item';
         reviewItem.innerHTML = `
@@ -1534,8 +1625,64 @@
             <span class="review-date">${new Date(avis.date_creation).toLocaleDateString()}</span>
           </div>
         `;
-        reviewsList.appendChild(reviewItem);
+        initialReviewsContainer.appendChild(reviewItem);
       });
+
+      // Créer un conteneur pour les avis supplémentaires
+      const additionalReviewsContainer = document.createElement('div');
+      additionalReviewsContainer.className = 'additional-reviews';
+      additionalReviewsContainer.style.display = 'none';
+
+      remainingReviews.forEach(avis => {
+        const reviewItem = document.createElement('div');
+        reviewItem.className = 'review-item';
+        reviewItem.innerHTML = `
+          <div class="reviewer-info">
+            <span>${avis.client_nom}</span>
+          </div>
+          <div class="review-content">
+            <div class="review-rating">
+              ${Array(5).fill().map((_, i) => `
+                <i class="fas fa-star${i < avis.evaluation ? '' : '-o'}"></i>
+              `).join('')}
+            </div>
+            <p>${avis.commentaire}</p>
+            <span class="review-date">${new Date(avis.date_creation).toLocaleDateString()}</span>
+          </div>
+        `;
+        additionalReviewsContainer.appendChild(reviewItem);
+      });
+
+      // Ajouter les conteneurs à la liste
+      reviewsList.appendChild(initialReviewsContainer);
+      reviewsList.appendChild(additionalReviewsContainer);
+
+      // Ajouter le bouton "Voir plus" si il y a plus de 3 avis
+      if (remainingReviews.length > 0) {
+        const toggleButton = document.createElement('button');
+        toggleButton.className = 'toggle-reviews';
+        toggleButton.innerHTML = `
+          <span>Voir plus d'avis</span>
+          <i class="fas fa-chevron-down"></i>
+        `;
+        toggleButton.onclick = function() {
+          const isExpanded = additionalReviewsContainer.style.display === 'block';
+          if (!isExpanded) {
+            additionalReviewsContainer.style.display = 'block';
+            toggleButton.innerHTML = `
+              <span>Voir moins d'avis</span>
+              <i class="fas fa-chevron-up"></i>
+            `;
+          } else {
+            additionalReviewsContainer.style.display = 'none';
+            toggleButton.innerHTML = `
+              <span>Voir plus d'avis</span>
+              <i class="fas fa-chevron-down"></i>
+            `;
+          }
+        };
+        reviewsList.appendChild(toggleButton);
+      }
 
     } catch (error) {
       console.error("Erreur lors du chargement des avis:", error);

@@ -10,5 +10,9 @@ router.put('/prestataires/desactiver/:id', prestataireController.desactiverPrest
 router.put('/prestataires/:id/suspendre', prestataireController.suspendrePrestataire);
 router.put('/prestataires/:id/reactiver', prestataireController.reactiverPrestataire);
 router.delete('/prestataires/:id', prestataireController.supprimerPrestataire);
+router.put('/prestataires/:id/status', prestataireController.updateStatus);
+router.get('/prestataires/:id/status', prestataireController.getStatus);
+router.get('/prestataires/:id/service-photos', prestataireController.getServicePhotos);
+router.delete('/prestataires/:id/service-photo/:serviceNumber', prestataireController.deleteServicePhoto);
 
 module.exports = router;

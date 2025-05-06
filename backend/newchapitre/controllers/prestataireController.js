@@ -222,3 +222,116 @@ exports.reactiverPrestataire = async (req, res) => {
         res.status(500).json({ message: 'Erreur lors de la réactivation du Prestataire', error });
     }
 };
+
+exports.updateStatus = async (req, res) => {
+    try {
+        const { id } = req.params;
+        const { status } = req.body;
+
+        if (!['disponible', 'occupé'].includes(status)) {
+            return res.status(400).json({ message: "Statut invalide" });
+        }
+
+        const result = await Prestataire.updateStatus(id, status);
+        if (result === 0) {
+            return res.status(404).json({ message: "Prestataire non trouvé" });
+        }
+
+        res.status(200).json({ message: "Statut mis à jour avec succès", status });
+    } catch (error) {
+        console.error("Erreur lors de la mise à jour du statut:", error);
+        res.status(500).json({ message: "Erreur serveur", error: error.message });
+    }
+};
+
+exports.getStatus = async (req, res) => {
+    try {
+        const { id } = req.params;
+        const status = await Prestataire.getStatus(id);
+        res.status(200).json({ status });
+    } catch (error) {
+        console.error("Erreur lors de la récupération du statut:", error);
+        res.status(500).json({ message: "Erreur serveur", error: error.message });
+    }
+};
+
+exports.getServicePhotos = async (req, res) => {
+    try {
+      const { id } = req.params;
+  
+      const servicePhotos = await Prestataire.getServicePhotos(id);
+  
+      if (!servicePhotos) {
+        return res.status(404).json({
+          success: false,
+          message: "Prestataire non trouvé"
+        });
+      }
+  
+      res.status(200).json({
+        success: true,
+        servicePhotos
+      });
+    } catch (error) {
+      console.error("Erreur lors de la récupération des photos de services:", error);
+      res.status(500).json({
+        success: false,
+        message: "Erreur lors de la récupération des photos de services",
+        error: error.message
+      });
+    }
+  };
+  
+  exports.postServicePhoto = async (req, res) => {
+    try {
+      const { id } = req.params; // ou req.user.id si authentifié
+      const { serviceNumber, photo, mediaType } = req.body;
+  
+      if (!photo||!mediaType||!serviceNumber||serviceNumber < 1||serviceNumber > 3) {
+        return res.status(400).json({ message: "Données invalides" });
+      }
+  
+      const result = await Prestataire.updateServicePhoto(id, serviceNumber, photo, mediaType);
+  
+      if (result === 0) {
+        return res.status(404).json({ message: "Prestataire non trouvé" });
+      }
+  
+      res.status(200).json({ 
+        message: "Photo de service ajoutée avec succès",
+        serviceNumber,
+        photo,
+        mediaType
+      });
+    } catch (error) {
+      console.error("Erreur lors de l'ajout de la photo de service:", error);
+      res.status(500).json({ message: "Erreur interne" });
+    }
+  };
+  
+  
+  exports.deleteServicePhoto = async (req, res) => {
+    try {
+      const { id } = req.params;
+      const { serviceNumber } = req.params;
+  
+      if (!serviceNumber||serviceNumber < 1 || serviceNumber > 3) {
+        return res.status(400).json({ message: "Numéro de service invalide" });
+      }
+  
+      const result = await Prestataire.deleteServicePhoto(id, serviceNumber);
+      
+      if (result === 0) {
+        return res.status(404).json({ message: "Photo de service non trouvée" });
+      }
+  
+      res.status(200).json({ 
+        message: "Photo de service supprimée avec succès",
+        serviceNumber
+      });
+    } catch (error) {
+      console.error("Erreur lors de la suppression de la photo de service:", error);
+      res.status(500).json({ message: "Erreur lors de la suppression" });
+    }
+  };
+

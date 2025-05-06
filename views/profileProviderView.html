@@ -4,41 +4,20 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>ServiGO - Profil Prestataire</title>
-  <link rel="stylesheet" href="../style/profileProvider.css">
+  <link rel="stylesheet" href="../style/profileProviderView.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
 <body>
-  <!-- NAVBAR -->
-  <nav>
-    <div class="logo">
-      <h1>ServiGO</h1>
-    </div>
-    <ul>
-      <li><a href="/homeProvider">Accueil</a></li>
-      <li><a href="/demandes">Demandes</a></li>
-      <li><a href="/messagerieProvider">Messagerie</a></li>
-      <li><a href="/notificationProvider">Notifications</a></li>
-      <li><a href="#">Options</a></li>
-      <li><a id="active" href="#">Profile</a></li>
-    </ul>
-  </nav>
-
   <!-- PAGE PROFIL -->
   <main class="profile-container">
-    <h1>Mon Profil Prestataire</h1>
+    <h1>Profile Visiteur</h1>
 
     <div class="profile-box" >
       <!-- Partie 1: Informations personnelles -->
       <div class="profile-header" id="profil-box">
         <div class="profile-pic-section">
           <div class="profile-pic-container">
-            <img id="profileImage" src="../images/default-profile.png" alt="Photo de profil">
-            <div class="profile-pic-overlay">
-              <label for="profilePicInput" class="upload-btn">
-                <i class="fas fa-camera"></i>
-          </label>
-          <input type="file" id="profilePicInput" accept="image/*" style="display: none;">
-            </div>
+            <img id="profileImage" src="../images/default-profile.png" alt=" ">
           </div>
         </div>
         <div class="profile-info">
@@ -49,8 +28,18 @@
           <p><i class="fas fa-map-marker-alt"></i> El Karimia, Chlef, Algérie</p>
           <div class="status-badge available">
             <i class="fas fa-circle"></i>
-            Disponible
+            <span id="statusText">Disponible</span>
           </div>
+        </div>
+        <div class="profile-actions">
+          <button class="btn-message" onclick="redirectToMessagerie()">
+            <i class="fas fa-envelope"></i>
+            Message
+          </button>
+          <button class="btn-report" onclick="openReportModal()">
+            <i class="fas fa-flag"></i>
+            Signaler
+          </button>
         </div>
       </div>
 
@@ -88,19 +77,13 @@
         <div class="services-header">
           <h3>Mes services</h3>
           <div class="services-counter">
-      <span class="current-count">0</span>
+            <span class="current-count">0</span>
             <span class="max-count">/3</span>
             <span class="services-limit">Services maximum</span>
           </div>
         </div>
         <div class="services-gallery">
-    <!-- Les services seront ajoutés dynamiquement ici -->
-    <div class="add-service-item" onclick="triggerFileInput()">
-            <i class="fas fa-plus"></i>
-            <span>Ajouter un service</span>
-            <p class="service-limit-info">(Maximum 3 services)</p>
-      <input type="file" id="serviceImageInput" accept="image/*" style="display: none;" onchange="handleServiceImage(event)">
-          </div>
+          <!-- Les services seront ajoutés dynamiquement ici -->
         </div>
       </div>
 
@@ -123,44 +106,32 @@
             <i class="fas fa-plus"></i> Donner un avis
           </button>
         </div>
-        <div class="reviews-list">
-          <div class="review-item">
-            <div class="reviewer-info">
-              <span>Ahmed B.</span>
-            </div>
-            <div class="review-content">
-              <div class="review-rating">
-                <i class="fas fa-star"></i>
-                <i class="fas fa-star"></i>
-                <i class="fas fa-star"></i>
-                <i class="fas fa-star"></i>
-                <i class="fas fa-star"></i>
-              </div>
-              <p>Travail très professionnel et soigné. Je recommande vivement !</p>
-              <span class="review-date">12 Mars 2024</span>
-              <button class="btn-reply" onclick="openReplyModal()">Répondre</button>
-            </div>
-          </div>
+        <div class="reviews-list collapsed">
+          <!-- Les avis seront ajoutés dynamiquement ici -->
         </div>
+        <button class="toggle-reviews" onclick="toggleReviews()">
+          <span>Voir plus avis</span>
+          <i class="fas fa-chevron-down"></i>
+        </button>
       </div>
 
       <!-- Partie 6: Disponibilité -->
       <div class="availability-section">
-        <h3>Disponibilité</h3>
         <div class="availability-status">
-          <div class="status-toggle">
-            <label class="switch">
-              <input type="checkbox" checked disabled>
-              <span class="slider round"></span>
-            </label>
-            <span>Disponible</span>
-          </div>
           <div class="working-hours">
             <h4>Horaires de travail</h4>
             <div class="schedule">
               <!-- Les horaires seront ajoutés dynamiquement ici -->
             </div>
           </div>
+          <div class="status-toggle">
+            <label class="switch">
+              <input type="checkbox" checked disabled>
+           
+            </label>
+           
+          </div>
+          
         </div>
       </div>
 
@@ -558,8 +529,8 @@
         document.querySelector('.fa-map-marker-alt').nextSibling.textContent = prestataire.adresse || 'Adresse non définie';
         
         // Mise à jour de la photo de profil si elle existe
-        if (prestataire.photo_de_profil) {
-          document.getElementById('profileImage').src = prestataire.photo_de_profil;
+        if (prestataire.photo_profil) {
+          document.getElementById('profileImage').src = prestataire.photo_profil;
         }
         
         // Mise à jour de l'expérience
@@ -572,46 +543,18 @@
       }
     }
 
-    // Gestion de la photo de profil
-    document.getElementById('profilePicInput').addEventListener('change', async function(e) {
-      const file = e.target.files[0];
-      if (file) {
-        try {
-          const formData = new FormData();
-          formData.append('photo_profil', file);
+    document.addEventListener("DOMContentLoaded", () => {
+      const token = localStorage.getItem("token");
+      const userId = localStorage.getItem("userId");
 
-          const userId = localStorage.getItem("userId");
-          const token = localStorage.getItem("token");
-
-          const response = await fetch(`http://localhost:5001/api/prestataires/${userId}/photo`, {
-            method: 'PUT',
-            headers: {
-              'Authorization': `Bearer ${token}`
-            },
-            body: formData
-          });
-
-          if (!response.ok) {
-            throw new Error('Erreur lors de la mise à jour de la photo');
-          }
-
-          const result = await response.json();
-          
-          // Mise à jour de l'image dans l'interface
-          document.getElementById('profileImage').src = URL.createObjectURL(file);
-          
-          // Stockage de l'URL de la nouvelle photo
-          localStorage.setItem('profilePhoto', result.photo_profil);
-
-        } catch (error) {
-          console.error("Erreur lors de la mise à jour de la photo:", error);
-          alert("Erreur lors de la mise à jour de la photo de profil");
-        }
+      if (!token || !userId) {
+        window.location.href = '/login.html';
+        return;
       }
-    });
 
-    // Appeler loadProfile au chargement de la page
-    document.addEventListener('DOMContentLoaded', loadProfile);
+      loadProfile();
+      loadServicePhotos();
+    });
   </script>
   <script>
     // Scripts pour la gestion des fonctionnalités
@@ -719,671 +662,153 @@
       document.getElementById('replyModal').style.display = 'none';
     }
 
-    // Gestion du toggle de disponibilité
-    const availabilityToggle = document.querySelector('.switch input');
-    const statusText = document.querySelector('.status-toggle span');
-    const statusBadge = document.querySelector('.status-badge');
-
-    availabilityToggle.addEventListener('change', function() {
-      if (this.checked) {
-        statusText.textContent = 'Disponible';
-        statusText.style.color = '#2ecc71';
-        statusBadge.classList.remove('unavailable');
-        statusBadge.classList.add('available');
-        statusBadge.innerHTML = '<i class="fas fa-circle"></i> Disponible';
-      } else {
-        statusText.textContent = 'Occupé';
-        statusText.style.color = '#e74c3c';
-        statusBadge.classList.remove('available');
-        statusBadge.classList.add('unavailable');
-        statusBadge.innerHTML = '<i class="fas fa-circle"></i> Occupé';
-      }
-    });
-
-    // Gestion des presets d'horaires
-    document.querySelectorAll('.preset-btn').forEach(btn => {
-      btn.addEventListener('click', function() {
-        const preset = this.dataset.preset;
-        switch(preset) {
-          case 'standard':
-            setStandardHours();
-            break;
-          case 'extended':
-            setExtendedHours();
-            break;
-          case 'weekend':
-            setWeekendHours();
-            break;
-        }
-      });
-    });
-
-    function setStandardHours() {
-      // Lundi-Vendredi: 9h-17h
-      document.querySelector('.day-schedule-form input[type="time"]').value = '09:00';
-      document.querySelector('.day-schedule-form input[type="time"]:nth-child(3)').value = '17:00';
-      // Pause déjeuner
-      document.querySelector('.break-time input[type="time"]').value = '12:00';
-      document.querySelector('.break-time input[type="time"]:nth-child(3)').value = '13:00';
-      // Samedi: fermé
-      document.querySelector('.day-schedule-form:nth-child(2) input[type="time"]').value = '';
-      document.querySelector('.day-schedule-form:nth-child(2) input[type="time"]:nth-child(3)').value = '';
-      // Dimanche: fermé
-      document.getElementById('sundayClosed').checked = true;
-    }
-
-    function setExtendedHours() {
-      // Lundi-Vendredi: 8h-20h
-      document.querySelector('.day-schedule-form input[type="time"]').value = '08:00';
-      document.querySelector('.day-schedule-form input[type="time"]:nth-child(3)').value = '20:00';
-      // Pause déjeuner
-      document.querySelector('.break-time input[type="time"]').value = '12:00';
-      document.querySelector('.break-time input[type="time"]:nth-child(3)').value = '13:00';
-      // Samedi: 9h-13h
-      document.querySelector('.day-schedule-form:nth-child(2) input[type="time"]').value = '09:00';
-      document.querySelector('.day-schedule-form:nth-child(2) input[type="time"]:nth-child(3)').value = '13:00';
-      // Dimanche: fermé
-      document.getElementById('sundayClosed').checked = true;
-    }
-
-    function setWeekendHours() {
-      // Lundi-Vendredi: 9h-17h
-      document.querySelector('.day-schedule-form input[type="time"]').value = '09:00';
-      document.querySelector('.day-schedule-form input[type="time"]:nth-child(3)').value = '17:00';
-      // Pause déjeuner
-      document.querySelector('.break-time input[type="time"]').value = '12:00';
-      document.querySelector('.break-time input[type="time"]:nth-child(3)').value = '13:00';
-      // Samedi: 9h-13h
-      document.querySelector('.day-schedule-form:nth-child(2) input[type="time"]').value = '09:00';
-      document.querySelector('.day-schedule-form:nth-child(2) input[type="time"]:nth-child(3)').value = '13:00';
-      // Dimanche: 9h-13h
-      document.getElementById('sundayClosed').checked = false;
-      document.querySelector('.day-schedule-form:nth-child(3) input[type="time"]').value = '09:00';
-      document.querySelector('.day-schedule-form:nth-child(3) input[type="time"]:nth-child(3)').value = '13:00';
-    }
-
-    // Fonctions pour gérer les éléments d'expérience et de formation
-    function addEducationItem() {
-      const educationForm = document.querySelector('.education-item');
-      const newItem = educationForm.cloneNode(true);
-      educationForm.parentNode.insertBefore(newItem, educationForm.nextSibling);
-    }
-
-    function addExperienceItem() {
-      const experienceForm = document.querySelector('.experience-item');
-      const newItem = experienceForm.cloneNode(true);
-      experienceForm.parentNode.insertBefore(newItem, experienceForm.nextSibling);
-    }
-
-    // Gestion des horaires de travail
-    document.querySelectorAll('.day-schedule-form input[type="time"]').forEach(input => {
-      input.addEventListener('change', function() {
-        const timeInputs = this.parentElement.querySelectorAll('input[type="time"]');
-        const startTime = timeInputs[0].value;
-        const endTime = timeInputs[1].value;
-        
-        if (startTime && endTime && startTime >= endTime) {
-          alert('L\'heure de fin doit être postérieure à l\'heure de début');
-          this.value = '';
-        }
-      });
-    });
-
-    // Gestion des jours fermés
-    document.querySelectorAll('.closed-day input[type="checkbox"]').forEach(checkbox => {
-      checkbox.addEventListener('change', function() {
-        const timeInputs = this.closest('.time-inputs').querySelectorAll('input[type="time"]');
-        timeInputs.forEach(input => {
-          input.disabled = this.checked;
-          if (this.checked) {
-            input.value = '';
-          }
-        });
-      });
-    });
-
-    // Fonction pour mettre à jour la progression
-    function updateProgress() {
-      const requiredFields = document.querySelectorAll('input[required], select[required], textarea[required]');
-      const filledFields = Array.from(requiredFields).filter(field => field.value.trim() !== '');
-      const progress = (filledFields.length / requiredFields.length) * 100;
-      
-      document.getElementById('formProgress').style.width = `${progress}%`;
-      document.getElementById('progressText').textContent = `${Math.round(progress)}% complété`;
-    }
-
-    // Fonction pour prévisualiser l'image
-    function previewImage(input) {
-      const preview = document.getElementById('mediaPreview');
-      preview.innerHTML = '';
-      
-      if (input.files && input.files[0]) {
-        const reader = new FileReader();
-        reader.onload = function(e) {
-          const previewItem = document.createElement('div');
-          previewItem.className = 'preview-item';
-          previewItem.innerHTML = `
-            <img src="${e.target.result}" alt="Prévisualisation">
-            <button onclick="removePreview(this)"><i class="fas fa-times"></i></button>
-          `;
-          preview.appendChild(previewItem);
-        }
-        reader.readAsDataURL(input.files[0]);
-      }
-    }
-
-    // Fonction pour prévisualiser la vidéo
-    function previewVideo(input) {
-      const preview = document.getElementById('mediaPreview');
-      
-      if (input.files && input.files[0]) {
-        const video = document.createElement('video');
-        video.controls = true;
-        video.src = URL.createObjectURL(input.files[0]);
-        
-        const previewItem = document.createElement('div');
-        previewItem.className = 'preview-item';
-        previewItem.innerHTML = `
-          <button onclick="removePreview(this)"><i class="fas fa-times"></i></button>
-        `;
-        previewItem.insertBefore(video, previewItem.firstChild);
-        preview.appendChild(previewItem);
-      }
-    }
-
-    // Fonction pour supprimer une prévisualisation
-    
-
-    // Fonction pour ajouter un nouveau service
-    function addNewService() {
-      const currentCount = document.querySelectorAll('.service-item').length;
-      if (currentCount >= 3) {
-        alert('Vous avez atteint la limite maximale de 3 services.');
-        return;
-      }
-      document.getElementById('serviceImageInput').click();
-    }
-
-
-    function updateServiceCount() {
-      const currentCount = document.querySelector('.current-count');
-      const serviceItems = document.querySelectorAll('.service-item');
-      currentCount.textContent = serviceItems.length;
-      
-      const addServiceItem = document.querySelector('.add-service-item');
-      if (serviceItems.length >= 3) {
-        addServiceItem.style.display = 'none';
-      } else {
-        addServiceItem.style.display = 'flex';
-      }
-    }
-
-    // Fonction de déconnexion
-    function logout() {
-      // Supprimer les données de session
-      localStorage.removeItem('token');
-      localStorage.removeItem('userId');
-      localStorage.removeItem('userRole');
-      localStorage.removeItem('profilePhoto');
-      
-      // Rediriger vers la page d'accueil
-      window.location.href = '/';
-    }
-
-    // Vérification de l'authentification au chargement de la page
-    document.addEventListener('DOMContentLoaded', function() {
-      const token = localStorage.getItem('token');
-      const userId = localStorage.getItem('userId');
-      
-      if (!token || !userId) {
-        // Si l'utilisateur n'est pas connecté, rediriger vers la page de connexion
-        window.location.href = '/login.html';
-        return;
-      }
-
-      // Si l'utilisateur est connecté, charger son profil
-      loadProfile();
-    });
-
-    // Fonction pour charger les données actuelles dans le formulaire
-    function loadFormData(prestataire) {
-      document.querySelector('input[placeholder="Entrer le nom"]').value = prestataire.nom || '';
-      document.querySelector('input[placeholder="Entrer le prénom"]').value = prestataire.prenom || '';
-      document.querySelector('input[placeholder="Entrer votre spécialité"]').value = prestataire.specialisation || '';
-      document.querySelector('input[placeholder="Entrer l\'email"]').value = prestataire.email || '';
-    }
-
-    // Gestion de la soumission du formulaire
-    document.querySelector('.edit-form').addEventListener('submit', async function(e) {
-      e.preventDefault();
-      
+    // Fonction pour charger le statut initial
+    async function loadProviderStatus() {
       try {
         const userId = localStorage.getItem("userId");
         const token = localStorage.getItem("token");
 
-        // Récupérer les données du formulaire
-        const formData = {
-          nom: document.querySelector('input[placeholder="Entrer le nom"]').value,
-          prenom: document.querySelector('input[placeholder="Entrer le prénom"]').value,
-          email: document.querySelector('input[placeholder="Entrer l\'email"]').value,
-          adresse: document.querySelector('.fa-map-marker-alt').nextSibling.textContent,
-          specialisation: document.querySelector('input[placeholder="Entrer votre spécialité"]').value
-        };
+        if (!userId || !token) {
+          console.error("ID utilisateur ou token manquant");
+          return;
+        }
 
-        // Envoyer les données au serveur
-        const response = await fetch(`http://localhost:5001/api/prestataires/${userId}`, {
+        const response = await fetch(`http://localhost:5001/api/prestataires/${userId}/status`, {
+          headers: {
+            'Authorization': `Bearer ${token}`
+          }
+        });
+
+        if (!response.ok) {
+          throw new Error('Erreur lors de la récupération du statut');
+        }
+
+        const data = await response.json();
+        const status = data.status || 'disponible';
+        
+        // Mettre à jour le toggle et l'affichage
+        const toggle = document.querySelector('.switch input');
+        toggle.checked = status === 'disponible';
+        
+        const statusBadge = document.querySelector('.status-badge');
+        const statusText = document.getElementById('statusText');
+        
+        if (status === 'disponible') {
+          statusBadge.classList.remove('unavailable');
+          statusBadge.classList.add('available');
+          statusText.textContent = 'Disponible';
+        } else {
+          statusBadge.classList.remove('available');
+          statusBadge.classList.add('unavailable');
+          statusText.textContent = 'Occupé';
+        }
+
+      } catch (error) {
+        console.error("Erreur lors du chargement du statut:", error);
+        // En cas d'erreur, définir un statut par défaut
+        const toggle = document.querySelector('.switch input');
+        toggle.checked = true;
+        const statusBadge = document.querySelector('.status-badge');
+        const statusText = document.getElementById('statusText');
+        statusBadge.classList.remove('unavailable');
+        statusBadge.classList.add('available');
+        statusText.textContent = 'Disponible';
+      }
+    }
+
+    // Charger le statut au chargement de la page
+    document.addEventListener('DOMContentLoaded', function() {
+      loadProviderStatus();
+    });
+
+    // Fonction pour mettre à jour le statut
+    async function updateProviderStatus(status) {
+      try {
+        const userId = localStorage.getItem("userId");
+        const token = localStorage.getItem("token");
+
+        if (!userId || !token) {
+          console.error("ID utilisateur ou token manquant");
+          return;
+        }
+
+        const response = await fetch(`http://localhost:5001/api/prestataires/${userId}/status`, {
           method: 'PUT',
           headers: {
             'Authorization': `Bearer ${token}`,
             'Content-Type': 'application/json'
           },
-          body: JSON.stringify(formData)
+          body: JSON.stringify({ status: status })
         });
 
         if (!response.ok) {
-          throw new Error('Erreur lors de la mise à jour du profil');
+          throw new Error('Erreur lors de la mise à jour du statut');
         }
 
-        const result = await response.json();
-
-        // Mettre à jour l'interface utilisateur
-        document.getElementById('nom_utilisateur1').textContent = `${result.prestataire.nom} ${result.prestataire.prenom}`;
-        document.querySelector('.specialty').textContent = result.prestataire.specialisation || 'Spécialité non définie';
-        document.querySelector('.fa-envelope').nextSibling.textContent = result.prestataire.email;
-        document.querySelector('.fa-map-marker-alt').nextSibling.textContent = result.prestataire.adresse || 'Adresse non définie';
-
-        // Fermer le modal
-        closeModal();
+        // Mettre à jour l'affichage du statut
+        const statusBadge = document.querySelector('.status-badge');
+        const statusText = document.getElementById('statusText');
         
-        // Afficher un message de succès
-        alert('Profil mis à jour avec succès!');
+        if (status === 'disponible') {
+          statusBadge.classList.remove('unavailable');
+          statusBadge.classList.add('available');
+          statusText.textContent = 'Disponible';
+        } else {
+          statusBadge.classList.remove('available');
+          statusBadge.classList.add('unavailable');
+          statusText.textContent = 'Occupé';
+        }
 
       } catch (error) {
-        console.error("Erreur lors de la mise à jour du profil:", error);
-        alert("Erreur lors de la mise à jour du profil");
-      }
-    });
-
-    // Fonction pour initialiser les horaires par défaut
-    function initializeDefaultHours() {
-      const defaultHours = {
-        monday: { start: '09:00', end: '17:00', closed: false },
-        tuesday: { start: '10:00', end: '18:00', closed: false },
-        wednesday: { start: '', end: '', closed: true },
-        thursday: { start: '', end: '', closed: true },
-        friday: { start: '', end: '', closed: true },
-        saturday: { start: '', end: '', closed: true },
-        sunday: { start: '', end: '', closed: true }
-      };
-
-      if (!localStorage.getItem('workingHours')) {
-        localStorage.setItem('workingHours', JSON.stringify(defaultHours));
+        console.error("Erreur lors de la mise à jour du statut:", error);
+        alert("Une erreur est survenue lors de la mise à jour du statut");
       }
     }
 
-    // Fonction pour mettre à jour l'affichage des horaires
-    function updateScheduleDisplay() {
-      const schedule = document.querySelector('.schedule');
-      const workingHours = JSON.parse(localStorage.getItem('workingHours'));
-      const days = {
-        monday: 'Lundi',
-        tuesday: 'Mardi',
-        wednesday: 'Mercredi',
-        thursday: 'Jeudi',
-        friday: 'Vendredi',
-        saturday: 'Samedi',
-        sunday: 'Dimanche'
-      };
-
-      schedule.innerHTML = '';
-
-      Object.entries(days).forEach(([dayKey, dayName]) => {
-        const daySchedule = document.createElement('div');
-        daySchedule.className = 'day-schedule';
-        
-        const dayData = workingHours[dayKey];
-        let timeText = dayData.closed ? 'Fermé' : `${dayData.start} - ${dayData.end}`;
-        
-        daySchedule.innerHTML = `
-          <span>${dayName}</span>
-          <span class="${dayData.closed ? 'closed-day' : 'open-day'}">${timeText}</span>
-        `;
-        
-        schedule.appendChild(daySchedule);
-      });
-    }
-
-    // Fonction pour ouvrir le modal d'édition des horaires
-    function openHoursModal() {
-      const modal = document.getElementById('editModal');
-      const workingHours = JSON.parse(localStorage.getItem('workingHours'));
-      
-      // Mettre à jour le contenu du modal pour l'édition des horaires
-      const modalContent = document.querySelector('.modal-content');
-      modalContent.innerHTML = `
-        <span class="close" onclick="closeModal()">&times;</span>
-        <h2>Modifier les horaires de travail</h2>
-        <div class="working-hours-container">
-          ${Object.entries({
-            monday: 'Lundi',
-            tuesday: 'Mardi',
-            wednesday: 'Mercredi',
-            thursday: 'Jeudi',
-            friday: 'Vendredi',
-            saturday: 'Samedi',
-            sunday: 'Dimanche'
-          }).map(([day, dayName]) => `
-            <div class="day-row ${workingHours[day].closed ? 'closed' : 'open'}">
-              <label>${dayName}</label>
-              <div class="time-inputs">
-                <input type="time" 
-                       id="${day}_start" 
-                       value="${workingHours[day].start}" 
-                       ${workingHours[day].closed ? 'disabled' : ''}
-                       onchange="validateHours('${day}')"
-                       min="00:00" 
-                       max="23:59">
-                <span>à</span>
-                <input type="time" 
-                       id="${day}_end" 
-                       value="${workingHours[day].end}" 
-                       ${workingHours[day].closed ? 'disabled' : ''}
-                       onchange="validateHours('${day}')"
-                       min="00:00" 
-                       max="23:59">
-        </div>
-              <label class="checkbox-label">
-                <input type="checkbox" 
-                       id="${day}_closed" 
-                       onchange="toggleDayStatus('${day}')"
-                       ${workingHours[day].closed ? 'checked' : ''}>
-                Fermé
-              </label>
-              <span class="error-message" id="${day}_error"></span>
-          </div>
-          `).join('')}
-        </div>
-        <div class="modal-actions">
-          <button onclick="saveWorkingHours()" class="btn btn-edit">Enregistrer</button>
-          <button onclick="resetHours()" class="btn btn-secondary">Réinitialiser</button>
-        </div>
-      `;
-      
-      modal.style.display = "block";
-    }
-
-    // Fonction pour valider les heures
-    function validateHours(day) {
-      const startInput = document.getElementById(`${day}_start`);
-      const endInput = document.getElementById(`${day}_end`);
-      const errorElement = document.getElementById(`${day}_error`);
-      
-      if (startInput.value && endInput.value) {
-        const start = new Date(`2000-01-01T${startInput.value}`);
-        const end = new Date(`2000-01-01T${endInput.value}`);
-        
-        if (end <= start) {
-          errorElement.textContent = "L'heure de fin doit être après l'heure de début";
-          errorElement.style.display = 'block';
-          endInput.value = '';
-          return false;
-        }
-      }
-      
-      errorElement.style.display = 'none';
-      return true;
-    }
-
-    // Fonction pour basculer le statut d'un jour
-    function toggleDayStatus(day) {
-      const checkbox = document.getElementById(`${day}_closed`);
-      const startInput = document.getElementById(`${day}_start`);
-      const endInput = document.getElementById(`${day}_end`);
-      const dayRow = startInput.closest('.day-row');
-      
-      if (checkbox.checked) {
-        startInput.disabled = true;
-        endInput.disabled = true;
-        startInput.value = '';
-        endInput.value = '';
-        dayRow.classList.remove('open');
-        dayRow.classList.add('closed');
-      } else {
-        startInput.disabled = false;
-        endInput.disabled = false;
-        // Restaurer les valeurs par défaut
-        startInput.value = '09:00';
-        endInput.value = '17:00';
-        dayRow.classList.remove('closed');
-        dayRow.classList.add('open');
-      }
-    }
-
-    // Fonction pour réinitialiser les horaires
-    function resetHours() {
-      if (confirm('Voulez-vous réinitialiser tous les horaires ?')) {
-        localStorage.removeItem('workingHours');
-        initializeDefaultHours();
-        openHoursModal(); // Recharger le modal avec les valeurs par défaut
-      }
-    }
-
-    // Fonction pour sauvegarder les horaires
-    function saveWorkingHours() {
-      const days = ['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday'];
-      const workingHours = {};
-      let isValid = true;
-
-      days.forEach(day => {
-        const closed = document.getElementById(`${day}_closed`).checked;
-        if (!closed && !validateHours(day)) {
-          isValid = false;
-          return;
-        }
-
-        workingHours[day] = {
-          closed: closed,
-          start: closed ? '' : document.getElementById(`${day}_start`).value,
-          end: closed ? '' : document.getElementById(`${day}_end`).value
-        };
-      });
-
-      if (!isValid) {
-        return;
-      }
-
-      localStorage.setItem('workingHours', JSON.stringify(workingHours));
-      updateScheduleDisplay();
-      closeModal();
-    }
-
-    // Styles CSS pour les états des jours
-    const style = document.createElement('style');
-    style.textContent = `
-      .day-row.closed {
-        background-color: #f8f9fa;
-        opacity: 0.7;
-      }
-      .day-row.open {
-        background-color: #fff;
-      }
-      .error-message {
-        color: #dc3545;
-        font-size: 12px;
-        margin-top: 5px;
-        display: none;
-      }
-      .closed-day {
-        color: #dc3545;
-        font-weight: bold;
-      }
-      .open-day {
-        color: #28a745;
-        font-weight: bold;
-      }
-      .modal-actions {
-        display: flex;
-        gap: 10px;
-        margin-top: 20px;
-      }
-      .btn-secondary {
-        background-color: #6c757d;
-        color: white;
-        border: none;
-        padding: 8px 16px;
-        border-radius: 4px;
-        cursor: pointer;
-      }
-      .btn-secondary:hover {
-        background-color: #5a6268;
-      }
-    `;
-    document.head.appendChild(style);
-
-    // Initialisation au chargement de la page
-    document.addEventListener('DOMContentLoaded', function() {
-      initializeDefaultHours();
-      updateScheduleDisplay();
+    // Gestion du toggle de disponibilité
+    const availabilityToggle = document.querySelector('.switch input');
+    availabilityToggle.addEventListener('change', function() {
+      const status = this.checked ? 'disponible' : 'occupé';
+      updateProviderStatus(status);
     });
 
     // Fonction pour charger les photos de services
     async function loadServicePhotos() {
-    try {
-      const userId = localStorage.getItem("userId");
-      const token = localStorage.getItem("token");
+      try {
+        const userId = localStorage.getItem("userId");
+        const token = localStorage.getItem("token");
 
-      const response = await fetch(`http://localhost:5001/api/prestataires/${userId}/service-photos`, {
-        headers: { 'Authorization': `Bearer ${token}` }
-      });
+        const response = await fetch(`http://localhost:5001/api/prestataires/${userId}/service-photos`, {
+          headers: { 'Authorization': `Bearer ${token}` }
+        });
 
-      if (!response.ok) throw new Error('Erreur lors de la récupération des photos');
+        if (!response.ok) throw new Error('Erreur lors de la récupération des photos');
 
-      const data = await response.json();
-      const gallery = document.querySelector('.services-gallery');
-      const addBtn = document.querySelector('.add-service-item');
+        const data = await response.json();
+        const gallery = document.querySelector('.services-gallery');
 
-      // Supprimer anciens services (sauf bouton ajouter)
-      document.querySelectorAll('.service-item').forEach(el => el.remove());
+        // Supprimer anciens services
+        document.querySelectorAll('.service-item').forEach(el => el.remove());
 
-      let count = 0;
-      Object.entries(data.servicePhotos).forEach(([key, item]) => {
-        if (item.photo) {
-          const serviceDiv = document.createElement('div');
-          serviceDiv.className = 'service-item';
-          serviceDiv.innerHTML = `
-            <img src="${item.photo}" alt="Service" class="service-image">
-            <button class="btn-delete-service" onclick="deleteService(this, '${key.slice(-1)}')">
-              <i class="fas fa-times"></i>
-            </button>
-          `;
-          gallery.insertBefore(serviceDiv, addBtn);
-          count++;
-        }
-      });
+        let count = 0;
+        Object.entries(data.servicePhotos).forEach(([key, item]) => {
+          if (item.photo) {
+            const serviceDiv = document.createElement('div');
+            serviceDiv.className = 'service-item';
+            serviceDiv.innerHTML = `
+              <img src="${item.photo}" alt="Service" class="service-image">
+            `;
+            gallery.appendChild(serviceDiv);
+            count++;
+          }
+        });
 
-      document.querySelector('.current-count').textContent = count;
+        document.querySelector('.current-count').textContent = count;
 
-      // Cacher le bouton Ajouter si déjà 3 services
-      addBtn.style.display = count >= 3 ? 'none' : 'flex';
-
-    } catch (err) {
-      console.error("Erreur chargement services:", err);
-    }
-  }
-
-  function triggerFileInput() {
-    const fileInput = document.getElementById("serviceImageInput");
-    fileInput.value = ''; // reset for consecutive uploads
-    fileInput.click();
-  }
-
-  async function handleServiceImage(event) {
-    const file = event.target.files[0];
-    if (!file) return;
-
-    try {
-      const userId = localStorage.getItem("userId");
-      const token = localStorage.getItem("token");
-
-      const base64 = await convertToBase64(file);
-
-      // Compter les services affichés
-      const count = document.querySelectorAll('.service-item').length;
-      if (count >= 3) {
-        alert("Vous avez atteint la limite de 3 services.");
-        return;
+      } catch (err) {
+        console.error("Erreur chargement services:", err);
       }
-
-      const serviceNumber = count + 1;
-
-      const response = await fetch(`http://localhost:5001/api/prestataires/${userId}/service-photo`, {
-        method: 'PUT',
-        headers: {
-          'Authorization': `Bearer ${token}`,
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({
-          serviceNumber,
-          photo: base64,
-          mediaType: file.type
-        })
-      });
-
-      if (!response.ok) throw new Error("Erreur lors de l'ajout");
-
-      await loadServicePhotos();
-
-    } catch (err) {
-      console.error("Erreur ajout photo:", err);
-      alert("Échec de l'ajout de la photo");
     }
-  }
-
-  async function deleteService(button, serviceNumber) {
-    if (!confirm("Supprimer ce service ?")) return;
-
-    try {
-      const userId = localStorage.getItem("userId");
-      const token = localStorage.getItem("token");
-
-      const response = await fetch(`http://localhost:5001/api/prestataires/${userId}/service-photo/${serviceNumber}`, {
-        method: 'DELETE',
-        headers: {
-          'Authorization': `Bearer ${token}`
-        }
-      });
-
-      if (!response.ok) throw new Error("Erreur lors de la suppression");
-
-      await loadServicePhotos();
-
-    } catch (err) {
-      console.error("Erreur suppression service:", err);
-      alert("Échec de la suppression");
-    }
-  }
-
-  function convertToBase64(file) {
-    return new Promise((resolve, reject) => {
-      const reader = new FileReader();
-      reader.onload = () => resolve(reader.result);
-      reader.onerror = reject;
-      reader.readAsDataURL(file);
-    });
-  }
-
-  document.addEventListener("DOMContentLoaded", () => {
-    const token = localStorage.getItem("token");
-    const userId = localStorage.getItem("userId");
-
-    if (!token || !userId) {
-      window.location.href = '/login.html';
-      return;
-    }
-
-      loadProfile();
-    loadServicePhotos();
-    });
 
     // Fonctions pour gérer le modal d'avis
     function openReviewModal() {
@@ -1519,9 +944,16 @@
           reviewsList.appendChild(reviewItem);
         });
 
+        // Afficher le bouton "Voir plus" uniquement s'il y a plus de 3 avis
+        const toggleButton = document.querySelector('.toggle-reviews');
+        if (avis.length > 3) {
+          toggleButton.style.display = 'flex';
+        } else {
+          toggleButton.style.display = 'none';
+        }
+
       } catch (error) {
         console.error("Erreur lors du chargement des avis:", error);
-        // En cas d'erreur, afficher des valeurs par défaut
         document.querySelector('.rating').textContent = "0.0";
         document.querySelector('.total-reviews').textContent = "(0 avis)";
         document.querySelector('.stars').innerHTML = '<i class="far fa-star"></i>'.repeat(5);
@@ -1609,6 +1041,66 @@
     document.addEventListener('DOMContentLoaded', function() {
       loadWorkingHours();
     });
+
+    // Fonction pour basculer l'affichage des avis
+    function toggleReviews() {
+      const reviewsList = document.querySelector('.reviews-list');
+      const toggleButton = document.querySelector('.toggle-reviews');
+      const icon = toggleButton.querySelector('i');
+      const text = toggleButton.querySelector('span');
+
+      if (reviewsList.classList.contains('expanded')) {
+        reviewsList.classList.remove('expanded');
+        reviewsList.classList.add('collapsed');
+        icon.className = 'fas fa-chevron-down';
+        text.textContent = 'Voir plus avis';
+      } else {
+        reviewsList.classList.remove('collapsed');
+        reviewsList.classList.add('expanded');
+        icon.className = 'fas fa-chevron-up';
+        text.textContent = 'Voir moins avis';
+      }
+    }
+
+    // Fonction pour rediriger vers la messagerie
+    async function redirectToMessagerie() {
+      try {
+        const prestataireId = localStorage.getItem("userId");
+        const clientId = localStorage.getItem("userId");
+        const token = localStorage.getItem("token");
+
+        if (!prestataireId || !clientId || !token) {
+          alert("Vous devez être connecté pour envoyer un message");
+          return;
+        }
+
+        // Créer une nouvelle conversation avec le prestataire
+        const response = await fetch('http://localhost:5001/api/conversation', {
+          method: 'POST',
+          headers: {
+            'Authorization': `Bearer ${token}`,
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            client_id: clientId,
+            prestataire_id: prestataireId,
+            titre: `Conversation avec prestataire ${prestataireId}`
+          })
+        });
+
+        if (!response.ok) {
+          throw new Error('Erreur lors de la création de la conversation');
+        }
+
+        const result = await response.json();
+        
+        // Rediriger vers la page de messagerie avec l'ID de la conversation
+        window.location.href = `messagerie.html?id=${result.conversation.id}`;
+      } catch (error) {
+        console.error('Erreur:', error);
+        alert('Une erreur est survenue lors de la création de la conversation');
+      }
+    }
   </script>
 
 </body>
