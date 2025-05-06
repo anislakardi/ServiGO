@@ -1050,25 +1050,114 @@ a, button {
   border-radius: 4px;
 }
 
-/* Responsive */
-@media (max-width: 768px) {
-  .publication {
-    max-width: 100%;
-    border-radius: 0;
-    margin-bottom: 10px;
-  }
-
-  .publication-media-container {
-    border-radius: 0;
-  }
-
-  .publication-media-container.double-image .publication-media,
-  .publication-media-container.multiple-images .publication-media {
-    height: 180px;
-  }
-
-  .publication-media-container.multiple-images .publication-media:first-child {
-    height: 250px;
-  }
+#commentModal {
+  display: none;
+  position: fixed;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  background: rgba(0,0,0,0.5);
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
 }
 
+/* Contenu du modal (scopé) */
+#commentModal .modal-content {
+  background: #fff;
+  padding: 20px;
+  border-radius: 6px;
+  width: 400px;
+  max-height: 80vh;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Bouton fermer (scopé) */
+#commentModal .close-btn {
+  align-self: flex-end;
+  font-size: 1.2rem;
+  cursor: pointer;
+}
+
+/* Liste des commentaires (scopé) */
+#commentModal .comments-list {
+  flex: 1;
+  overflow-y: auto;
+  margin: 10px 0;
+  border-top: 1px solid #eee;
+  border-bottom: 1px solid #eee;
+  padding: 5px 0;
+}
+
+  #commentModal.comment-modal {
+    display: none;
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    background: rgba(0,0,0,0.5);
+    justify-content: center;
+    align-items: center;
+    z-index: 2000;
+  }
+  #commentModal.comment-modal .modal-content {
+    background: #fff;
+    padding: 20px;
+    border-radius: 6px;
+    width: 400px;
+    max-height: 80vh;
+    display: flex;
+    flex-direction: column;
+  }
+  #commentModal.comment-modal .close-btn {
+    align-self: flex-end;
+    font-size: 1.2rem;
+    cursor: pointer;
+  }
+  #commentModal.comment-modal .comments-list {
+    flex: 1; overflow-y: auto;
+    margin: 10px 0; padding: 5px 0;
+    border-top: 1px solid #eee;
+    border-bottom: 1px solid #eee;
+  }
+  #commentModal.comment-modal .new-comment {
+    display: flex; gap: 8px;
+  }
+ /* === Styles pour l'input et le bouton d’ajout de commentaire === */
+#commentModal .new-comment {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: nowrap;
+}
+
+#commentModal .new-comment input {
+  flex: 1;        /* prend tout l'espace restant */
+  min-width: 0;   /* évite les débordements en flexbox */
+  padding: 10px 12px;
+  font-size: 0.95rem;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  outline: none;
+  transition: border-color 0.2s;
+}
+
+#commentModal .new-comment input:focus {
+  border-color: var(--Big-Stone);
+}
+
+#commentModal .new-comment button {
+  flex: 0 0 auto;    /* garde sa taille naturelle */
+  padding: 10px 16px;
+  font-size: 0.95rem;
+  background-color: var(--Big-Stone);
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.2s, color 0.2s;
+}
+
+#commentModal .new-comment button:hover {
+  background-color: var(--Bright-Sun);
+  color: var(--Big-Stone);
+}

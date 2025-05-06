@@ -197,6 +197,22 @@
       </div>
     </dialog>
 
+    <!-- ======= Comment Modal ======= -->
+    <div id="commentModal" class="modal">
+      <div class="modal-content">
+        <span class="close-btn">&times;</span>
+        <h3>Commentaires</h3>
+        <div id="commentsList" class="comments-list">
+          <!-- Les commentaires chargés ici -->
+        </div>
+        <div class="new-comment">
+          <input type="text" id="newCommentInput" placeholder="Ajouter un commentaire..." />
+          <button id="submitCommentBtn">Envoyer</button>
+        </div>
+      </div>
+    </div>
+
+
     <!-- Publications -->
     <div class="publication-list" id="allPublicationsContainer">
       <!-- Les publications seront chargées dynamiquement ici -->
@@ -209,6 +225,7 @@
 
   
   <script src="../logout.js"></script>
+  
   <script>
     // Attendre que le DOM soit complètement chargé
     document.addEventListener('DOMContentLoaded', function() {
@@ -1207,5 +1224,6 @@ document.addEventListener('click', async function(e) {
   }
 
   </script>
+  <script src="../comments.js"></script>
 </body>
 </html>
